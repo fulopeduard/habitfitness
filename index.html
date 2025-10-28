@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goal Garden 3.0 – Fejedelem Edition 🌿🔥</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right,#e8f5e9,#f1f8e9);
+  margin: 0;
+  padding: 0;
+  color: #222;
+}
+header {
+  background: white;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#app {
+  max-width: 1150px;
+  margin: 20px auto;
+  padding: 10px;
+}
+button {
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+button:hover { background: #444; }
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin: 10px 0;
+  padding: 15px 20px;
+  position: relative;
+}
+.card h3 { margin: 0; }
+.card p { margin: 5px 0 10px; color:#444; }
+
+.owner-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+.owner-tabs button {
+  flex: 1;
+  background: #eee;
+  color: #222;
+}
+.owner-tabs button.active {
+  background: #222;
+  color: white;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+.stats div { flex: 1; min-width: 140px; text-align:center; }
+
+#dailyTracker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.tracker-box {
+  background:white;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  padding:15px;
+}
+.tracker-box h4 { margin-top:0; }
+
+.progress { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.progress-inner { height: 100%; background: #16a34a; transition: width 0.3s; }
+
+.log {
+  background:white;
+  border-radius:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+  padding:10px 15px;
+  margin-top:20px;
+  max-height:200px;
+  overflow:auto;
+  font-size:13px;
+}
+
+.tip-box {
+  background: #fef9c3;
+  border-left: 5px solid #facc15;
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.tip-box strong { color: #92400e; }
+
+#weightLog {
+  background:white;
+  border-radius:12px;
+  padding:15px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+#weightLog input { margin-bottom: 10px; }
+
+footer {
+  text-align:center;
+  padding: 10px;
+  font-size: 13px;
+  color: #555;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<header>
+  <h2>🌿 Goal Garden 3.0 – Fejedelem Edition</h2>
+  <button id="addGoalBtn">+ Új cél</button>
+</header>
+
+<div id="app">
+  <div class="owner-tabs">
+    <button id="tabAll" class="active">🌍 Mind</button>
+    <button id="tabEduard">🧠 Eduard</button>
+    <button id="tabBoroka">💖 Boróka</button>
+  </div>
+
+  <div class="stats">
+    <div>🎯 Aktív célok: <b id="statActive">0</b></div>
+    <div>✅ Teljesítve: <b id="statPercent">0%</b></div>
+    <div>⭐ Pontjaid: <b id="statPoints">0</b></div>
+    <div>⚖️ Testsúly: <b id="currentWeight">-</b></div>
+    <div>🔥 Napi kalória limit: <b id="dailyCalLimit">-</b></div>
+  </div>
+
+  <div class="tip-box">
+    <strong>Mai tipp:</strong> <span id="dailyTip">Betöltés...</span>
+  </div>
+
+  <div id="dailyTracker">
+    <div class="tracker-box">
+      <h4>💧 Vízfogyasztás</h4>
+      <input type="number" id="waterInput" placeholder="liter / nap" min="0" step="0.1">
+      <button onclick="addWater()">Mentés</button>
+      <p>Összesen ma: <b id="waterTotal">0L</b></p>
+    </div>
+
+    <div class="tracker-box">
+      <h4>🍽️ Kalóriabevitel</h4>
+      <input type="number" id="calInput" placeholder="kalória / étkezés">
+      <button onclick="addCalories()">Hozzáadás</button>
+      <p>Mai összesen: <b id="calTotal">0 kcal</b></p>
+      <div class="progress"><div id="calBar" class="progress-inner" style="width:0%;"></div></div>
+    </div>
+
+    <div class="tracker-box" id="weightLog">
+      <h4>⚖️ Súly napló</h4>
+      <input type="number" id="weightInput" placeholder="Aktuális súly (kg)">
+      <button onclick="saveWeight()">Mentés</button>
+      <p>Utolsó mentett: <b id="lastWeight">-</b></p>
+    </div>
+  </div>
+
+  <div id="goals"></div>
+
+  <div class="log">
+    <h4>📜 Napló</h4>
+    <div id="logEntries"></div>
+  </div>
+</div>
+
+<footer>Fejedelem Edition 🌿 Nóra támogatásával 💚</footer>
+<script>
+// --- Alap adatok és inicializálás ---
+let tips = [
+  "Igyál egy nagy pohár vizet minden étkezés előtt – kevesebbet fogsz enni.",
+  "Használj kisebb tányért – automatikusan kevesebbet eszel.",
+  "Ne igyál kalóriát: felejtsd el az üdítőket, gyümölcsleveket.",
+  "Egyél lassan – 20 perc kell, mire az agyad jelzi, hogy tele vagy.",
+  "Reggel egy pohár víz + mozgás = anyagcsere turbó!",
+  "Ne nassolj unalomból. Inkább sétálj 5 percet.",
+  "Kerüld a cukrot – főleg a rejtett cukrokat a szószokban.",
+  "Zöld tea = természetes zsírégető. Próbáld ki délután!",
+  "Aludj legalább 7 órát – a kevés alvás éhséget okoz.",
+  "Ne koplalj – csak egy kis kalóriadeficit kell, napi 500 körül.",
+  "Egyél fehérjét minden étkezéshez – izmot védesz, zsírt égetsz.",
+  "Kerüld az esti nassolást. Este csak könnyű fehérje + zöldség.",
+  "Több séta = több zsírégetés. 10.000 lépés a cél.",
+  "Ha elrontod a napot, ne add fel. Másnap újrakezded!",
+  "Fókuszálj az előrehaladásra, ne a tökéletességre.",
+  "Igyál 2.5–3 liter vizet naponta.",
+  "Ne egyél 2-3 órával lefekvés előtt.",
+  "Mérd magad hetente, ne naponta.",
+  "Kávé éhgyomorra – anyagcsere gyorsító.",
+  "Hideg zuhany 30 másodpercig – hormonális reset.",
+  "Fűszerezd az ételeid chilis fűszerekkel – gyorsítják az anyagcserét.",
+  "Tarts 16/8-as böjtöt – csak 12 és 20 óra között egyél.",
+  "Ne hagyd ki a reggelit, ha farkaséhes vagy.",
+  "Légy következetes, nem tökéletes – ez a kulcs.",
+  "Jutalmazd magad, ha elérsz egy célt – dopamin támogatás.",
+  "Készíts étkezési tervet, ne döntsd el éhesen mit eszel.",
+  "Több rost = teltségérzet. Zöldségek, chia, zabpehely.",
+  "Ne félj a zsírtól, de válaszd az egészségeset: olíva, avokádó.",
+  "Alvás előtt nyújtás – stresszcsökkentés, jobb regeneráció.",
+  "Ne stresszelj – a stressz hízlal, nem a tészta.",
+  "Több fehérje, kevesebb liszt = gyorsabb zsírégetés.",
+  "Tarts hetente 1 csalónapot – anyagcseréd hálás lesz.",
+  "Állj fel óránként, ha sokat ülsz.",
+  "Ne számold a kalóriát kényszeresen – inkább értsd meg az arányokat.",
+  "Ha éhes vagy, igyál vizet – lehet, hogy nem is éhség.",
+  "Alvás az igazi zsírégető idő.",
+  "Ne a mérleget nézd, hanem a tükörképet.",
+  "Mindig legyen nálad víz.",
+  "A következetesség mindig legyőzi a motivációt.",
+  "Légy büszke magadra minden apró eredményért."
+];
+
+let water = parseFloat(localStorage.getItem("water") || "0");
+let calories = parseInt(localStorage.getItem("calories") || "0");
+let weightHistory = JSON.parse(localStorage.getItem("weights") || "[]");
+let dailyLimit = 1800;
+let today = new Date().toDateString();
+
+// Reset napi értékeket új napkor
+if (localStorage.getItem("lastDay") !== today) {
+  water = 0;
+  calories = 0;
+  localStorage.setItem("lastDay", today);
+}
+
+document.getElementById("waterTotal").textContent = water + "L";
+document.getElementById("calTotal").textContent = calories + " kcal";
+document.getElementById("dailyCalLimit").textContent = dailyLimit + " kcal";
+
+// --- Napi tipp kijelzés ---
+function loadDailyTip() {
+  const day = new Date().getDate();
+  const tip = tips[day % tips.length];
+  document.getElementById("dailyTip").textContent = tip;
+}
+loadDailyTip();
+
+// --- Vízfogyasztás ---
+function addWater() {
+  let val = parseFloat(document.getElementById("waterInput").value);
+  if (isNaN(val) || val <= 0) return alert("Adj meg egy érvényes litermennyiséget!");
+  water += val;
+  localStorage.setItem("water", water);
+  document.getElementById("waterTotal").textContent = water.toFixed(1) + "L";
+  addLog(`💧 Ittál ${val} litert. Összesen: ${water.toFixed(1)}L`);
+  document.getElementById("waterInput").value = "";
+}
+
+// --- Kalóriabevitel ---
+function addCalories() {
+  let val = parseInt(document.getElementById("calInput").value);
+  if (isNaN(val) || val <= 0) return alert("Adj meg érvényes kalóriát!");
+  calories += val;
+  localStorage.setItem("calories", calories);
+  document.getElementById("calTotal").textContent = calories + " kcal";
+  let percent = Math.min((calories / dailyLimit) * 100, 100);
+  document.getElementById("calBar").style.width = percent + "%";
+  addLog(`🍽️ Ettél ${val} kalóriát. Összesen: ${calories} kcal`);
+  document.getElementById("calInput").value = "";
+}
+
+// --- Testsúly napló ---
+function saveWeight() {
+  let val = parseFloat(document.getElementById("weightInput").value);
+  if (isNaN(val) || val <= 0) return alert("Adj meg egy érvényes súlyt!");
+  weightHistory.push({ date: new Date().toLocaleDateString(), weight: val });
+  localStorage.setItem("weights", JSON.stringify(weightHistory));
+  document.getElementById("lastWeight").textContent = val + " kg";
+  document.getElementById("currentWeight").textContent = val + " kg";
+  addLog(`⚖️ Súly mentve: ${val} kg`);
+  document.getElementById("weightInput").value = "";
+}
+
+// --- Napló logika ---
+let logs = JSON.parse(localStorage.getItem("log_v6") || "[]");
+function addLog(txt) {
+  logs.unshift({ time: new Date().toLocaleString(), text: txt });
+  if (logs.length > 100) logs.pop();
+  localStorage.setItem("log_v6", JSON.stringify(logs));
+  renderLog();
+}
+function renderLog() {
+  document.getElementById("logEntries").innerHTML = logs.map(l => 
+    `<div>🕓 ${l.time}: ${l.text}</div>`
+  ).join('');
+}
+renderLog();
+
+// --- Súly betöltés ---
+if (weightHistory.length > 0) {
+  const last = weightHistory[weightHistory.length - 1].weight;
+  document.getElementById("lastWeight").textContent = last + " kg";
+  document.getElementById("currentWeight").textContent = last + " kg";
+}
+
+// --- Kalória sáv induláskor ---
+document.getElementById("calBar").style.width = Math.min((calories / dailyLimit) * 100, 100) + "%";
+
+// Ide jön majd a célkezelés (3. rész)
+// --- Célok és jutalmak tárolása ---
+let goals = JSON.parse(localStorage.getItem('goals_v6') || '[]');
+let rewards = JSON.parse(localStorage.getItem('rewards_v6') || '[]');
+let points = parseInt(localStorage.getItem('points_v6') || '0');
+let currentOwner = 'Mind';
+
+const app = document.getElementById('goals');
+const statActive = document.getElementById('statActive');
+const statPercent = document.getElementById('statPercent');
+const statPoints = document.getElementById('statPoints');
+
+// --- Mentés ---
+function saveAll() {
+  localStorage.setItem('goals_v6', JSON.stringify(goals));
+  localStorage.setItem('rewards_v6', JSON.stringify(rewards));
+  localStorage.setItem('points_v6', points);
+}
+
+// --- Statisztika frissítés ---
+function renderStats() {
+  const active = goals.filter(g => !g.done).length;
+  const done = goals.filter(g => g.done).length;
+  const total = goals.length || 1;
+  statActive.textContent = active;
+  statPercent.textContent = Math.round((done / total) * 100) + '%';
+  statPoints.textContent = points;
+}
+renderStats();
+
+// --- Szín logika tulajdonos szerint ---
+function colorByOwner(o) {
+  if (o === 'Eduard') return '#a7f3d0';
+  if (o === 'Boróka') return '#fbcfe8';
+  return '#bfdbfe';
+}
+
+// --- Célok megjelenítése ---
+function renderGoals() {
+  app.innerHTML = '';
+  const filtered = goals.filter(g => currentOwner === 'Mind' || g.owner === currentOwner);
+  filtered.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.borderLeft = `8px solid ${colorByOwner(g.owner)}`;
+    const doneCount = g.subtasks.filter(s => s.done).length;
+    const prog = Math.round((doneCount / g.subtasks.length) * 100);
+    card.innerHTML = `
+      <div class='goal-owner'>${g.owner}</div>
+      <h3>${g.title}</h3>
+      <p>${g.desc || ''}</p>
+    `;
+    const subDiv = document.createElement('div');
+    g.subtasks.forEach((s) => {
+      const row = document.createElement('div');
+      row.className = 'subtask';
+      const chk = document.createElement('input');
+      chk.type = 'checkbox';
+      chk.checked = s.done;
+      chk.onchange = () => {
+        s.done = !s.done;
+        if (s.done) {
+          if (s.points > 0) points += parseInt(s.points);
+          addLog(`✅ Alcél teljesítve: ${s.text} (+${s.points} pont)`);
+        } else {
+          if (s.points > 0) points -= parseInt(s.points);
+          addLog(`↩️ Alcél visszavonva: ${s.text} (-${s.points} pont)`);
+        }
+        g.done = g.subtasks.every(x => x.done);
+        saveAll(); renderAll();
+      };
+      const span = document.createElement('span');
+      span.textContent = `${s.text} (${s.points}p)`;
+      row.append(chk, span);
+      subDiv.append(row);
+    });
+    card.append(subDiv);
+
+    const pr = document.createElement('div');
+    pr.className = 'progress';
+    pr.innerHTML = `<div class='progress-inner' style='width:${prog}%;'></div>`;
+    card.append(pr);
+
+    const icons = document.createElement('div');
+    icons.className = 'icons';
+    const editBtn = document.createElement('button'); editBtn.innerHTML = '✏️'; editBtn.onclick = () => editGoal(g.id);
+    const delBtn = document.createElement('button'); delBtn.innerHTML = '🗑️'; delBtn.onclick = () => { if (confirm('Biztos törlöd?')) { goals = goals.filter(x => x.id !== g.id); saveAll(); renderAll(); } };
+    icons.append(editBtn, delBtn);
+    card.append(icons);
+    app.append(card);
+  });
+}
+
+// --- Új cél hozzáadása ---
+const addGoalBtn = document.getElementById('addGoalBtn');
+addGoalBtn.onclick = () => {
+  const title = prompt('Cél címe:');
+  if (!title) return;
+  const desc = prompt('Rövid leírás:');
+  const owner = prompt('Kinek a célja? (Eduard / Boróka / Mindkettő)', 'Eduard');
+  const subtasks = [];
+  let addMore = true;
+  while (addMore) {
+    const subName = prompt('Alcél neve: (vagy hagyd üresen a kilépéshez)');
+    if (!subName) break;
+    const pts = parseInt(prompt('Pontérték (0 is lehet):', '10')) || 0;
+    subtasks.push({ text: subName, points: pts, done: false });
+    addMore = confirm('Szeretnél még egy alcélt hozzáadni?');
+  }
+  const goal = { id: Date.now(), title, desc, owner, subtasks, done: false };
+  goals.unshift(goal);
+  addLog(`➕ Új cél: ${goal.title}`);
+  saveAll(); renderAll();
+};
+
+// --- Szerkesztés ---
+function editGoal(id) {
+  const g = goals.find(x => x.id === id);
+  if (!g) return;
+  const newTitle = prompt('Új cím:', g.title);
+  if (newTitle) g.title = newTitle;
+  const newDesc = prompt('Új leírás:', g.desc);
+  if (newDesc) g.desc = newDesc;
+  addLog(`✏️ Cél frissítve: ${g.title}`);
+  saveAll(); renderAll();
+}
+
+// --- Megjelenítés ---
+function renderAll() {
+  renderGoals();
+  renderStats();
+  renderLog();
+}
+renderAll();
+
+// --- Tulajdonos szűrő ---
+document.getElementById('tabAll').onclick = () => { currentOwner = 'Mind'; setTab('tabAll'); };
+document.getElementById('tabEduard').onclick = () => { currentOwner = 'Eduard'; setTab('tabEduard'); };
+document.getElementById('tabBoroka').onclick = () => { currentOwner = 'Boróka'; setTab('tabBoroka'); };
+
+function setTab(id) {
+  ['tabAll', 'tabEduard', 'tabBoroka'].forEach(x => document.getElementById(x).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  renderGoals();
+}
+
+</script>
+</body>
+</html>
