@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FitGarden 2.0 – Fejedelem Edition 💪🌿</title>
+
 <style>
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -96,7 +97,7 @@ button:hover {
 #tabs {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; 
   flex-wrap: wrap;
   margin-bottom: 25px;
   gap: 5px;
@@ -119,7 +120,6 @@ button:hover {
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-
 /* ================================================== */
 /* ===== CÉL/JUTALOM ELRENDEZÉS ===== */
 /* ================================================== */
@@ -139,7 +139,7 @@ button:hover {
 /* ================================================== */
 .card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; 
   align-items: center;
   margin-bottom: 15px;
 }
@@ -405,26 +405,20 @@ button:hover, .tab-btn:hover {
 /* ================================================== */
 /* ===== ÚJ JEGYZET STÍLUSOK ===== */
 /* ================================================== */
-
-/* A felugró ablak tartalma */
 #noteViewModal .modal-content {
-  background: #f1f8e9; /* A kért világoszöld háttér */
-  max-width: 600px; /* Lehet picit szélesebb */
+  background: #f1f8e9;
+  max-width: 600px;
 }
-
-/* A jegyzet szövegét tartalmazó doboz */
 #noteViewText {
-  background: #ffffff; /* Fehér háttér a szövegnek a jobb olvashatóságért */
+  background: #ffffff;
   border-radius: 8px;
   padding: 15px;
   min-height: 100px;
-  max-height: 60vh; /* Maximális magasság, utána görgetés */
-  overflow-y: auto; /* Automatikus függőleges görgetősáv */
-  white-space: pre-wrap; /* Ez tartja meg a sortöréseket! */
+  max-height: 60vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
   border: 1px solid #dcedc8;
 }
-
-/* A jegyzetek listája a Jegyzetek fülön */
 .note-summary-item {
   display: flex;
   justify-content: space-between;
@@ -435,7 +429,6 @@ button:hover, .tab-btn:hover {
   margin-bottom: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-
 .note-summary-title {
   flex: 1;
   font-weight: bold;
@@ -444,27 +437,66 @@ button:hover, .tab-btn:hover {
   cursor: pointer;
   margin-right: 10px;
 }
-
 .note-summary-date {
   font-size: 0.85em;
   color: #555;
   margin-right: 15px;
   flex-shrink: 0;
 }
-
 .note-summary-actions button {
   background: transparent;
   color: #00796b;
   font-size: 1.1em;
   padding: 5px;
 }
-
-/* A szerkesztő modalban a szövegdoboz */
 #editInputText {
   height: 150px;
   resize: vertical;
   font-family: 'Segoe UI', sans-serif;
 }
+
+/* ================================================== */
+/* ===== ÚJ EDZÉS STÍLUSOK (NAPTÁR TÖRÖLVE) ===== */
+/* ================================================== */
+.workout-adder {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.workout-adder input[type="date"] {
+  flex: 1; /* A dátumválasztó töltse ki a helyet */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1em;
+}
+.workout-adder button {
+  flex-shrink: 0; /* A gomb ne zsugorodjon */
+  padding: 10px 15px;
+  font-weight: bold;
+}
+.workout-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e8f5e9;
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.workout-item span {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #004d40;
+}
+.workout-item button {
+  background: transparent;
+  color: #c00; /* Vörös a törléshez */
+  font-size: 1.2em;
+}
+/* ================================================== */
+
 
 </style>
 </head>
@@ -476,10 +508,11 @@ button:hover, .tab-btn:hover {
     <div class="tab-btn active" onclick="showTab('main')">Főoldal</div>
     <div class="tab-btn" onclick="showTab('notes')">Jegyzetek</div>
     <div class="tab-btn" onclick="showTab('history')">Haladás</div>
+    <div class="tab-btn" onclick="showTab('workouts')">Edzések</div>
   </div>
 
   <div id="main" class="tab-content active">
-
+    
     <div class="card" style="text-align:center; padding: 10px;">
       <button onclick="openChartModal()" style="width: 100%; padding: 10px; font-size: 1em;">
         📈 Súly Grafikon Megnyitása
@@ -488,7 +521,7 @@ button:hover, .tab-btn:hover {
 
     <div class="card" id="goalsDisplay">
       <div class="icon-box" id="goalSummary">
-
+        
         <div class="icon-card">
           <button class="edit-btn" onclick="editGoals()">✏️</button>
           <i>⚖️</i>
@@ -540,7 +573,7 @@ button:hover, .tab-btn:hover {
       <div class="card">
         <div class="card-header">
           <h2>✅ Célok</h2>
-          </div>
+        </div>
         <div id="goalList"></div>
         <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
       </div>
@@ -564,7 +597,7 @@ button:hover, .tab-btn:hover {
       <div class="log" id="activityLog"></div>
       <button style="margin-top:10px" onclick="clearAllLogs()">🧹 Napló törlése</button>
     </div>
-
+    
     <div class="card fade-in" id="controlPanel">
       <h2>🧠 Fejedelem Kontrollpanel</h2>
       <p>Adatmentés, visszaállítás és teljes reset</p>
@@ -573,9 +606,9 @@ button:hover, .tab-btn:hover {
       <input type="file" id="importFile" accept=".json" onchange="importData(event)">
       <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
     </div>
-
+    
   </div>
-
+  
   <div id="notes" class="tab-content">
     <div class="card">
       <h2>📝 Új Jegyzet</h2>
@@ -584,7 +617,7 @@ button:hover, .tab-btn:hover {
       <label for="noteTextInput">Szöveg</label>
       <textarea id="noteTextInput" placeholder="Írj ide valamit..."></textarea>
       <button onclick="addNote()">Mentés</button>
-
+      
       <h2 style="margin-top: 25px;">Mentett Jegyzetek</h2>
       <div id="notesList"></div>
     </div>
@@ -596,6 +629,22 @@ button:hover, .tab-btn:hover {
       <div id="historyList" class="log"></div>
     </div>
   </div>
+
+  <div id="workouts" class="tab-content">
+    <div class="card">
+      <h2>📅 Edzés rögzítése</h2>
+      <p>Válaszd ki a napot, és rögzítsd az edzést.</p>
+      <div class="workout-adder">
+        <input type="date" id="workoutDateInput">
+        <button onclick="addWorkout()">🏋️‍♂️ Edzés rögzítése</button>
+      </div>
+      
+      <h2 style="margin-top: 25px;">Rögzített edzések</h2>
+      <div id="workoutList">
+        </div>
+    </div>
+  </div>
+
 </main>
 
 <div class="modal" id="noteViewModal">
@@ -644,7 +693,7 @@ button:hover, .tab-btn:hover {
     <input id="goalPointsInput" type="number" placeholder="pl. 10 (0 is lehet)">
     <label>Kategória (opcionális)</label>
     <input id="goalCategoryInput" type="text" placeholder="pl. Valóság">
-
+    
     <div style="text-align:center;margin-top:15px;">
       <button onclick="saveGoal()">✅ Mentés</button>
       <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
@@ -669,13 +718,13 @@ button:hover, .tab-btn:hover {
 <div class="modal" id="editModal">
   <div class="modal-content">
     <h3 id="editTitle">✏️ Szerkesztés</h3>
-
+    
     <label id="editLabel1"></label>
     <input id="editInput1" type="text">
-
+    
     <label id="editLabel2"></label>
     <input id="editInput2" type="number">
-
+    
     <label id="editLabel3" style="display:none;"></label>
     <input id="editInput3" type="text" style="display:none;">
 
@@ -706,6 +755,7 @@ function editGoals() {
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 // =======================================================
 // ===== GLOBÁLIS VÁLTOZÓK =====
@@ -714,14 +764,17 @@ let goals = JSON.parse(localStorage.getItem("goals")) || [];
 let rewards = JSON.parse(localStorage.getItem("rewards")) || [];
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 let logs = JSON.parse(localStorage.getItem("logs")) || [];
+let workouts = JSON.parse(localStorage.getItem("workouts")) || []; // Ez megmarad
 let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
 let chart;
 let editTarget = null;
 let transactions = [];
 let dailyProgress = { water: 0, calories: 0, lastWeight: 0, date: "" };
+// calendarInstance TÖRÖLVE
+
 
 // =======================================================
-// ===== MÓDOSÍTOTT PONTSZÁMLÁLÓ ANIMÁCIÓ =====
+// ===== PONTSZÁMLÁLÓ ANIMÁCIÓ =====
 // =======================================================
 function animatePoints(newValue) {
   const displayElement = document.getElementById("totalPointsDisplay");
@@ -731,28 +784,23 @@ function animatePoints(newValue) {
   if (isNaN(startValue)) {
       startValue = 0;
   }
-
-  // Ha nincs változás, ne animáljon
   if (startValue === newValue) return;
 
-  const duration = 750; // Kicsit gyorsabb (750ms)
+  const duration = 750;
   const range = newValue - startValue;
   let startTime = null;
 
   function step(timestamp) {
     if (!startTime) startTime = timestamp;
     const progress = Math.min((timestamp - startTime) / duration, 1);
-
-    // "Ease-out" görbe helyett EGYENLETES (lineáris) haladás
-    // Ez megszünteti a "megakadást" a vége előtt.
     const currentValue = Math.floor(startValue + range * progress);
-
+    
     displayElement.textContent = currentValue;
 
     if (progress < 1) {
       window.requestAnimationFrame(step);
     } else {
-      displayElement.textContent = newValue; // Biztosítja a pontos végső értéket
+      displayElement.textContent = newValue;
     }
   }
   window.requestAnimationFrame(step);
@@ -760,7 +808,7 @@ function animatePoints(newValue) {
 
 
 // =======================================================
-// ===== GRAFIKON MODAL FUNKCIÓ (JAVÍTVA) =====
+// ===== GRAFIKON MODAL FUNKCIÓ =====
 // =======================================================
 function openChartModal() {
   openModal('chartModal');
@@ -785,7 +833,7 @@ function loadTransactionsAndMigrate() {
         value: e.w,
         date: e.date
       }));
-
+    
     localStorage.setItem("transactions", JSON.stringify(transactions));
     localStorage.removeItem("entries");
     localStorage.removeItem("dailyProgress");
@@ -796,14 +844,14 @@ function loadTransactionsAndMigrate() {
 function calculateDailyProgress() {
   const today = new Date().toISOString().slice(0, 10);
   dailyProgress = { water: 0, calories: 0, lastWeight: 0, date: today };
-
+  
   let lastWeightEntry = null;
 
   for (const t of transactions) {
     if (t.type === 'weight' && t.value > 0) {
       lastWeightEntry = t;
     }
-
+    
     try {
       let entryDate;
       if (t.date.includes('/')) {
@@ -839,19 +887,104 @@ function calculateDailyProgress() {
   }
 }
 
-// ===== TAB KEZELÉS =====
+// =======================================================
+// ===== MÓDOSÍTOTT TAB KEZELÉS (NAPTÁR NÉLKÜL) =====
+// =======================================================
 function showTab(id) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-
+  
   if (event && event.target) {
      event.target.classList.add('active');
   } else {
      document.querySelector(`.tab-btn[onclick="showTab('${id}')"]`).classList.add('active');
   }
-
+  
   document.getElementById(id).classList.add('active');
+  
+  // === ÚJ RÉSZ: EDZÉS LISTA FRISSÍTÉSE ===
+  if (id === 'workouts') {
+    // Mindig frissítjük a listát, amikor a fülre kattintunk
+    renderWorkouts();
+  }
+  // ======================================
 }
+
+// =======================================================
+// ===== ÚJ, SAJÁT EDZÉS FUNKCIÓK =====
+// =======================================================
+function addWorkout() {
+  const dateInput = document.getElementById("workoutDateInput");
+  const selectedDate = dateInput.value; // "YYYY-MM-DD" formátumú
+
+  if (!selectedDate) {
+    alert("Kérlek válassz ki egy dátumot!");
+    return;
+  }
+  
+  // Ellenőrizzük, hogy ez a dátum szerepel-e már
+  if (workouts.includes(selectedDate)) {
+    alert("Ehhez a naphoz már rögzítettél edzést!");
+    return;
+  }
+  
+  // Hozzáadás, mentés, naplózás, frissítés
+  workouts.push(selectedDate);
+  saveWorkouts();
+  logActivity(`🏋️‍♂️ Edzés rögzítve: ${selectedDate}`);
+  renderWorkouts();
+  
+  // Dátumválasztó ürítése (opcionális, de hasznos)
+  dateInput.value = "";
+}
+
+function renderWorkouts() {
+  const list = document.getElementById("workoutList");
+  if (!list) return; // Biztonsági ellenőrzés
+
+  // Dátum szerint csökkenő sorrendbe rendezzük
+  workouts.sort((a, b) => b.localeCompare(a));
+  
+  list.innerHTML = ""; // Lista ürítése
+  
+  if (workouts.length === 0) {
+    list.innerHTML = "<p>Még nincsenek rögzített edzéseid.</p>";
+    return;
+  }
+  
+  workouts.forEach((date, index) => {
+    const div = document.createElement("div");
+    div.className = "workout-item";
+    
+    // Az indexet használjuk a törléshez, mivel a dátum egyedi
+    div.innerHTML = `
+      <span>🏋️‍♂️ ${date}</span>
+      <button onclick="deleteWorkout('${date}')">🗑️</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function deleteWorkout(date) {
+  if (!confirm(`Biztosan törlöd az edzést erről a napról: ${date}?`)) {
+    return;
+  }
+  
+  // Megkeressük a dátumot a tömbben és töröljük
+  const indexToDelete = workouts.indexOf(date);
+  if (indexToDelete > -1) {
+    workouts.splice(indexToDelete, 1);
+    saveWorkouts();
+    logActivity(`🗑️ Edzés törölve: ${date}`);
+    renderWorkouts(); // Lista frissítése
+  }
+}
+
+function saveWorkouts() {
+  localStorage.setItem("workouts", JSON.stringify(workouts));
+}
+// =======================================================
+
 
 // ===== CÉLBEÁLLÍTÁS =====
 function saveGoalSettings() {
@@ -872,7 +1005,7 @@ function updateAllSummaries() {
   const gw = parseFloat(localStorage.getItem("goalWeight"));
   const gwat = parseFloat(localStorage.getItem("goalWater"));
   const gcal = parseFloat(localStorage.getItem("goalCalories"));
-
+  
   const dp = dailyProgress;
 
   // --- Súly (Weight) ---
@@ -905,7 +1038,7 @@ function updateAllSummaries() {
     goalWaterText.textContent = `Víz cél: ${gwat} L`;
     const rem_water = gwat - dp.water;
     let perc_water = (dp.water / gwat) * 100;
-
+    
     if (rem_water > 0) {
       waterSummary.textContent = `Még ${rem_water.toFixed(1)} L hiányzik.`;
     } else {
@@ -928,7 +1061,7 @@ function updateAllSummaries() {
     goalCalText.textContent = `Kalória cél: ${gcal} kcal`;
     const rem_cal = gcal - dp.calories;
     let perc_cal = (dp.calories / gcal) * 100;
-
+    
     if (rem_cal > 0) {
       calSummary.textContent = `Még ${rem_cal.toFixed(0)} kcal van hátra.`;
     } else {
@@ -950,7 +1083,7 @@ function updateAllSummaries() {
 // =======================================================
 function addTransaction(type) {
   let inputElem, value, logText;
-
+  
   if (type === 'weight') {
     inputElem = document.getElementById("weightInput");
     value = parseFloat(inputElem.value);
@@ -975,7 +1108,7 @@ function addTransaction(type) {
   else {
     return;
   }
-
+  
   const transaction = {
     id: Date.now(),
     type: type,
@@ -984,9 +1117,9 @@ function addTransaction(type) {
   };
   transactions.push(transaction);
   localStorage.setItem("transactions", JSON.stringify(transactions));
-
+  
   logActivity(logText);
-
+  
   updateAllSummaries();
   updateHistory();
   if (type === 'weight') {
@@ -994,7 +1127,7 @@ function addTransaction(type) {
         updateChart();
     }
   }
-
+  
   inputElem.value = "";
 }
 
@@ -1002,12 +1135,12 @@ function deleteTransaction(index) {
   if (!confirm("Biztosan törlöd ezt a bejegyzést?")) {
     return;
   }
-
+  
   const entry = transactions.splice(index, 1)[0];
   localStorage.setItem("transactions", JSON.stringify(transactions));
 
   logActivity(`🗑️ Bejegyzés törölve: ${entry.type} (${entry.value})`);
-
+  
   calculateDailyProgress();
   updateAllSummaries();
   updateHistory();
@@ -1023,16 +1156,16 @@ function deleteTransaction(index) {
 function addNote() {
   const title = document.getElementById("noteTitleInput").value.trim();
   const text = document.getElementById("noteTextInput").value.trim();
-
+  
   if (!title || !text) return alert("Kérlek adj meg egy címet és szöveget is!");
-
+  
   const note = { title, text, date: new Date().toLocaleString() };
   notes.unshift(note);
   localStorage.setItem("notes", JSON.stringify(notes));
-
+  
   document.getElementById("noteTitleInput").value = "";
   document.getElementById("noteTextInput").value = "";
-
+  
   renderNotes();
   logActivity("📝 Jegyzet hozzáadva");
 }
@@ -1044,7 +1177,7 @@ function renderNotes() {
     container.innerHTML = "<p>Még nincsenek mentett jegyzeteid.</p>";
     return;
   }
-
+  
   notes.forEach((n, i) => {
     const div = document.createElement("div");
     div.className = "note-summary-item";
@@ -1065,7 +1198,7 @@ function deleteNote(i) {
   if (!confirm(`Biztosan törlöd ezt a jegyzetet: "${notes[i].title}"?`)) {
     return;
   }
-  const deletedTitle = notes[i].title; // Mentsük el a címet a loghoz
+  const deletedTitle = notes[i].title;
   notes.splice(i, 1);
   localStorage.setItem("notes", JSON.stringify(notes));
   renderNotes();
@@ -1081,7 +1214,7 @@ function openNoteModal(i) {
 
 function editNote(i) {
   editTarget = { type: 'note', index: i };
-
+  
   document.getElementById("editTitle").textContent = "📝 Jegyzet szerkesztése";
   document.getElementById("editLabel1").textContent = "Cím";
   document.getElementById("editInput1").value = notes[i].title;
@@ -1091,7 +1224,7 @@ function editNote(i) {
   document.getElementById("editLabelText").style.display = "block";
   document.getElementById("editInputText").value = notes[i].text;
   document.getElementById("editInputText").style.display = "block";
-
+  
   document.getElementById("editLabel2").style.display = "none";
   document.getElementById("editInput2").style.display = "none";
   document.getElementById("editLabel3").style.display = "none";
@@ -1109,17 +1242,17 @@ function saveGoal() {
   const name = document.getElementById("goalNameInput").value.trim();
   const points = parseInt(document.getElementById("goalPointsInput").value);
   const category = document.getElementById("goalCategoryInput").value.trim();
-
+  
   if (!name) return alert("A célnak nevet kell adni!");
   if (isNaN(points) || points < 0) return alert("Érvénytelen pontszám! Adj meg 0-t vagy nagyobbat.");
-
+  
   goals.push({ name, points, done: false, category: category });
   localStorage.setItem("goals", JSON.stringify(goals));
-
+  
   document.getElementById("goalNameInput").value = "";
   document.getElementById("goalPointsInput").value = "";
   document.getElementById("goalCategoryInput").value = "";
-
+  
   closeModal('goalModal');
   renderGoals();
   logActivity(`🎯 Cél hozzáadva: ${name} (${points} pont)`);
@@ -1143,7 +1276,7 @@ function toggleGoal(i) {
 function editGoal(i) {
   editTarget = { type: 'goal', index: i };
   document.getElementById("editTitle").textContent = "🎯 Cél szerkesztése";
-
+  
   document.getElementById("editLabel1").textContent = "Cél neve";
   document.getElementById("editInput1").value = goals[i].name;
   document.getElementById("editInput1").style.display = "block";
@@ -1153,7 +1286,7 @@ function editGoal(i) {
   document.getElementById("editInput2").value = goals[i].points;
   document.getElementById("editInput2").style.display = "block";
   document.getElementById("editLabel2").style.display = "block";
-
+  
   document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
   document.getElementById("editInput3").value = goals[i].category || "";
   document.getElementById("editLabel3").style.display = "block";
@@ -1165,24 +1298,14 @@ function editGoal(i) {
   openModal('editModal');
 }
 
-// ===== MÓDOSÍTOTT deleteGoal FUNKCIÓ =====
 function deleteGoal(i) {
-  const goalToDelete = goals[i]; // Mentsük el a törlendő célt a loghoz
+  const goalToDelete = goals[i]; 
 
-  // === MÓDOSÍTÁS: A pontlevonás eltávolítva ===
-  // if(goalToDelete.done) {
-  //     totalPoints -= goalToDelete.points;
-  //     localStorage.setItem("totalPoints", totalPoints);
-  //     animatePoints(totalPoints); // Ezt is kivesszük, mert nincs pontváltozás
-  // }
-  // ===========================================
-
-  goals.splice(i, 1); // Csak eltávolítja a célt a tömbből
-  localStorage.setItem("goals", JSON.stringify(goals)); // Menti a frissített cél listát
-  renderGoals(); // Újrarajzolja a célok listáját
-  logActivity(`🗑️ Cél törölve: ${goalToDelete ? goalToDelete.name : 'ismeretlen cél'}`); // Naplózás a mentett névvel
+  goals.splice(i, 1);
+  localStorage.setItem("goals", JSON.stringify(goals));
+  renderGoals();
+  logActivity(`🗑️ Cél törölve: ${goalToDelete ? goalToDelete.name : 'ismeretlen cél'}`);
 }
-// ==========================================
 
 
 function renderGoals() {
@@ -1303,7 +1426,7 @@ function editReward(i) {
 }
 
 function deleteReward(i) {
-  const deletedName = rewards[i].name; // Mentsük el a nevet a loghoz
+  const deletedName = rewards[i].name;
   rewards.splice(i, 1);
   localStorage.setItem("rewards", JSON.stringify(rewards));
   renderRewards();
@@ -1511,7 +1634,6 @@ window.onload = function() {
   loadTransactionsAndMigrate();
   calculateDailyProgress();
 
-  // Kezdő pontszám beállítása (animáció nélkül)
   document.getElementById("totalPointsDisplay").textContent = totalPoints;
 
   renderGoals();
@@ -1524,10 +1646,13 @@ window.onload = function() {
   loadMotivation();
 };
 
-// ====== EXPORT / IMPORT ======
+// =======================================================
+// ===== EXPORT / IMPORT / RESET (MÓDOSÍTVA) =====
+// =======================================================
 function exportData() {
   const allData = {
     goals, rewards, notes, transactions, logs, totalPoints,
+    workouts, // Hozzáadva
     goalWeight: localStorage.getItem("goalWeight"),
     goalWater: localStorage.getItem("goalWater"),
     goalCalories: localStorage.getItem("goalCalories")
@@ -1552,19 +1677,21 @@ function importData(event) {
       notes = data.notes || [];
       transactions = data.transactions || [];
       logs = data.logs || [];
+      workouts = data.workouts || []; // Hozzáadva
       totalPoints = data.totalPoints || 0;
-
+      
       localStorage.setItem("goalWeight", data.goalWeight || "");
       localStorage.setItem("goalWater", data.goalWater || "");
       localStorage.setItem("goalCalories", data.goalCalories || "");
-
+      
       localStorage.setItem("goals", JSON.stringify(goals));
       localStorage.setItem("rewards", JSON.stringify(rewards));
       localStorage.setItem("notes", JSON.stringify(notes));
       localStorage.setItem("transactions", JSON.stringify(transactions));
       localStorage.setItem("logs", JSON.stringify(logs));
+      localStorage.setItem("workouts", JSON.stringify(workouts)); // Hozzáadva
       localStorage.setItem("totalPoints", totalPoints);
-
+      
       localStorage.removeItem("entries");
       localStorage.removeItem("dailyProgress");
 
@@ -1578,7 +1705,6 @@ function importData(event) {
   reader.readAsText(file);
 }
 
-// ====== TELJES RESET ======
 function resetAll() {
   if (confirm("Biztosan törölni szeretnél MINDENT? Ez végleges!")) {
     localStorage.clear();
@@ -1587,29 +1713,33 @@ function resetAll() {
     notes = [];
     transactions = [];
     logs = [];
+    workouts = []; // Hozzáadva
     totalPoints = 0;
-
+    
     renderAll();
     logActivity("⚠️ Teljes rendszer reset");
     alert("FitGarden újraindítva, minden törölve ✅");
   }
 }
 
-// ====== EGYSZERŰ ÚJRARAJZOLÁS (MÓDOSÍTVA) ======
 function renderAll() {
   calculateDailyProgress();
-
-  // Pontszám frissítése (animáció nélkül, mivel ez egy teljes "reset")
+  
   document.getElementById("totalPointsDisplay").textContent = totalPoints;
-
+  
   renderGoals();
   renderRewards();
   renderNotes();
   renderLogs();
-
+  
   updateAllSummaries();
   updateHistory();
   loadMotivation();
+  
+  // Naptár frissítés helyett az edzéslistát frissítjük, ha az épp aktív
+  if(document.getElementById('workouts').classList.contains('active')) {
+    renderWorkouts();
+  }
 }
 </script>
 
