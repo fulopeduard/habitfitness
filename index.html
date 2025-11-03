@@ -748,7 +748,11 @@ button:hover, .tab-btn:hover {
 	    <label>Pont érték</label>
 	    <input id="goalPointsInput" type="number" placeholder="pl. 10 (0 is lehet)">
 	    <label>Kategória (opcionális)</label>
-	    <input id="goalCategoryInput" type="text" placeholder="pl. Valóság">
+	    <!-- MÓDOSÍTOTT INPUT ÉS ÚJ DATALIST -->
+	    <input id="goalCategoryInput" type="text" placeholder="pl. Valóság (válassz vagy írj be újat)" list="categoryDatalist">
+	    <datalist id="categoryDatalist">
+	      <!-- JavaScript tölti fel dinamikusan -->
+	    </datalist>
 	    
 	    <div style="text-align:center;margin-top:15px;">
 	      <button onclick="saveGoal()">✅ Mentés</button>
@@ -853,6 +857,10 @@ button:hover, .tab-btn:hover {
 // ======= POPUP VEZÉRLÉS =======
 function openModal(id) {
   document.getElementById(id).style.display = 'flex';
+  // HOZZÁADVA: Kategória lista feltöltése, amikor a cél modalt nyitjuk meg
+  if (id === 'goalModal') {
+    populateCategoryDatalist();
+  }
 }
 function closeModal(id) {
   document.getElementById(id).style.display = 'none';
@@ -896,6 +904,38 @@ let goalCaloriesSetting = "";
 let chart;
 let editTarget = null;
 let dailyProgress = { water: 0, calories: 0, lastWeight: 0, date: "" };
+
+
+// =======================================================
+// ===== ÚJ FUNKCIÓ: KATEGÓRIA LISTA LÉTREHOZÁSA =====
+// =======================================================
+function populateCategoryDatalist() {
+  const datalist = document.getElementById('categoryDatalist');
+  if (!datalist) return;
+
+  datalist.innerHTML = ""; // Töröljük a régi opciókat
+
+  // Összegyűjtjük a meglévő kategóriákat (csak egyedi értékek)
+  const existingCategories = new Set(
+    goals
+      .map(goal => goal.category)
+      .filter(category => category) // Csak a létező kategóriák
+  );
+  
+  // Hozzáadjuk az archivált célok kategóriáit is
+  archivedGoals
+    .map(goal => goal.category)
+    .filter(category => category)
+    .forEach(category => existingCategories.add(category));
+
+  // Hozzáadjuk őket a listához
+  existingCategories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    datalist.appendChild(option);
+  });
+}
+// =======================================================
 
 
 // =======================================================
@@ -2224,3 +2264,4 @@ function renderAll() {
 
 </body>
 </html>
+
