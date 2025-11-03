@@ -204,7 +204,7 @@ button:hover {
   margin-bottom: 8px;
   display: flex;
   overflow: hidden;
-  align-items: center;
+  align-items: stretch;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 .completed {
@@ -222,13 +222,18 @@ button:hover {
 }
 .item-points {
   flex-shrink: 0;
-  width: 100px;
+  align-items: center;
+  justify-content: center;
+  width: 69px;
   padding: 10px;
   background: #dcedc8; /* Árnyalattal sötétebb zöld */
   text-align: center;
   font-weight: bold;
   border-left: 1px solid #c8e6c9;
   border-right: 1px solid #c8e6c9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 /* ÚJ STÍLUS AZ ÉTEL KÁRTYÁHOZ */
 .food-item .item-details {
@@ -255,6 +260,7 @@ button:hover {
   display: flex;
   gap: 5px;
   justify-content: center;
+  align-items: center;
 }
 
 .item-actions button {
