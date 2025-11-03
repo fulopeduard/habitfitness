@@ -33,8 +33,8 @@ main {
   background: white;
   border-radius: 18px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  padding: 20px;
-  margin-bottom: 25px;
+  padding: 8px;
+  margin-bottom: 5px;
 }
 h2 {
   color: #00796b;
@@ -57,7 +57,7 @@ button:hover {
   display: flex;
   justify-content: space-around;
   align-items: stretch;
-  gap: 15px;
+  gap: 5px;
   flex-wrap: wrap;
 }
 .icon-card {
@@ -100,7 +100,7 @@ button:hover {
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 25px;
-  gap: 5px;
+  gap: 25px;
 }
 .tab-btn {
   background: #ccc;
@@ -465,10 +465,10 @@ input, textarea, select {
   to { opacity: 1; transform: translateY(0); }
 }
 button, .tab-btn {
-  transition: transform 0.15s ease, background-color 0.3s;
+  transition: transform 0.25s ease, background-color 0.3s;
 }
 button:hover, .tab-btn:hover {
-  transform: scale(1.03);
+  transform: scale(1.01);
 }
 
 /* ====== EXPORT / RESET PANEL ====== */
@@ -611,12 +611,12 @@ button:hover, .tab-btn:hover {
 
 	<main>
 	  <div id="tabs">
-	    <div class="tab-btn active" onclick="showTab('main')">Főoldal</div>
-	    <div class="tab-btn" onclick="showTab('notes')">Jegyzetek</div>
+	    <div class="tab-btn active" onclick="showTab('main')">🏠 Főoldal</div>
+	    <div class="tab-btn" onclick="showTab('notes')">📝 Jegyzetek</div>
         <div class="tab-btn" onclick="showTab('reminders')">🔔 Emlékeztetők</div>
-        <div class="tab-btn" onclick="showTab('meals')">Étkezés</div>
-	    <div class="tab-btn" onclick="showTab('history')">Haladás</div>
-	    <div class="tab-btn" onclick="showTab('workouts')">Edzések</div>
+        <div class="tab-btn" onclick="showTab('meals')">🍗 Étkezés</div>
+	    <div class="tab-btn" onclick="showTab('history')">📈 Haladás</div>
+	    <div class="tab-btn" onclick="showTab('workouts')">🏋️‍♂️ Edzések</div>
 	  </div>
 
 	  <div id="main" class="tab-content active">
