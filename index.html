@@ -57,7 +57,7 @@ button:hover {
   display: flex;
   justify-content: space-around;
   align-items: stretch;
-  gap: 5px;
+  gap: 15px;
   flex-wrap: wrap;
 }
 .icon-card {
@@ -100,10 +100,10 @@ button:hover {
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 25px;
-  gap: 25px;
+  gap: 5px;
 }
 .tab-btn {
-  background: #f2ffed;
+  background: #ccc;
   color: black;
   padding: 10px 20px;
   border-radius: 10px;
@@ -465,10 +465,10 @@ input, textarea, select {
   to { opacity: 1; transform: translateY(0); }
 }
 button, .tab-btn {
-  transition: transform 0.25s ease, background-color 0.3s;
+  transition: transform 0.15s ease, background-color 0.3s;
 }
 button:hover, .tab-btn:hover {
-  transform: scale(1.01);
+  transform: scale(1.03);
 }
 
 /* ====== EXPORT / RESET PANEL ====== */
@@ -1990,10 +1990,6 @@ async function deleteGoal(i) { // Make async
   }
   const goalToDelete = goals[i]; 
 
-  if (goalToDelete.done) {
-    totalPoints -= goalToDelete.points;
-    animatePoints(totalPoints);
-  }
 
   goals.splice(i, 1);
   renderGoals();
