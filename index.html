@@ -97,7 +97,7 @@ button:hover {
 #tabs {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   flex-wrap: wrap;
   margin-bottom: 25px;
   gap: 5px;
@@ -139,7 +139,7 @@ button:hover {
 /* ================================================== */
 .card-header {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
@@ -269,12 +269,12 @@ button:hover {
   align-items: center;
 }
 .log-entry span {
-    flex: 1;
-    padding-right: 10px;
+  flex: 1;
+  padding-right: 10px;
 }
 .log-entry small { color: #777; font-size: 0.85em; margin-left: 10px; }
 .log-entry button {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .modal {
@@ -501,246 +501,313 @@ button:hover, .tab-btn:hover {
 </style>
 </head>
 <body>
-<div id="motivationBar">Tipp: „A lustaság a gyengék vallása. Törj ki belőle.”</div>
 
-<main>
-  <div id="tabs">
-    <div class="tab-btn active" onclick="showTab('main')">Főoldal</div>
-    <div class="tab-btn" onclick="showTab('notes')">Jegyzetek</div>
-    <div class="tab-btn" onclick="showTab('history')">Haladás</div>
-    <div class="tab-btn" onclick="showTab('workouts')">Edzések</div>
+<!-- ======================================================= -->
+<!-- ===== LOGIN CONTAINER (NEW) ===== -->
+<!-- ======================================================= -->
+<div id="loginContainer" style="padding: 20px; max-width: 400px; margin: 40px auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+  <h2 style="color: #00796b; text-align: center;">FitGarden 2.0</h2>
+  <h3 style="text-align: center;">Belépés / Regisztráció</h3>
+  <label>Email</label>
+  <input type="email" id="loginEmail" placeholder="email@cim.com">
+  <label>Jelszó</label>
+  <input type="password" id="loginPassword" placeholder="min. 6 karakter">
+  <div style="display: flex; gap: 10px; margin-top: 15px;">
+    <button onclick="handleLogin()" style="flex: 1;">Belépés</button>
+    <button onclick="handleSignUp()" style="flex: 1; background: #004d40;">Regisztráció</button>
   </div>
+  <p id="loginError" style="color: red; text-align: center; margin-top: 10px;"></p>
+</div>
 
-  <div id="main" class="tab-content active">
-    
-    <div class="card" style="text-align:center; padding: 10px;">
-      <button onclick="openChartModal()" style="width: 100%; padding: 10px; font-size: 1em;">
-        📈 Súly Grafikon Megnyitása
-      </button>
-    </div>
+<!-- ======================================================= -->
+<!-- ===== MAIN APP CONTAINER (WRAPS YOUR EXISTING APP) ===== -->
+<!-- ======================================================= -->
+<!-- We hide this by default, onAuthStateChanged will show it -->
+<div id="appContainer" style="display: none;">
 
-    <div class="card" id="goalsDisplay">
-      <div class="icon-box" id="goalSummary">
-        
-        <div class="icon-card">
-          <button class="edit-btn" onclick="editGoals()">✏️</button>
-          <i>⚖️</i>
-          <span id="goalWeightText">Cél súly: nincs megadva</span>
-          <div class="content-wrapper">
-            <div class="progress-summary" id="weightSummary">Még nem adtál meg súlyt.</div>
-            <div class="input-group">
-              <input id="weightInput" type="number" placeholder="Jelenlegi súly (kg)">
-              <button onclick="addTransaction('weight')">⚖️ Mentés</button>
-            </div>
-          </div>
-        </div>
+	<div id="motivationBar">Tipp: „A lustaság a gyengék vallása. Törj ki belőle.”</div>
 
-        <div class="icon-card">
-          <button class="edit-btn" onclick="editGoals()">✏️</button>
-          <i>💧</i>
-          <span id="goalWaterText">Víz cél: nincs megadva</span>
-          <div class="content-wrapper">
-            <div class="progress-bar-container">
-              <div id="waterProgressBar" class="progress-bar"></div>
-            </div>
-            <div class="progress-summary" id="waterSummary">...</div>
-            <div class="input-group">
-              <input id="waterInput" type="number" step="0.1" placeholder="Hozzáad (L)">
-              <button onclick="addTransaction('water')">💧 Hozzáad</button>
-            </div>
-          </div>
-        </div>
+	<main>
+	  <div id="tabs">
+	    <div class="tab-btn active" onclick="showTab('main')">Főoldal</div>
+	    <div class="tab-btn" onclick="showTab('notes')">Jegyzetek</div>
+	    <div class="tab-btn" onclick="showTab('history')">Haladás</div>
+	    <div class="tab-btn" onclick="showTab('workouts')">Edzések</div>
+	  </div>
 
-        <div class="icon-card">
-          <button class="edit-btn" onclick="editGoals()">✏️</button>
-          <i>🔥</i>
-          <span id="goalCalText">Kalória cél: nincs megadva</span>
-            <div class="content-wrapper">
-            <div class="progress-bar-container">
-              <div id="calProgressBar" class="progress-bar"></div>
-            </div>
-            <div class="progress-summary" id="calSummary">...</div>
-            <div class="input-group">
-              <input id="calInput" type="number" placeholder="Hozzáad (kcal)">
-              <button onclick="addTransaction('calories')">🔥 Hozzáad</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+	  <div id="main" class="tab-content active">
+	    
+	    <div class="card" style="text-align:center; padding: 10px;">
+	      <button onclick="openChartModal()" style="width: 100%; padding: 10px; font-size: 1em;">
+	        📈 Súly Grafikon Megnyitása
+	      </button>
+	    </div>
 
-    <div class="flex-container">
-      <div class="card">
-        <div class="card-header">
-          <h2>✅ Célok</h2>
-        </div>
-        <div id="goalList"></div>
-        <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
-      </div>
+	    <div class="card" id="goalsDisplay">
+	      <div class="icon-box" id="goalSummary">
+	        
+	        <div class="icon-card">
+	          <button class="edit-btn" onclick="editGoals()">✏️</button>
+	          <i>⚖️</i>
+	          <span id="goalWeightText">Cél súly: nincs megadva</span>
+	          <div class="content-wrapper">
+	            <div class="progress-summary" id="weightSummary">Még nem adtál meg súlyt.</div>
+	            <div class="input-group">
+	              <input id="weightInput" type="number" placeholder="Jelenlegi súly (kg)">
+	              <button onclick="addTransaction('weight')">⚖️ Mentés</button>
+	            </div>
+	          </div>
+	        </div>
 
-      <div class="card">
-        <div class="card-header">
-          <h2>🎁 Jutalmak</h2>
-          <div class="header-points-display">
-            <span class="points-icon">💎</span>
-            <span id="totalPointsDisplay" class="points-number">0</span>
-            <span class="points-label"> pont</span>
-          </div>
-        </div>
-        <div id="rewardList"></div>
-        <button onclick="openModal('rewardModal')" class="new-item-button">+ Új jutalom</button>
-      </div>
-    </div>
+	        <div class="icon-card">
+	          <button class="edit-btn" onclick="editGoals()">✏️</button>
+	          <i>💧</i>
+	          <span id="goalWaterText">Víz cél: nincs megadva</span>
+	          <div class="content-wrapper">
+	            <div class="progress-bar-container">
+	              <div id="waterProgressBar" class="progress-bar"></div>
+	            </div>
+	            <div class="progress-summary" id="waterSummary">...</div>
+	            <div class="input-group">
+	              <input id="waterInput" type="number" step="0.1" placeholder="Hozzáad (L)">
+	              <button onclick="addTransaction('water')">💧 Hozzáad</button>
+	            </div>
+	          </div>
+	        </div>
 
-    <div class="card">
-      <h2>📜 Napló</h2>
-      <div class="log" id="activityLog"></div>
-      <button style="margin-top:10px" onclick="clearAllLogs()">🧹 Napló törlése</button>
-    </div>
-    
-    <div class="card fade-in" id="controlPanel">
-      <h2>🧠 Fejedelem Kontrollpanel</h2>
-      <p>Adatmentés, visszaállítás és teljes reset</p>
-      <button onclick="exportData()">💾 Exportálás</button>
-      <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
-      <input type="file" id="importFile" accept=".json" onchange="importData(event)">
-      <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
-    </div>
-    
-  </div>
+	        <div class="icon-card">
+	          <button class="edit-btn" onclick="editGoals()">✏️</button>
+	          <i>🔥</i>
+	          <span id="goalCalText">Kalória cél: nincs megadva</span>
+	            <div class="content-wrapper">
+	            <div class="progress-bar-container">
+	              <div id="calProgressBar" class="progress-bar"></div>
+	            </div>
+	            <div class="progress-summary" id="calSummary">...</div>
+	            <div class="input-group">
+	              <input id="calInput" type="number" placeholder="Hozzáad (kcal)">
+	              <button onclick="addTransaction('calories')">🔥 Hozzáad</button>
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+
+	    <div class="flex-container">
+	      <div class="card">
+	        <div class="card-header">
+	          <h2>✅ Célok</h2>
+	        </div>
+	        <div id="goalList"></div>
+	        <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
+	      </div>
+
+	      <div class="card">
+	        <div class="card-header">
+	          <h2>🎁 Jutalmak</h2>
+	          <div class="header-points-display">
+	            <span class="points-icon">💎</span>
+	            <span id="totalPointsDisplay" class="points-number">0</span>
+	            <span class="points-label"> pont</span>
+	          </div>
+	        </div>
+	        <div id="rewardList"></div>
+	        <button onclick="openModal('rewardModal')" class="new-item-button">+ Új jutalom</button>
+	      </div>
+	    </div>
+
+	    <div class="card">
+	      <h2>📜 Napló</h2>
+	      <div class="log" id="activityLog"></div>
+	      <button style="margin-top:10px" onclick="clearAllLogs()">🧹 Napló törlése</button>
+	    </div>
+	    
+	    <div class="card fade-in" id="controlPanel">
+	      <h2>🧠 Fejedelem Kontrollpanel</h2>
+	      <p>Adatmentés, visszaállítás és teljes reset</p>
+	      <button onclick="exportData()">💾 Exportálás</button>
+	      <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
+	      <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+	      <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
+          <!-- Added Logout Button -->
+	      <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
+	    </div>
+	    
+	  </div>
+	  
+	  <div id="notes" class="tab-content">
+	    <div class="card">
+	      <h2>📝 Új Jegyzet</h2>
+	      <label for="noteTitleInput">Cím</label>
+	      <input type="text" id="noteTitleInput" placeholder="Jegyzet címe...">
+	      <label for="noteTextInput">Szöveg</label>
+	      <textarea id="noteTextInput" placeholder="Írj ide valamit..."></textarea>
+	      <button onclick="addNote()">Mentés</button>
+	      
+	      <h2 style="margin-top: 25px;">Mentett Jegyzetek</h2>
+	      <div id="notesList"></div>
+	    </div>
+	  </div>
+
+	  <div id="history" class="tab-content">
+	    <div class="card">
+	      <h2>📅 Adat Történet (Súly, Víz, Kalória)</h2>
+	      <div id="historyList" class="log"></div>
+	    </div>
+	  </div>
+
+	  <div id="workouts" class="tab-content">
+	    <div class="card">
+	      <h2>📅 Edzés rögzítése</h2>
+	      <p>Válaszd ki a napot, és rögzítsd az edzést.</p>
+	      <div class="workout-adder">
+	        <input type="date" id="workoutDateInput">
+	        <button onclick="addWorkout()">🏋️‍♂️ Edzés rögzítése</button>
+	      </div>
+	      
+	      <h2 style="margin-top: 25px;">Rögzített edzések</h2>
+	      <div id="workoutList">
+	          </div>
+	    </div>
+	  </div>
+
+	</main>
+
+	<!-- All Modals -->
+	<div class="modal" id="noteViewModal">
+	  <div class="modal-content">
+	    <h3 id="noteViewTitle">Jegyzet címe</h3>
+	    <div id="noteViewText">
+	      Jegyzet tartalma...
+	    </div>
+	    <div style="text-align:center;margin-top:15px;">
+	      <button style="background:#ccc;color:black;" onclick="closeModal('noteViewModal')">Bezárás</button>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal" id="chartModal">
+	  <div class="modal-content" id="chartModalContent">
+	    <h3>📈 Súly Grafikon</h3>
+	    <canvas id="progressChart"></canvas>
+	    <div style="text-align:center;margin-top:15px;">
+	      <button style="background:#ccc;color:black;" onclick="closeModal('chartModal')">Bezárás</button>
+	    </div>
+	  </div>
+	</div>
+	<div class="modal" id="goalSetupModal">
+	  <div class="modal-content">
+	    <h3>🎯 Célok beállítása</h3>
+	    <label>Ideális súly (kg)</label>
+	    <input id="goalWeightInput" type="number" placeholder="pl. 75">
+	    <label>Napi víz cél (liter)</label>
+	    <input id="goalWaterInput" type="number" step="0.1" placeholder="pl. 2.5">
+	    <label>Napi kalória cél (kcal)</label>
+	    <input id="goalCalInput" type="number" placeholder="pl. 2200">
+	    <div style="text-align:center;margin-top:15px;">
+	      <button onclick="saveGoalSettings()">💾 Mentés</button>
+	      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalSetupModal')">Mégse</button>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal" id="goalModal">
+	  <div class="modal-content">
+	    <h3>🎯 Új cél</h3>
+	    <label>Cél neve</label>
+	    <input id="goalNameInput" type="text" placeholder="pl. 10.000 lépés">
+	    <label>Pont érték</label>
+	    <input id="goalPointsInput" type="number" placeholder="pl. 10 (0 is lehet)">
+	    <label>Kategória (opcionális)</label>
+	    <input id="goalCategoryInput" type="text" placeholder="pl. Valóság">
+	    
+	    <div style="text-align:center;margin-top:15px;">
+	      <button onclick="saveGoal()">✅ Mentés</button>
+	      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal" id="rewardModal">
+	  <div class="modal-content">
+	    <h3>🎁 Új jutalom</h3>
+	    <label>Jutalom neve</label>
+	    <input id="rewardNameInput" type="text" placeholder="pl. Pihenőnap">
+	    <label>Pont ára</label>
+	    <input id="rewardCostInput" type="number" placeholder="pl. 20">
+	    <div style="text-align:center;margin-top:15px;">
+	      <button onclick="saveReward()">✅ Mentés</button>
+	      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal" id="editModal">
+	  <div class="modal-content">
+	    <h3 id="editTitle">✏️ Szerkesztés</h3>
+	    
+	    <label id="editLabel1"></label>
+	    <input id="editInput1" type="text">
+	    
+	    <label id="editLabel2"></label>
+	    <input id="editInput2" type="number">
+	    
+	    <label id="editLabel3" style="display:none;"></label>
+	    <input id="editInput3" type="text" style="display:none;">
+
+	    <label id="editLabelText" style="display:none;">Szöveg</label>
+	    <textarea id="editInputText" style="display:none;"></textarea>
+
+	    <div style="text-align:center;margin-top:15px;">
+	      <button onclick="confirmEdit()">💾 Mentés</button>
+	      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('editModal')">Mégse</button>
+	    </div>
+	  </div>
+	</div>
+
+</div> <!-- End of #appContainer -->
+
+
+<!-- ================================================== -->
+<!-- ===== START: FIREBASE SCRIPTS (FROM STEP 2) ===== -->
+<!-- ================================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCZJLWZFJFEFWQqZYmAcZjgqoc88FDfPwQ",
+    authDomain: "habit-tracker-32c11.firebaseapp.com",
+    databaseURL: "https://habit-tracker-32c11-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "habit-tracker-32c11",
+    storageBucket: "habit-tracker-32c11.appspot.com",
+    messagingSenderId: "637775270587",
+    appId: "1:637775270587:web:11b31d9f64510d81c20f9e",
+    measurementId: "G-SS9TX286CF"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
   
-  <div id="notes" class="tab-content">
-    <div class="card">
-      <h2>📝 Új Jegyzet</h2>
-      <label for="noteTitleInput">Cím</label>
-      <input type="text" id="noteTitleInput" placeholder="Jegyzet címe...">
-      <label for="noteTextInput">Szöveg</label>
-      <textarea id="noteTextInput" placeholder="Írj ide valamit..."></textarea>
-      <button onclick="addNote()">Mentés</button>
-      
-      <h2 style="margin-top: 25px;">Mentett Jegyzetek</h2>
-      <div id="notesList"></div>
-    </div>
-  </div>
+  // Create global variables to access Firebase services
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  let currentUser = null; // This will be set on login
+  
+  console.log("Firebase is connected!");
+  
+</script>
 
-  <div id="history" class="tab-content">
-    <div class="card">
-      <h2>📅 Adat Történet (Súly, Víz, Kalória)</h2>
-      <div id="historyList" class="log"></div>
-    </div>
-  </div>
+<!-- ================================================== -->
+<!-- ===== END: FIREBASE SCRIPTS ===== -->
+<!-- ================================================== -->
 
-  <div id="workouts" class="tab-content">
-    <div class="card">
-      <h2>📅 Edzés rögzítése</h2>
-      <p>Válaszd ki a napot, és rögzítsd az edzést.</p>
-      <div class="workout-adder">
-        <input type="date" id="workoutDateInput">
-        <button onclick="addWorkout()">🏋️‍♂️ Edzés rögzítése</button>
-      </div>
-      
-      <h2 style="margin-top: 25px;">Rögzített edzések</h2>
-      <div id="workoutList">
-        </div>
-    </div>
-  </div>
-
-</main>
-
-<div class="modal" id="noteViewModal">
-  <div class="modal-content">
-    <h3 id="noteViewTitle">Jegyzet címe</h3>
-    <div id="noteViewText">
-      Jegyzet tartalma...
-    </div>
-    <div style="text-align:center;margin-top:15px;">
-      <button style="background:#ccc;color:black;" onclick="closeModal('noteViewModal')">Bezárás</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="chartModal">
-  <div class="modal-content" id="chartModalContent">
-    <h3>📈 Súly Grafikon</h3>
-    <canvas id="progressChart"></canvas>
-    <div style="text-align:center;margin-top:15px;">
-      <button style="background:#ccc;color:black;" onclick="closeModal('chartModal')">Bezárás</button>
-    </div>
-  </div>
-</div>
-<div class="modal" id="goalSetupModal">
-  <div class="modal-content">
-    <h3>🎯 Célok beállítása</h3>
-    <label>Ideális súly (kg)</label>
-    <input id="goalWeightInput" type="number" placeholder="pl. 75">
-    <label>Napi víz cél (liter)</label>
-    <input id="goalWaterInput" type="number" step="0.1" placeholder="pl. 2.5">
-    <label>Napi kalória cél (kcal)</label>
-    <input id="goalCalInput" type="number" placeholder="pl. 2200">
-    <div style="text-align:center;margin-top:15px;">
-      <button onclick="saveGoalSettings()">💾 Mentés</button>
-      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalSetupModal')">Mégse</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="goalModal">
-  <div class="modal-content">
-    <h3>🎯 Új cél</h3>
-    <label>Cél neve</label>
-    <input id="goalNameInput" type="text" placeholder="pl. 10.000 lépés">
-    <label>Pont érték</label>
-    <input id="goalPointsInput" type="number" placeholder="pl. 10 (0 is lehet)">
-    <label>Kategória (opcionális)</label>
-    <input id="goalCategoryInput" type="text" placeholder="pl. Valóság">
-    
-    <div style="text-align:center;margin-top:15px;">
-      <button onclick="saveGoal()">✅ Mentés</button>
-      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="rewardModal">
-  <div class="modal-content">
-    <h3>🎁 Új jutalom</h3>
-    <label>Jutalom neve</label>
-    <input id="rewardNameInput" type="text" placeholder="pl. Pihenőnap">
-    <label>Pont ára</label>
-    <input id="rewardCostInput" type="number" placeholder="pl. 20">
-    <div style="text-align:center;margin-top:15px;">
-      <button onclick="saveReward()">✅ Mentés</button>
-      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="editModal">
-  <div class="modal-content">
-    <h3 id="editTitle">✏️ Szerkesztés</h3>
-    
-    <label id="editLabel1"></label>
-    <input id="editInput1" type="text">
-    
-    <label id="editLabel2"></label>
-    <input id="editInput2" type="number">
-    
-    <label id="editLabel3" style="display:none;"></label>
-    <input id="editInput3" type="text" style="display:none;">
-
-    <label id="editLabelText" style="display:none;">Szöveg</label>
-    <textarea id="editInputText" style="display:none;"></textarea>
-
-    <div style="text-align:center;margin-top:15px;">
-      <button onclick="confirmEdit()">💾 Mentés</button>
-      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('editModal')">Mégse</button>
-    </div>
-  </div>
-</div>
 
 <script>
 // ======= POPUP VEZÉRLÉS =======
-
 function openModal(id) {
   document.getElementById(id).style.display = 'flex';
 }
@@ -748,29 +815,208 @@ function closeModal(id) {
   document.getElementById(id).style.display = 'none';
 }
 function editGoals() {
-  document.getElementById("goalWeightInput").value = localStorage.getItem("goalWeight") || "";
-  document.getElementById("goalWaterInput").value = localStorage.getItem("goalWater") || "";
-  document.getElementById("goalCalInput").value = localStorage.getItem("goalCalories") || "";
+  // Refactored to use global vars instead of localStorage
+  document.getElementById("goalWeightInput").value = goalWeightSetting || "";
+  document.getElementById("goalWaterInput").value = goalWaterSetting || "";
+  document.getElementById("goalCalInput").value = goalCaloriesSetting || "";
   openModal('goalSetupModal');
 }
 </script>
+
+<!-- Your existing Chart.js script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- ======================================================= -->
+<!-- ===== ALL APP LOGIC (NOW FIREBASE ENABLED) ===== -->
+<!-- ======================================================= -->
 <script>
 // =======================================================
-// ===== GLOBÁLIS VÁLTOZÓK =====
+// ===== GLOBÁLIS VÁLTOZÓK (REFACTORED) =====
 // =======================================================
-let goals = JSON.parse(localStorage.getItem("goals")) || [];
-let rewards = JSON.parse(localStorage.getItem("rewards")) || [];
-let notes = JSON.parse(localStorage.getItem("notes")) || [];
-let logs = JSON.parse(localStorage.getItem("logs")) || [];
-let workouts = JSON.parse(localStorage.getItem("workouts")) || []; // Ez megmarad
-let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+// These are now initialized as empty.
+// They will be filled by loadDataFromFirestore()
+let goals = [];
+let rewards = [];
+let notes = [];
+let logs = [];
+let workouts = [];
+let totalPoints = 0;
+let transactions = [];
+
+// App settings
+let goalWeightSetting = "";
+let goalWaterSetting = "";
+let goalCaloriesSetting = "";
+
+// Other global vars
 let chart;
 let editTarget = null;
-let transactions = [];
 let dailyProgress = { water: 0, calories: 0, lastWeight: 0, date: "" };
-// calendarInstance TÖRÖLVE
+
+
+// =======================================================
+// ===== AUTHENTICATION (NEW FUNCTIONS) =====
+// =======================================================
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPassword').value;
+  document.getElementById('loginError').innerText = "";
+  
+  auth.signInWithEmailAndPassword(email, pass)
+    .then((userCredential) => {
+      // Sign-in successful, onAuthStateChanged will handle the rest
+      console.log("User logged in:", userCredential.user.uid);
+    })
+    .catch((error) => {
+      document.getElementById('loginError').innerText = "Hiba: " + error.message;
+    });
+}
+
+function handleSignUp() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPassword').value;
+  document.getElementById('loginError').innerText = "";
+
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then((userCredential) => {
+      // Sign-up successful, onAuthStateChanged will handle the rest
+      // We can also create their data document here for the first time
+      console.log("User created:", userCredential.user.uid);
+      // We don't need to call saveDataToFirestore() here,
+      // onAuthStateChanged will run and loadData will find no doc,
+      // so the user starts fresh.
+    })
+    .catch((error) => {
+      document.getElementById('loginError').innerText = "Hiba: " + error.message;
+    });
+}
+
+function handleLogout() {
+  auth.signOut();
+}
+
+// =======================================================
+// ===== DATA SYNC (NEW FUNCTIONS) =====
+// =======================================================
+
+// A function to get all data from Firestore
+async function loadDataFromFirestore() {
+  if (!currentUser) return; // Safety check
+  console.log("Loading data from Firestore...");
+  const docRef = db.collection('users').doc(currentUser.uid);
+  
+  try {
+    const doc = await docRef.get();
+    if (doc.exists) {
+      // Document exists, load the data into our global variables
+      const data = doc.data();
+      goals = data.goals || [];
+      rewards = data.rewards || [];
+      notes = data.notes || [];
+      // Ensure logs is an array, handle potential old data
+      logs = Array.isArray(data.logs) ? data.logs : [];
+      workouts = data.workouts || [];
+      totalPoints = data.totalPoints || 0;
+      // Ensure transactions is an array
+      transactions = Array.isArray(data.transactions) ? data.transactions : [];
+      
+      // Also load the settings
+      goalWeightSetting = data.goalWeight || "";
+      goalWaterSetting = data.goalWater || "";
+      goalCaloriesSetting = data.goalCalories || "";
+      
+      console.log("Data loaded successfully.");
+    } else {
+      // New user, doc doesn't exist. We don't need to do anything,
+      // the app will start with empty arrays.
+      console.log("No data found for this user, starting fresh.");
+    }
+  } catch (error) {
+    console.error("Error loading data:", error);
+    alert("Hiba történt az adatok betöltése közben.");
+  }
+}
+
+// A function to save all data to Firestore
+// This ONE function will replace ALL our localStorage.setItem calls
+async function saveDataToFirestore() {
+  if (!currentUser) return; // Safety check
+
+  console.log("Saving data to Firestore...");
+  const docRef = db.collection('users').doc(currentUser.uid);
+  
+  // Create one big object with all our data
+  const dataToSave = {
+    goals,
+    rewards,
+    notes,
+    logs,
+    workouts,
+    totalPoints,
+    transactions,
+    goalWeight: goalWeightSetting,
+    goalWater: goalWaterSetting,
+    goalCalories: goalCaloriesSetting
+  };
+  
+  try {
+    // .set() will overwrite the document with our new data
+    await docRef.set(dataToSave);
+    console.log("Data saved successfully.");
+  } catch (error) {
+    console.error("Error saving data:", error);
+    // We won't alert here, as it would be too noisy.
+  }
+}
+
+// =======================================================
+// ===== APP INITIALIZATION (REFACTORED) =====
+// =======================================================
+
+// This is the new "master" function.
+// It replaces window.onload
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    // === USER IS LOGGED IN ===
+    currentUser = user; // Set the global user variable
+    console.log("Auth state changed: Logged in as", user.uid);
+    
+    // Show the app, hide the login form
+    document.getElementById('appContainer').style.display = 'block';
+    document.getElementById('loginContainer').style.display = 'none';
+    
+    // Load the user's data from Firestore
+    await loadDataFromFirestore();
+    
+    // Now that data is loaded, run all your startup functions
+    calculateDailyProgress();
+    loadMotivation();
+    renderAll(); 
+
+  } else {
+    // === USER IS LOGGED OUT ===
+    currentUser = null;
+    console.log("Auth state changed: Logged out");
+
+    // Hide the app, show the login form
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('loginContainer').style.display = 'block';
+    
+    // Clear all local data so the next user doesn't see it
+    goals = [];
+    rewards = [];
+    notes = [];
+    logs = [];
+    workouts = [];
+    totalPoints = 0;
+    transactions = [];
+    goalWeightSetting = "";
+    goalWaterSetting = "";
+    goalCaloriesSetting = "";
+  }
+});
+
+// The old window.onload function is REMOVED.
 
 
 // =======================================================
@@ -819,33 +1065,20 @@ function openChartModal() {
 // ===== ADATKEZELŐ FÜGGVÉNYEK =====
 // =======================================================
 
-function loadTransactionsAndMigrate() {
-  transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-  const oldEntries = JSON.parse(localStorage.getItem("entries"));
-
-  if (oldEntries && oldEntries.length > 0 && transactions.length === 0) {
-    console.log("Régi adatok migrálása...");
-    transactions = oldEntries
-      .filter(e => e.w)
-      .map(e => ({
-        id: new Date(e.date).getTime() + Math.floor(Math.random() * 1000),
-        type: 'weight',
-        value: e.w,
-        date: e.date
-      }));
-    
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-    localStorage.removeItem("entries");
-    localStorage.removeItem("dailyProgress");
-    logActivity("🔧 Adatstruktúra sikeresen frissítve!");
-  }
-}
+// loadTransactionsAndMigrate() is REMOVED as it's no longer needed.
+// New users start fresh, old data is left in localStorage.
 
 function calculateDailyProgress() {
   const today = new Date().toISOString().slice(0, 10);
   dailyProgress = { water: 0, calories: 0, lastWeight: 0, date: today };
   
   let lastWeightEntry = null;
+
+  if (!Array.isArray(transactions)) {
+    console.error("Transactions is not an array!", transactions);
+    transactions = [];
+    return;
+  }
 
   for (const t of transactions) {
     if (t.type === 'weight' && t.value > 0) {
@@ -854,20 +1087,33 @@ function calculateDailyProgress() {
     
     try {
       let entryDate;
-      if (t.date.includes('/')) {
-        entryDate = new Date(t.date);
-      } else if (t.date.includes('.')) {
-        let parts = t.date.split(' ');
-        if (parts.length >= 3) {
-          let datePart = parts.slice(0, 3).join('').replace(/\./g, '-');
-          datePart = datePart.substring(0, 10);
-          let timePart = parts.length > 3 ? parts.slice(3).join(' ') : '00:00:00';
-          entryDate = new Date(datePart + 'T' + timePart);
+      // Handle different date formats, including Firebase Timestamps
+      if (t.date && typeof t.date.toDate === 'function') {
+        entryDate = t.date.toDate(); // Firestore timestamp object
+      } else if (typeof t.date === 'string') {
+        if (t.date.includes('/')) {
+          entryDate = new Date(t.date);
+        } else if (t.date.includes('.')) {
+          let parts = t.date.split(' ');
+          if (parts.length >= 3) {
+            let datePart = parts.slice(0, 3).join('').replace(/\./g, '-');
+            datePart = datePart.substring(0, 10);
+            let timePart = parts.length > 3 ? parts.slice(3).join(' ') : '00:00:00';
+            entryDate = new Date(datePart + 'T' + timePart);
+          } else {
+            entryDate = new Date(t.date);
+          }
         } else {
-           entryDate = new Date(t.date);
+            entryDate = new Date(t.date); // ISO string or other
         }
       } else {
-           entryDate = new Date(t.date);
+        // Try to parse it anyway
+        entryDate = new Date(t.date);
+      }
+      
+      if (!entryDate || isNaN(entryDate.getTime())) {
+          console.warn("Invalid date object encountered:", t.date);
+          continue; // Skip this transaction
       }
 
       if (entryDate.toISOString().slice(0, 10) === today) {
@@ -897,55 +1143,48 @@ function showTab(id) {
   if (event && event.target) {
      event.target.classList.add('active');
   } else {
+     // Fallback, ha event nem elérhető
      document.querySelector(`.tab-btn[onclick="showTab('${id}')"]`).classList.add('active');
   }
   
   document.getElementById(id).classList.add('active');
   
-  // === ÚJ RÉSZ: EDZÉS LISTA FRISSÍTÉSE ===
   if (id === 'workouts') {
-    // Mindig frissítjük a listát, amikor a fülre kattintunk
     renderWorkouts();
   }
-  // ======================================
 }
 
 // =======================================================
-// ===== ÚJ, SAJÁT EDZÉS FUNKCIÓK =====
+// ===== ÚJ, SAJÁT EDZÉS FUNKCIÓK (REFACTORED) =====
 // =======================================================
-function addWorkout() {
+async function addWorkout() { // Make async
   const dateInput = document.getElementById("workoutDateInput");
-  const selectedDate = dateInput.value; // "YYYY-MM-DD" formátumú
+  const selectedDate = dateInput.value; 
 
   if (!selectedDate) {
     alert("Kérlek válassz ki egy dátumot!");
     return;
   }
   
-  // Ellenőrizzük, hogy ez a dátum szerepel-e már
   if (workouts.includes(selectedDate)) {
     alert("Ehhez a naphoz már rögzítettél edzést!");
     return;
   }
   
-  // Hozzáadás, mentés, naplózás, frissítés
   workouts.push(selectedDate);
-  saveWorkouts();
-  logActivity(`🏋️‍♂️ Edzés rögzítve: ${selectedDate}`);
+  await saveWorkouts(); // await the save
+  logActivity(`🏋️‍♂️ Edzés rögzítve: ${selectedDate}`); // logActivity will also save
   renderWorkouts();
   
-  // Dátumválasztó ürítése (opcionális, de hasznos)
   dateInput.value = "";
 }
 
 function renderWorkouts() {
   const list = document.getElementById("workoutList");
-  if (!list) return; // Biztonsági ellenőrzés
+  if (!list) return; 
 
-  // Dátum szerint csökkenő sorrendbe rendezzük
   workouts.sort((a, b) => b.localeCompare(a));
-  
-  list.innerHTML = ""; // Lista ürítése
+  list.innerHTML = "";
   
   if (workouts.length === 0) {
     list.innerHTML = "<p>Még nincsenek rögzített edzéseid.</p>";
@@ -955,8 +1194,6 @@ function renderWorkouts() {
   workouts.forEach((date, index) => {
     const div = document.createElement("div");
     div.className = "workout-item";
-    
-    // Az indexet használjuk a törléshez, mivel a dátum egyedi
     div.innerHTML = `
       <span>🏋️‍♂️ ${date}</span>
       <button onclick="deleteWorkout('${date}')">🗑️</button>
@@ -965,46 +1202,49 @@ function renderWorkouts() {
   });
 }
 
-function deleteWorkout(date) {
+async function deleteWorkout(date) { // Make async
   if (!confirm(`Biztosan törlöd az edzést erről a napról: ${date}?`)) {
     return;
   }
   
-  // Megkeressük a dátumot a tömbben és töröljük
   const indexToDelete = workouts.indexOf(date);
   if (indexToDelete > -1) {
     workouts.splice(indexToDelete, 1);
-    saveWorkouts();
-    logActivity(`🗑️ Edzés törölve: ${date}`);
-    renderWorkouts(); // Lista frissítése
+    await saveWorkouts(); // await the save
+    logActivity(`🗑️ Edzés törölve: ${date}`); // logActivity will also save
+    renderWorkouts();
   }
 }
 
-function saveWorkouts() {
-  localStorage.setItem("workouts", JSON.stringify(workouts));
+async function saveWorkouts() {
+  // This function now just calls the main save function
+  await saveDataToFirestore();
 }
 // =======================================================
 
 
-// ===== CÉLBEÁLLÍTÁS =====
-function saveGoalSettings() {
+// ===== CÉLBEÁLLÍTÁS (REFACTORED) =====
+async function saveGoalSettings() { // Make async
   const gw = parseFloat(document.getElementById("goalWeightInput").value) || null;
   const gwat = parseFloat(document.getElementById("goalWaterInput").value) || null;
   const gcal = parseFloat(document.getElementById("goalCalInput").value) || null;
 
-  localStorage.setItem("goalWeight", gw || "");
-  localStorage.setItem("goalWater", gwat || "");
-  localStorage.setItem("goalCalories", gcal || "");
+  // Save to global variables
+  goalWeightSetting = gw ? gw.toString() : "";
+  goalWaterSetting = gwat ? gwat.toString() : "";
+  goalCaloriesSetting = gcal ? gcal.toString() : "";
 
   updateAllSummaries();
-  logActivity(`🎯 Célok beállítva: ${gw || "-"}kg, ${gwat || "-"}L, ${gcal || "-"}kcal`);
+  // logActivity will call saveDataToFirestore
+  await logActivity(`🎯 Célok beállítva: ${gw || "-"}kg, ${gwat || "-"}L, ${gcal || "-"}kcal`);
   closeModal('goalSetupModal');
 }
 
 function updateAllSummaries() {
-  const gw = parseFloat(localStorage.getItem("goalWeight"));
-  const gwat = parseFloat(localStorage.getItem("goalWater"));
-  const gcal = parseFloat(localStorage.getItem("goalCalories"));
+  // Read from global variables
+  const gw = parseFloat(goalWeightSetting);
+  const gwat = parseFloat(goalWaterSetting);
+  const gcal = parseFloat(goalCaloriesSetting);
   
   const dp = dailyProgress;
 
@@ -1079,9 +1319,9 @@ function updateAllSummaries() {
 
 
 // =======================================================
-// ===== ADATBEVITEL ÉS TÖRLÉS =====
+// ===== ADATBEVITEL ÉS TÖRLÉS (REFACTORED) =====
 // =======================================================
-function addTransaction(type) {
+async function addTransaction(type) { // Make async
   let inputElem, value, logText;
   
   if (type === 'weight') {
@@ -1113,12 +1353,11 @@ function addTransaction(type) {
     id: Date.now(),
     type: type,
     value: value,
-    date: new Date().toLocaleString()
+    date: new Date() // Store as a JS Date object, Firestore will convert to Timestamp
   };
   transactions.push(transaction);
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  
-  logActivity(logText);
+  // logActivity will call saveDataToFirestore
+  await logActivity(logText);
   
   updateAllSummaries();
   updateHistory();
@@ -1131,15 +1370,14 @@ function addTransaction(type) {
   inputElem.value = "";
 }
 
-function deleteTransaction(index) {
+async function deleteTransaction(index) { // Make async
   if (!confirm("Biztosan törlöd ezt a bejegyzést?")) {
     return;
   }
   
   const entry = transactions.splice(index, 1)[0];
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-
-  logActivity(`🗑️ Bejegyzés törölve: ${entry.type} (${entry.value})`);
+  // logActivity will call saveDataToFirestore
+  await logActivity(`🗑️ Bejegyzés törölve: ${entry.type} (${entry.value})`);
   
   calculateDailyProgress();
   updateAllSummaries();
@@ -1151,23 +1389,27 @@ function deleteTransaction(index) {
 
 
 // =======================================================
-// ===== MÓDOSÍTOTT JEGYZETEK FUNKCIÓK =====
+// ===== MÓDOSÍTOTT JEGYZETEK FUNKCIÓK (REFACTORED) =====
 // =======================================================
-function addNote() {
+async function addNote() { // Make async
   const title = document.getElementById("noteTitleInput").value.trim();
   const text = document.getElementById("noteTextInput").value.trim();
   
   if (!title || !text) return alert("Kérlek adj meg egy címet és szöveget is!");
   
-  const note = { title, text, date: new Date().toLocaleString() };
+  const note = { 
+    title, 
+    text, 
+    date: new Date() // Store as Date object
+  };
   notes.unshift(note);
-  localStorage.setItem("notes", JSON.stringify(notes));
   
   document.getElementById("noteTitleInput").value = "";
   document.getElementById("noteTextInput").value = "";
   
   renderNotes();
-  logActivity("📝 Jegyzet hozzáadva");
+  // logActivity will call saveDataToFirestore
+  await logActivity("📝 Jegyzet hozzáadva");
 }
 
 function renderNotes() {
@@ -1179,12 +1421,22 @@ function renderNotes() {
   }
   
   notes.forEach((n, i) => {
+    // Handle date formatting (from Timestamp or string)
+    let displayDate = "...";
+    if (n.date) {
+      if (typeof n.date.toDate === 'function') {
+        displayDate = n.date.toDate().toLocaleString().split(',')[0]; // From Timestamp
+      } else {
+        displayDate = new Date(n.date).toLocaleString().split(',')[0]; // From String/Number
+      }
+    }
+
     const div = document.createElement("div");
     div.className = "note-summary-item";
     div.innerHTML = `
       <div>
         <span class="note-summary-title" onclick="openNoteModal(${i})">${n.title}</span>
-        <span class="note-summary-date">${n.date.split(',')[0]}</span>
+        <span class="note-summary-date">${displayDate}</span>
       </div>
       <div class="note-summary-actions">
         <button onclick='editNote(${i})'>✏️</button>
@@ -1194,15 +1446,15 @@ function renderNotes() {
   });
 }
 
-function deleteNote(i) {
+async function deleteNote(i) { // Make async
   if (!confirm(`Biztosan törlöd ezt a jegyzetet: "${notes[i].title}"?`)) {
     return;
   }
   const deletedTitle = notes[i].title;
   notes.splice(i, 1);
-  localStorage.setItem("notes", JSON.stringify(notes));
   renderNotes();
-  logActivity(`🗑️ Jegyzet törölve: ${deletedTitle}`);
+  // logActivity will call saveDataToFirestore
+  await logActivity(`🗑️ Jegyzet törölve: ${deletedTitle}`);
 }
 
 function openNoteModal(i) {
@@ -1236,9 +1488,9 @@ function editNote(i) {
 
 
 // =======================================================
-// ===== CÉLOK =====
+// ===== CÉLOK (REFACTORED) =====
 // =======================================================
-function saveGoal() {
+async function saveGoal() { // Make async
   const name = document.getElementById("goalNameInput").value.trim();
   const points = parseInt(document.getElementById("goalPointsInput").value);
   const category = document.getElementById("goalCategoryInput").value.trim();
@@ -1247,7 +1499,6 @@ function saveGoal() {
   if (isNaN(points) || points < 0) return alert("Érvénytelen pontszám! Adj meg 0-t vagy nagyobbat.");
   
   goals.push({ name, points, done: false, category: category });
-  localStorage.setItem("goals", JSON.stringify(goals));
   
   document.getElementById("goalNameInput").value = "";
   document.getElementById("goalPointsInput").value = "";
@@ -1255,21 +1506,22 @@ function saveGoal() {
   
   closeModal('goalModal');
   renderGoals();
-  logActivity(`🎯 Cél hozzáadva: ${name} (${points} pont)`);
+  // logActivity will call saveDataToFirestore
+  await logActivity(`🎯 Cél hozzáadva: ${name} (${points} pont)`);
 }
 
-function toggleGoal(i) {
+async function toggleGoal(i) { // Make async
   goals[i].done = !goals[i].done;
   if (goals[i].done) {
     totalPoints += goals[i].points;
-    logActivity(`✅ Cél teljesítve: ${goals[i].name} (+${goals[i].points} pont)`);
+    await logActivity(`✅ Cél teljesítve: ${goals[i].name} (+${goals[i].points} pont)`);
   } else {
     totalPoints -= goals[i].points;
-    logActivity(`❌ Cél visszavonva: ${goals[i].name} (-${goals[i].points} pont)`);
+    await logActivity(`❌ Cél visszavonva: ${goals[i].name} (-${goals[i].points} pont)`);
   }
-  localStorage.setItem("totalPoints", totalPoints);
-  animatePoints(totalPoints); // <-- ANIMÁCIÓ HÍVÁSA
-  localStorage.setItem("goals", JSON.stringify(goals));
+  animatePoints(totalPoints);
+  // Note: logActivity already called saveDataToFirestore, but if points changed, we save again.
+  await saveDataToFirestore(); 
   renderGoals();
 }
 
@@ -1298,13 +1550,18 @@ function editGoal(i) {
   openModal('editModal');
 }
 
-function deleteGoal(i) {
+async function deleteGoal(i) { // Make async
   const goalToDelete = goals[i]; 
 
+  if (goalToDelete.done) {
+    totalPoints -= goalToDelete.points; // Refund points if deleted while done
+    animatePoints(totalPoints);
+  }
+
   goals.splice(i, 1);
-  localStorage.setItem("goals", JSON.stringify(goals));
   renderGoals();
-  logActivity(`🗑️ Cél törölve: ${goalToDelete ? goalToDelete.name : 'ismeretlen cél'}`);
+  // logActivity will call saveDataToFirestore
+  await logActivity(`🗑️ Cél törölve: ${goalToDelete ? goalToDelete.name : 'ismeretlen cél'}`);
 }
 
 
@@ -1373,30 +1630,30 @@ function renderGoals() {
 }
 
 // =======================================================
-// ===== JUTALMAK =====
+// ===== JUTALMAK (REFACTORED) =====
 // =======================================================
-function saveReward() {
+async function saveReward() { // Make async
   const name = document.getElementById("rewardNameInput").value.trim();
   const cost = parseInt(document.getElementById("rewardCostInput").value);
   if (!name || isNaN(cost) || cost <= 0) return alert("Érvénytelen név vagy pontszám!");
 
   rewards.push({ name, cost });
-  localStorage.setItem("rewards", JSON.stringify(rewards));
   document.getElementById("rewardNameInput").value = "";
   document.getElementById("rewardCostInput").value = "";
   closeModal('rewardModal');
   renderRewards();
-  logActivity(`🎁 Jutalom hozzáadva: ${name} (${cost} pont)`);
+  // logActivity will call saveDataToFirestore
+  await logActivity(`🎁 Jutalom hozzáadva: ${name} (${cost} pont)`);
 }
 
-function claimReward(i) {
+async function claimReward(i) { // Make async
   if (totalPoints >= rewards[i].cost) {
     if (confirm(`Biztosan kiváltod ezt: "${rewards[i].name}" (${rewards[i].cost} pontért)?`)) {
       totalPoints -= rewards[i].cost;
-      localStorage.setItem("totalPoints", totalPoints);
-      animatePoints(totalPoints); // <-- ANIMÁCIÓ HÍVÁSA
-      logActivity(`🎉 Jutalom kiváltva: ${rewards[i].name} (-${rewards[i].cost} pont)`);
+      animatePoints(totalPoints);
       renderRewards();
+      // logActivity will call saveDataToFirestore
+      await logActivity(`🎉 Jutalom kiváltva: ${rewards[i].name} (-${rewards[i].cost} pont)`);
     }
   } else {
     alert("Nincs elég pontod!");
@@ -1425,12 +1682,12 @@ function editReward(i) {
   openModal('editModal');
 }
 
-function deleteReward(i) {
+async function deleteReward(i) { // Make async
   const deletedName = rewards[i].name;
   rewards.splice(i, 1);
-  localStorage.setItem("rewards", JSON.stringify(rewards));
   renderRewards();
-  logActivity(`🗑️ Jutalom törölve: ${deletedName}`);
+  // logActivity will call saveDataToFirestore
+  await logActivity(`🗑️ Jutalom törölve: ${deletedName}`);
 }
 
 function renderRewards() {
@@ -1458,9 +1715,9 @@ function renderRewards() {
 }
 
 // =======================================================
-// ===== KIBŐVÍTETT SZERKESZTÉS FUNKCIÓ =====
+// ===== KIBŐVÍTETT SZERKESZTÉS FUNKCIÓ (REFACTORED) =====
 // =======================================================
-function confirmEdit() {
+async function confirmEdit() { // Make async
   const v1 = document.getElementById("editInput1").value; // Cím / Név
 
   if (editTarget.type === 'goal') {
@@ -1473,15 +1730,13 @@ function confirmEdit() {
     if(goals[editTarget.index].done) {
         let diff = v2 - goals[editTarget.index].points;
         totalPoints += diff;
-        localStorage.setItem("totalPoints", totalPoints);
-        animatePoints(totalPoints); // <-- ANIMÁCIÓ HÍVÁSA
+        animatePoints(totalPoints);
     }
     goals[editTarget.index].name = v1;
     goals[editTarget.index].points = v2;
     goals[editTarget.index].category = v3;
-    localStorage.setItem("goals", JSON.stringify(goals));
     renderGoals();
-    logActivity(`✏️ Cél szerkesztve: ${v1}`);
+    await logActivity(`✏️ Cél szerkesztve: ${v1}`); // Will save
   }
   else if (editTarget.type === 'reward') {
     const v2 = parseInt(document.getElementById("editInput2").value); // Ár
@@ -1491,9 +1746,8 @@ function confirmEdit() {
 
     rewards[editTarget.index].name = v1;
     rewards[editTarget.index].cost = v2;
-    localStorage.setItem("rewards", JSON.stringify(rewards));
     renderRewards();
-    logActivity(`✏️ Jutalom szerkesztve: ${v1}`);
+    await logActivity(`✏️ Jutalom szerkesztve: ${v1}`); // Will save
   }
   else if (editTarget.type === 'note') {
     const vText = document.getElementById("editInputText").value.trim(); // Jegyzet szövege
@@ -1501,56 +1755,73 @@ function confirmEdit() {
 
     notes[editTarget.index].title = v1;
     notes[editTarget.index].text = vText;
-    notes[editTarget.index].date = new Date().toLocaleString() + " (szerkesztve)"; // Dátum frissítése
-    localStorage.setItem("notes", JSON.stringify(notes));
+    notes[editTarget.index].date = new Date(); // Dátum frissítése
     renderNotes();
-    logActivity(`✏️ Jegyzet szerkesztve: ${v1}`);
+    await logActivity(`✏️ Jegyzet szerkesztve: ${v1}`); // Will save
   }
 
   closeModal('editModal');
 }
 
-// ===== NAPLÓ =====
-function logActivity(text) {
-  const time = new Date().toLocaleString();
+// ===== NAPLÓ (REFACTORED) =====
+async function logActivity(text) { // Make async
+  const time = new Date(); // Store as Date object
   const entry = { time, text };
+  
+  if (!Array.isArray(logs)) {
+    console.error("Logs is not an array, resetting.");
+    logs = [];
+  }
+
   logs.unshift(entry);
   if (logs.length > 100) logs.pop();
-  localStorage.setItem("logs", JSON.stringify(logs));
   renderLogs();
+  
+  // This is now the main save point for most functions
+  await saveDataToFirestore();
 }
 
 function renderLogs() {
   const logDiv = document.getElementById("activityLog");
   logDiv.innerHTML = "";
   logs.forEach((l, i) => {
+    // Handle date formatting
+    let displayTime = "...";
+    if (l.time) {
+      if (typeof l.time.toDate === 'function') {
+        displayTime = l.time.toDate().toLocaleString(); // From Timestamp
+      } else {
+        displayTime = new Date(l.time).toLocaleString(); // From String/Number
+      }
+    }
+
     const div = document.createElement("div");
     div.className = "log-entry";
     div.innerHTML = `
       <span>${l.text}</span>
-      <small>${l.time}</small>
+      <small>${displayTime}</small>
       <button style="background:none;color:#c00" onclick="deleteLog(${i})">🗑️</button>
     `;
     logDiv.appendChild(div);
   });
 }
 
-function deleteLog(i) {
+async function deleteLog(i) { // Make async
   logs.splice(i, 1);
-  localStorage.setItem("logs", JSON.stringify(logs));
   renderLogs();
+  await saveDataToFirestore(); // Save changes
 }
 
-function clearAllLogs() {
+async function clearAllLogs() { // Make async
   if (confirm("Biztos törlöd az összes naplóbejegyzést?")) {
     logs = [];
-    localStorage.setItem("logs", JSON.stringify([]));
     renderLogs();
+    await saveDataToFirestore(); // Save changes
   }
 }
 
 // =======================================================
-// ===== GRAFIKON (JAVÍTVA) =====
+// ===== GRAFIKON (REFACTORED) =====
 // =======================================================
 function updateChart() {
   const ctx = document.getElementById("progressChart");
@@ -1558,7 +1829,17 @@ function updateChart() {
 
   const weightEntries = transactions.filter(t => t.type === 'weight');
   const weights = weightEntries.map(e => e.value);
-  const labels = weightEntries.map(e => e.date);
+  const labels = weightEntries.map(e => {
+    // Handle date formatting
+    if (e.date) {
+      if (typeof e.date.toDate === 'function') {
+        return e.date.toDate().toLocaleDateString(); // From Timestamp
+      } else {
+        return new Date(e.date).toLocaleDateString(); // From String/Number
+      }
+    }
+    return "?";
+  });
 
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
@@ -1616,10 +1897,20 @@ function updateHistory() {
     } else if (t.type === 'calories') {
       text = `🔥 Kalória: <b>${t.value} kcal</b>`;
     }
+    
+    // Handle date formatting
+    let displayDate = "...";
+    if (t.date) {
+      if (typeof t.date.toDate === 'function') {
+        displayDate = t.date.toDate().toLocaleString(); // From Timestamp
+      } else {
+        displayDate = new Date(t.date).toLocaleString(); // From String/Number
+      }
+    }
 
     item.innerHTML = `
       <span>
-        <b>${t.date}</b> — ${text}
+        <b>${displayDate}</b> — ${text}
       </span>
       <button style="background:none;color:#c00" onclick="deleteTransaction(${originalIndex})">🗑️</button>
     `;
@@ -1627,49 +1918,32 @@ function updateHistory() {
   });
 }
 
-// =======================================================
-// ===== INIT (MÓDOSÍTVA) =====
-// =======================================================
-window.onload = function() {
-  loadTransactionsAndMigrate();
-  calculateDailyProgress();
-
-  document.getElementById("totalPointsDisplay").textContent = totalPoints;
-
-  renderGoals();
-  renderRewards();
-  renderNotes();
-  renderLogs();
-
-  updateAllSummaries();
-  updateHistory();
-  loadMotivation();
-};
 
 // =======================================================
-// ===== EXPORT / IMPORT / RESET (MÓDOSÍTVA) =====
+// ===== EXPORT / IMPORT / RESET (REFACTORED) =====
 // =======================================================
 function exportData() {
+  // Exports the CURRENTLY loaded data
   const allData = {
     goals, rewards, notes, transactions, logs, totalPoints,
-    workouts, // Hozzáadva
-    goalWeight: localStorage.getItem("goalWeight"),
-    goalWater: localStorage.getItem("goalWater"),
-    goalCalories: localStorage.getItem("goalCalories")
+    workouts,
+    goalWeight: goalWeightSetting,
+    goalWater: goalWaterSetting,
+    goalCalories: goalCaloriesSetting
   };
   const blob = new Blob([JSON.stringify(allData, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `FitGarden_Backup_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
-  logActivity("💾 Adatok exportálva");
+  logActivity("💾 Adatok exportálva"); // This will also save
 }
 
-function importData(event) {
+async function importData(event) { // Make async
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => { // Make async
     try {
       const data = JSON.parse(e.target.result);
       goals = data.goals || [];
@@ -1677,26 +1951,19 @@ function importData(event) {
       notes = data.notes || [];
       transactions = data.transactions || [];
       logs = data.logs || [];
-      workouts = data.workouts || []; // Hozzáadva
+      workouts = data.workouts || [];
       totalPoints = data.totalPoints || 0;
       
-      localStorage.setItem("goalWeight", data.goalWeight || "");
-      localStorage.setItem("goalWater", data.goalWater || "");
-      localStorage.setItem("goalCalories", data.goalCalories || "");
+      goalWeightSetting = data.goalWeight || "";
+      goalWaterSetting = data.goalWater || "";
+      goalCaloriesSetting = data.goalCalories || "";
       
-      localStorage.setItem("goals", JSON.stringify(goals));
-      localStorage.setItem("rewards", JSON.stringify(rewards));
-      localStorage.setItem("notes", JSON.stringify(notes));
-      localStorage.setItem("transactions", JSON.stringify(transactions));
-      localStorage.setItem("logs", JSON.stringify(logs));
-      localStorage.setItem("workouts", JSON.stringify(workouts)); // Hozzáadva
-      localStorage.setItem("totalPoints", totalPoints);
+      // Data is loaded into global vars, now save to Firestore
+      await saveDataToFirestore();
       
-      localStorage.removeItem("entries");
-      localStorage.removeItem("dailyProgress");
-
+      // Re-render everything with the new data
       renderAll();
-      logActivity("📂 Adatok importálva");
+      logActivity("📂 Adatok importálva"); // This saves again, which is fine
       alert("Sikeres importálás! Minden adat frissítve ✅");
     } catch {
       alert("❌ Hiba: a fájl nem megfelelő formátumú!");
@@ -1705,24 +1972,28 @@ function importData(event) {
   reader.readAsText(file);
 }
 
-function resetAll() {
+async function resetAll() { // Make async
   if (confirm("Biztosan törölni szeretnél MINDENT? Ez végleges!")) {
-    localStorage.clear();
+    // Clear local variables
     goals = [];
     rewards = [];
     notes = [];
     transactions = [];
     logs = [];
-    workouts = []; // Hozzáadva
+    workouts = [];
     totalPoints = 0;
+    goalWeightSetting = "";
+    goalWaterSetting = "";
+    goalCaloriesSetting = "";
     
     renderAll();
-    logActivity("⚠️ Teljes rendszer reset");
+    await logActivity("⚠️ Teljes rendszer reset"); // This will save the empty state
     alert("FitGarden újraindítva, minden törölve ✅");
   }
 }
 
 function renderAll() {
+  // Frissítjük a számításokat az új (vagy resetelt) adatok alapján
   calculateDailyProgress();
   
   document.getElementById("totalPointsDisplay").textContent = totalPoints;
@@ -1734,9 +2005,7 @@ function renderAll() {
   
   updateAllSummaries();
   updateHistory();
-  loadMotivation();
   
-  // Naptár frissítés helyett az edzéslistát frissítjük, ha az épp aktív
   if(document.getElementById('workouts').classList.contains('active')) {
     renderWorkouts();
   }
