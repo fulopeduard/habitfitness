@@ -232,8 +232,8 @@ button:hover {
   border-left: 1px solid #c8e6c9;
   border-right: 1px solid #c8e6c9;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 /* ÚJ STÍLUS AZ ÉTEL KÁRTYÁHOZ */
 .food-item .item-details {
@@ -587,15 +587,10 @@ button:hover, .tab-btn:hover {
   font-size: 1.1em;
 }
 /* ================================================== */
-
-
 </style>
 </head>
 <body>
 
-<!-- ======================================================= -->
-<!-- ===== LOGIN CONTAINER (NEW) ===== -->
-<!-- ======================================================= -->
 <div id="loginContainer" style="padding: 20px; max-width: 400px; margin: 40px auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
   <h2 style="color: #00796b; text-align: center;">FitGarden 2.0</h2>
   <h3 style="text-align: center;">Belépés / Regisztráció</h3>
@@ -610,10 +605,6 @@ button:hover, .tab-btn:hover {
   <p id="loginError" style="color: red; text-align: center; margin-top: 10px;"></p>
 </div>
 
-<!-- ======================================================= -->
-<!-- ===== MAIN APP CONTAINER (WRAPS YOUR EXISTING APP) ===== -->
-<!-- ======================================================= -->
-<!-- We hide this by default, onAuthStateChanged will show it -->
 <div id="appContainer" style="display: none;">
 
 	<div id="motivationBar">Tipp: „A lustaság a gyengék vallása. Törj ki belőle.”</div>
@@ -622,8 +613,8 @@ button:hover, .tab-btn:hover {
 	  <div id="tabs">
 	    <div class="tab-btn active" onclick="showTab('main')">Főoldal</div>
 	    <div class="tab-btn" onclick="showTab('notes')">Jegyzetek</div>
-	    <!-- ÚJ ÉTKEZÉS FÜL -->
-	    <div class="tab-btn" onclick="showTab('meals')">Étkezés</div>
+        <div class="tab-btn" onclick="showTab('reminders')">🔔 Emlékeztetők</div>
+        <div class="tab-btn" onclick="showTab('meals')">Étkezés</div>
 	    <div class="tab-btn" onclick="showTab('history')">Haladás</div>
 	    <div class="tab-btn" onclick="showTab('workouts')">Edzések</div>
 	  </div>
@@ -636,20 +627,16 @@ button:hover, .tab-btn:hover {
 	      </button>
 	    </div>
 
-	    <!-- ÚJ GOMB A CÉLOK VÁLTÁSÁHOZ -->
 	    <div class="card" id="goalsToggleCard" style="text-align:center; padding: 10px;">
 	      <button onclick="toggleGoalsDisplay()" style="width: 100%; padding: 10px; font-size: 1em;">
 	        🎯 Napi Célok Megnyitása/Elrejtése
 	      </button>
 	    </div>
 
-	    <!-- A CÉL KÁRTYÁK ÚJ HELYTARTÓJA -->
 	    <div id="mainGoalsPlaceholder">
-	      <!-- JAVÍTOTT RÉSZ: VISSZAÁLLÍTOTTAM A HIÁNYZÓ KÁRTYÁKAT -->
 	      <div class="card" id="goalsDisplay" style="display: none;">
 	        <div class="icon-box" id="goalSummary">
 	          
-	          <!-- SÚLY KÁRTYA (VISSZAÁLLÍTVA) -->
 	          <div class="icon-card">
 	            <button class="edit-btn" onclick="editGoals()">✏️</button>
 	            <i>⚖️</i>
@@ -663,7 +650,6 @@ button:hover, .tab-btn:hover {
 	            </div>
 	          </div>
 
-	          <!-- VÍZ KÁRTYA (EZ EREDETILEG IS JÓ VOLT) -->
 	          <div class="icon-card">
 	            <button class="edit-btn" onclick="editGoals()">✏️</button>
 	            <i>💧</i>
@@ -680,7 +666,6 @@ button:hover, .tab-btn:hover {
 	            </div>
 	          </div>
 
-	          <!-- KALÓRIA KÁRTYA (VISSZAÁLLÍTVA) -->
 	          <div class="icon-card">
 	            <button class="edit-btn" onclick="editGoals()">✏️</button>
 	            <i>🔥</i>
@@ -697,7 +682,6 @@ button:hover, .tab-btn:hover {
 	            </div>
 	          </div>
 	          
-	          <!-- PROTEIN KÁRTYA (VISSZAÁLLÍTVA) -->
 	          <div class="icon-card">
 	            <button class="edit-btn" onclick="editGoals()">✏️</button>
 	            <i>🥩</i>
@@ -722,7 +706,6 @@ button:hover, .tab-btn:hover {
 	      <div class="card">
 	        <div class="card-header">
 	          <h2>✅ Célok</h2>
-	          <!-- ÚJ ARCHÍVUM GOMB HOZZÁADVA -->
 	          <button class="archive-header-btn" onclick="openArchiveModal()">📥 Archívum</button>
 	        </div>
 	        <div id="goalList"></div>
@@ -756,8 +739,7 @@ button:hover, .tab-btn:hover {
 	      <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
 	      <input type="file" id="importFile" accept=".json" onchange="importData(event)">
 	      <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
-          <!-- Added Logout Button -->
-	      <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
+          <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
 	    </div>
 	    
 	  </div>
@@ -775,18 +757,36 @@ button:hover, .tab-btn:hover {
 	      <div id="notesList"></div>
 	    </div>
 	  </div>
-	  
-	  <!-- ÚJ ÉTKEZÉS OLDAL TARTALMA -->
-	  <div id="meals" class="tab-content">
-	    <!-- ÚJ HELYTARTÓ A CÉLOKNAK -->
+
+      <div id="reminders" class="tab-content">
+	    <div class="card">
+	      <h2>🔔 Új emlékeztető</h2>
+	      <p>Kapj értesítést a böngésződtől a megadott időpontban. A funkció használatához engedélyezned kell az értesítéseket, ha a böngésző rákérdez.</p>
+	      
+	      <label for="reminderTextInput">Emlékeztető szövege</label>
+	      <input type="text" id="reminderTextInput" placeholder="pl. Idd meg a vizet!">
+	      
+	      <label for="reminderTimeInput">Időpont</label>
+	      <input type="datetime-local" id="reminderTimeInput">
+	      
+	      <button onclick="addReminder()" style="margin-top: 10px;">💾 Emlékeztető Mentése</button>
+	    </div>
+	    
+	    <div class="card">
+	      <h2>Aktív emlékeztetők</h2>
+	      <div id="reminderList" class="log" style="max-height: 400px; overflow-y: auto;">
+	        <p>Nincsenek aktív emlékeztetők.</p>
+	      </div>
+	    </div>
+	  </div>
+      <div id="meals" class="tab-content">
 	    <div id="mealsGoalsPlaceholder"></div>
 	    
 	    <div class="card">
 	      <h2>Mentett ételek</h2>
 	      <p>Itt kezelheted az ételeket, amiket gyakran fogyasztasz. Fogyaszd el őket, hogy automatikusan frissüljön a kalória- és fehérjebeviteled.</p>
 	      <div id="mealList">
-	        <!-- Ételek listája ide kerül -->
-	      </div>
+	        </div>
 	      <button onclick="openMealModal()" class="new-item-button">+ Új étel hozzáadása</button>
 	    </div>
 	  </div>
@@ -809,13 +809,12 @@ button:hover, .tab-btn:hover {
 	      
 	      <h2 style="margin-top: 25px;">Rögzített edzések</h2>
 	      <div id="workoutList">
-	          </div>
+	        </div>
 	    </div>
 	  </div>
 
 	</main>
 
-	<!-- All Modals -->
 	<div class="modal" id="noteViewModal">
 	  <div class="modal-content">
 	    <h3 id="noteViewTitle">Jegyzet címe</h3>
@@ -846,7 +845,6 @@ button:hover, .tab-btn:hover {
 	    <input id="goalWaterInput" type="number" step="0.1" placeholder="pl. 2.5">
 	    <label>Napi kalória cél (kcal)</label>
 	    <input id="goalCalInput" type="number" placeholder="pl. 2200">
-	    <!-- ÚJ PROTEIN CÉL MEZŐ -->
 	    <label>Napi protein cél (gramm)</label>
 	    <input id="goalProteinInput" type="number" placeholder="pl. 120">
 	    
@@ -865,13 +863,10 @@ button:hover, .tab-btn:hover {
 	    <label>Pont érték</label>
 	    <input id="goalPointsInput" type="number" placeholder="pl. 10 (0 is lehet)">
 	    <label>Kategória (opcionális)</label>
-	    <!-- MÓDOSÍTOTT INPUT ÉS ÚJ DATALIST -->
 	    <input id="goalCategoryInput" type="text" placeholder="pl. Valóság (válassz vagy írj be újat)" list="categoryDatalist">
 	    <datalist id="categoryDatalist">
-	      <!-- JavaScript tölti fel dinamikusan -->
-	    </datalist>
+	      </datalist>
 	    
-	    <!-- ÚJ ALCÉL MEZŐ -->
 	    <label>Alcélok (opcionális, minden sor egy alcél)</label>
 	    <textarea id="goalSubGoalsInput" rows="5" placeholder="pl. Csere cipő&#10;Edző nadrág&#10;Törölköző..."></textarea>
 	    
@@ -909,14 +904,12 @@ button:hover, .tab-btn:hover {
 	    <label id="editLabel3" style="display:none;"></label>
 	    <input id="editInput3" type="text" style="display:none;">
 	    
-	    <!-- ÚJ: ALCÉL SZERKESZTŐ -->
 	    <label id="editLabelSubGoals" style="display:none;">Alcélok (minden sor egy alcél)</label>
 	    <textarea id="editInputSubGoals" rows="5" style="display:none;"></textarea>
 
 	    <label id="editLabelText" style="display:none;">Szöveg</label>
 	    <textarea id="editInputText" style="display:none;"></textarea>
 	    
-	    <!-- ÚJ MEZŐK AZ ÉTEL SZERKESZTÉSÉHEZ -->
 	    <div id="editMealFields" style="display: none;">
 	        <label for="editMealType">Típus</label>
 	        <select id="editMealType">
@@ -936,20 +929,17 @@ button:hover, .tab-btn:hover {
 	  </div>
 	</div>
 
-	<!-- ÚJ ARCHÍVUM MODAL HOZZÁADVA -->
 	<div class="modal" id="archiveModal">
 	  <div class="modal-content" style="max-width: 600px;">
 	    <h3>📥 Archivált Célok</h3>
 	    <div id="archivedGoalList" style="max-height: 400px; overflow-y: auto;">
-	      <!-- Archivált célok listája ide kerül dinamikusan -->
-	    </div>
+	      </div>
 	    <div style="text-align:center;margin-top:15px;">
 	      <button style="background:#ccc;color:black;" onclick="closeModal('archiveModal')">Bezárás</button>
 	    </div>
 	  </div>
 	</div>
 	
-	<!-- ÚJ ÉTEL MODAL -->
 	<div class="modal" id="mealModal">
 	  <div class="modal-content">
 	    <h3>Új étel hozzáadása</h3>
@@ -975,7 +965,6 @@ button:hover, .tab-btn:hover {
 	  </div>
 	</div>
 	
-	<!-- ÚJ ÉTEL FOGYASZTÁSA MODAL -->
 	<div class="modal" id="consumeModal">
 	  <div class="modal-content">
 	    <h3 id="consumeMealTitle">Étel fogyasztása</h3>
@@ -992,14 +981,7 @@ button:hover, .tab-btn:hover {
 	</div>
 
 
-</div> <!-- End of #appContainer -->
-
-
-<!-- ================================================== -->
-<!-- ===== START: FIREBASE SCRIPTS (FROM STEP 2) ===== -->
-<!-- ================================================== -->
-
-<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+</div> <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 
@@ -1028,19 +1010,8 @@ button:hover, .tab-btn:hover {
   
 </script>
 
-<!-- ================================================== -->
-<!-- ===== END: FIREBASE SCRIPTS ===== -->
-<!-- ================================================== -->
-
-
-<!-- Your existing Chart.js script -->
-<!-- JAVÍTÁS: ÁTHELYEZVE IDE, HOGY A FŐ SCRIPT ELŐTT BETÖLTSÖN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- ======================================================= -->
-<!-- ===== ALL APP LOGIC (NOW FIREBASE ENABLED) ===== -->
-<!-- JAVÍTÁS: EGYESÍTVE EGY BLOKKBAN -->
-<!-- ======================================================= -->
 <script>
 // ======= POPUP VEZÉRLÉS =======
 function openModal(id) {
@@ -1106,7 +1077,8 @@ let rewards = [];
 let notes = [];
 let logs = [];
 let workouts = [];
-let meals = []; // ÚJ
+let meals = [];
+let reminders = []; // ÚJ EMLÉKEZTETŐ TÖMB
 let totalPoints = 0;
 let transactions = [];
 let archivedGoals = [];
@@ -1121,6 +1093,7 @@ let goalProteinSetting = ""; // ÚJ
 let chart;
 let editTarget = null;
 let dailyProgress = { water: 0, calories: 0, protein: 0, lastWeight: 0, date: "" }; // 'protein' HOZZÁADVA
+let reminderCheckInterval = null; // ÚJ EMLÉKEZTETŐ IDŐZÍTŐ
 
 
 // =======================================================
@@ -1212,7 +1185,8 @@ async function loadDataFromFirestore() {
       notes = data.notes || [];
       logs = Array.isArray(data.logs) ? data.logs : [];
       workouts = data.workouts || [];
-      meals = data.meals || []; // ÚJ
+      meals = data.meals || []; 
+      reminders = data.reminders || []; // ÚJ
       archivedGoals = data.archivedGoals || [];
       totalPoints = data.totalPoints || 0;
       transactions = Array.isArray(data.transactions) ? data.transactions : [];
@@ -1221,7 +1195,7 @@ async function loadDataFromFirestore() {
       goalWeightSetting = data.goalWeight || "";
       goalWaterSetting = data.goalWater || "";
       goalCaloriesSetting = data.goalCalories || "";
-      goalProteinSetting = data.goalProtein || ""; // ÚJ
+      goalProteinSetting = data.goalProtein || ""; 
       
       // ===== EDZÉS ADAT MIGRÁCIÓ (ÚJ) =====
       if (workouts.length > 0 && typeof workouts[0] === 'string') {
@@ -1253,14 +1227,15 @@ async function saveDataToFirestore() {
     notes,
     logs,
     workouts,
-    meals, // ÚJ
+    meals,
+    reminders, // ÚJ
     archivedGoals,
     totalPoints,
     transactions,
     goalWeight: goalWeightSetting,
     goalWater: goalWaterSetting,
     goalCalories: goalCaloriesSetting,
-    goalProtein: goalProteinSetting // ÚJ
+    goalProtein: goalProteinSetting 
   };
   
   try {
@@ -1289,6 +1264,8 @@ auth.onAuthStateChanged(async (user) => {
     calculateDailyProgress();
     loadMotivation();
     renderAll(); 
+    
+    startReminderEngine(); // ÚJ EMLÉKEZTETŐ MOTOR INDÍTÁSA
 
   } else {
     // === USER IS LOGGED OUT ===
@@ -1304,14 +1281,15 @@ auth.onAuthStateChanged(async (user) => {
     notes = [];
     logs = [];
     workouts = [];
-    meals = []; // ÚJ
+    meals = []; 
+    reminders = []; // ÚJ
     archivedGoals = [];
     totalPoints = 0;
     transactions = [];
     goalWeightSetting = "";
     goalWaterSetting = "";
     goalCaloriesSetting = "";
-    goalProteinSetting = ""; // ÚJ
+    goalProteinSetting = ""; 
   }
 });
 
@@ -1436,6 +1414,12 @@ function showTab(id) {
   // ÚJ: Étkezés fül renderelése
   if (id === 'meals') {
     renderMeals();
+  }
+
+  // ÚJ: Emlékeztető fül renderelése és engedélykérés
+  if (id === 'reminders') {
+    checkNotificationPermission(); // Rákérdez az engedélyre
+    renderReminders();
   }
   
   // ===== CÉL KÁRTYÁK ÁTHELYEZÉSE (ÚJ LOGIKA) =====
@@ -2751,12 +2735,13 @@ function exportData() {
   const allData = {
     goals, rewards, notes, transactions, logs, totalPoints,
     workouts,
-    meals, // ÚJ
+    meals,
+    reminders, // ÚJ
     archivedGoals,
     goalWeight: goalWeightSetting,
     goalWater: goalWaterSetting,
     goalCalories: goalCaloriesSetting,
-    goalProtein: goalProteinSetting // ÚJ
+    goalProtein: goalProteinSetting 
   };
   const blob = new Blob([JSON.stringify(allData, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -2779,14 +2764,15 @@ async function importData(event) { // Make async
       transactions = data.transactions || [];
       logs = data.logs || [];
       workouts = data.workouts || [];
-      meals = data.meals || []; // ÚJ
+      meals = data.meals || []; 
+      reminders = data.reminders || []; // ÚJ
       archivedGoals = data.archivedGoals || [];
       totalPoints = data.totalPoints || 0;
       
       goalWeightSetting = data.goalWeight || "";
       goalWaterSetting = data.goalWater || "";
       goalCaloriesSetting = data.goalCalories || "";
-      goalProteinSetting = data.goalProtein || ""; // ÚJ
+      goalProteinSetting = data.goalProtein || ""; 
       
       await saveDataToFirestore();
       
@@ -2808,13 +2794,14 @@ async function resetAll() { // Make async
     transactions = [];
     logs = [];
     workouts = [];
-    meals = []; // ÚJ
+    meals = []; 
+    reminders = []; // ÚJ
     archivedGoals = [];
     totalPoints = 0;
     goalWeightSetting = "";
     goalWaterSetting = "";
     goalCaloriesSetting = "";
-    goalProteinSetting = ""; // ÚJ
+    goalProteinSetting = ""; 
     
     renderAll();
     await logActivity("⚠️ Teljes rendszer reset");
@@ -2831,6 +2818,7 @@ function renderAll() {
   renderRewards();
   renderNotes();
   renderLogs();
+  renderReminders(); // ÚJ
   
   updateAllSummaries();
   updateHistory();
@@ -2838,11 +2826,182 @@ function renderAll() {
   if(document.getElementById('workouts').classList.contains('active')) {
     renderWorkouts();
   }
-  // ÚJ: Étkezés fül renderelése, ha az aktív
   if(document.getElementById('meals').classList.contains('active')) {
     renderMeals();
   }
+  // Nincs szükség külön renderReminders() hívásra itt,
+  // mert a showTab() már kezeli, amikor odalépünk.
 }
+
+// =======================================================
+// ===== ÚJ EMLÉKEZTETŐ FUNKCIÓK =====
+// =======================================================
+
+/**
+ * Ellenőrzi az értesítési engedélyt, és kéri, ha még nincs beállítva.
+ */
+function checkNotificationPermission() {
+  // Ellenőrizzük, hogy a böngésző támogatja-e az értesítéseket
+  if (!('Notification' in window)) {
+    console.warn("Ez a böngésző nem támogatja az asztali értesítéseket.");
+    return;
+  }
+
+  // Kérjünk engedélyt, ha még nincs 'granted' (engedélyezve) vagy 'denied' (letiltva)
+  if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        console.log('Értesítési engedély megadva.');
+        new Notification('FitGarden', { body: 'Sikeresen engedélyezted az értesítéseket!', icon: '🔔' });
+      } else {
+        console.log('Értesítési engedély elutasítva.');
+      }
+    });
+  }
+}
+
+/**
+ * Hozzáad egy új emlékeztetőt a listához.
+ */
+async function addReminder() {
+  const textInput = document.getElementById("reminderTextInput");
+  const timeInput = document.getElementById("reminderTimeInput");
+  
+  const text = textInput.value.trim();
+  const time = timeInput.value;
+
+  if (!text || !time) {
+    alert("Kérlek adj meg egy szöveget és egy időpontot!");
+    return;
+  }
+
+  const reminderTime = new Date(time);
+  if (reminderTime <= new Date()) {
+    alert("Az emlékeztető időpontjának a jövőben kell lennie!");
+    return;
+  }
+
+  reminders.push({
+    id: Date.now(),
+    text: text,
+    time: reminderTime.toISOString(), // ISO stringként tároljuk
+    triggered: false // Még nem lett aktiválva
+  });
+
+  textInput.value = "";
+  timeInput.value = "";
+
+  renderReminders();
+  await saveDataToFirestore();
+}
+
+/**
+ * Töröl egy emlékeztetőt az indexe alapján.
+ */
+async function deleteReminder(id) {
+  if (!confirm("Biztosan törlöd ezt az emlékeztetőt?")) {
+    return;
+  }
+  
+  reminders = reminders.filter(r => r.id !== id);
+  
+  renderReminders();
+  await saveDataToFirestore();
+}
+
+/**
+ * Kirajzolja az aktív emlékeztetők listáját.
+ */
+function renderReminders() {
+  const list = document.getElementById("reminderList");
+  if (!list) return; // Ha a fül még nem aktív, ne csináljon semmit
+  list.innerHTML = "";
+
+  // Csak azokat mutatjuk, amik még nem sültek el
+  const pendingReminders = reminders
+    .filter(r => !r.triggered)
+    .sort((a, b) => new Date(a.time) - new Date(b.time)); // Időrendben
+
+  if (pendingReminders.length === 0) {
+    list.innerHTML = "<p>Nincsenek aktív emlékeztetők.</p>";
+    return;
+  }
+
+  pendingReminders.forEach(r => {
+    const div = document.createElement("div");
+    div.className = "log-entry"; // Újrahasznosítjuk a log stílusát
+    
+    const displayTime = new Date(r.time).toLocaleString(); // Felhasználóbarát dátum
+
+    div.innerHTML = `
+        <span>🔔 <b>${r.text}</b></span>
+        <small>${displayTime}</small>
+        <button style="background:none;color:#c00" onclick="deleteReminder(${r.id})">🗑️</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/**
+ * Elindítja az időzítőt, ami rendszeresen ellenőrzi az emlékeztetőket.
+ */
+function startReminderEngine() {
+  // Ha már fut, ne indítsuk újra
+  if (reminderCheckInterval) {
+    clearInterval(reminderCheckInterval);
+  }
+
+  // 30 másodpercenként ellenőrizzük, van-e teendő
+  reminderCheckInterval = setInterval(checkReminders, 30000); 
+  
+  // Indításkor azonnal lefuttatjuk, hogy az esetleg lekésett emlékeztetők megjelenjenek
+  checkReminders();
+}
+
+/**
+ * Ellenőrzi az emlékeztetőket, és aktiválja azokat, amiknek lejárt az ideje.
+ */
+function checkReminders() {
+  const now = new Date();
+  let needsSave = false; // Csak akkor mentünk, ha változás történt
+
+  reminders.forEach(r => {
+    if (!r.triggered && new Date(r.time) <= now) {
+      // Itt az idő!
+      showReminderNotification(r);
+      r.triggered = true;
+      needsSave = true;
+    }
+  });
+
+  if (needsSave) {
+    // Frissítjük a listát (hogy eltűnjenek a kisültek) és mentünk
+    // Csak akkor renderelünk, ha épp az a fül van nyitva
+    if (document.getElementById('reminders').classList.contains('active')) {
+        renderReminders();
+    }
+    saveDataToFirestore();
+  }
+}
+
+/**
+ * Megjeleníti a böngésző értesítést.
+ */
+function showReminderNotification(reminder) {
+  if (Notification.permission === 'granted') {
+    // Jelenítsük meg az értesítést
+    new Notification('FitGarden Emlékeztető', {
+      body: reminder.text,
+      icon: 'https://img.icons8.com/color/96/leaf.png' // Egy egyszerű levél ikon
+    });
+  } else {
+    // Ha valamiért nincs engedély (pl. visszavonta), csak a konzolra írunk.
+    console.warn(`Emlékeztető elsütve (de nincs engedély): ${reminder.text}`);
+  }
+}
+
+// =======================================================
+
 </script>
 
 </body>
