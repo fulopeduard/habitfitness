@@ -489,11 +489,19 @@ button:hover, .tab-btn:hover {
   font-weight: bold;
   font-size: 1.1em;
   color: #004d40;
+  cursor: pointer; /* HOZZÁADVA */
+  flex: 1; /* HOZZÁADVA */
+  margin-right: 10px; /* HOZZÁADVA */
 }
 .workout-item button {
   background: transparent;
   color: #c00; /* Vörös a törléshez */
   font-size: 1.2em;
+}
+/* EZT A GOMBOT ADJUK HOZZÁ A SZERKESZTÉSHEZ */
+.workout-item button.edit-note-btn {
+  color: #00796b; /* Téma zöld */
+  font-size: 1.1em;
 }
 /* ================================================== */
 
@@ -925,6 +933,15 @@ async function loadDataFromFirestore() {
       goalWaterSetting = data.goalWater || "";
       goalCaloriesSetting = data.goalCalories || "";
       
+      // ===== EDZÉS ADAT MIGRÁCIÓ (ÚJ) =====
+      // Ez átalakítja a régi ["2025-01-01"] formátumot új [{date: "2025-01-01", note: ""}] formátumra
+      if (workouts.length > 0 && typeof workouts[0] === 'string') {
+        console.log("Migrating workouts data structure...");
+        workouts = workouts.map(dateStr => ({ date: dateStr, note: "" }));
+        // A következő mentés (pl. logActivity) már az új formátumot fogja elmenteni.
+      }
+      // ===== MIGRÁCIÓ VÉGE =====
+
       console.log("Data loaded successfully.");
     } else {
       // New user, doc doesn't exist. We don't need to do anything,
@@ -1166,12 +1183,14 @@ async function addWorkout() { // Make async
     return;
   }
   
-  if (workouts.includes(selectedDate)) {
+  // Módosított ellenőrzés: objektum tömbben keresünk
+  if (workouts.find(w => w.date === selectedDate)) {
     alert("Ehhez a naphoz már rögzítettél edzést!");
     return;
   }
   
-  workouts.push(selectedDate);
+  // Objektumot adunk hozzá a dátummal és üres jegyzettel
+  workouts.push({ date: selectedDate, note: "" });
   await saveWorkouts(); // await the save
   logActivity(`🏋️‍♂️ Edzés rögzítve: ${selectedDate}`); // logActivity will also save
   renderWorkouts();
@@ -1183,7 +1202,8 @@ function renderWorkouts() {
   const list = document.getElementById("workoutList");
   if (!list) return; 
 
-  workouts.sort((a, b) => b.localeCompare(a));
+  // Objektumok rendezése dátum alapján
+  workouts.sort((a, b) => b.date.localeCompare(a.date));
   list.innerHTML = "";
   
   if (workouts.length === 0) {
@@ -1191,27 +1211,30 @@ function renderWorkouts() {
     return;
   }
   
-  workouts.forEach((date, index) => {
+  // Frissítve, hogy objektumokkal (workout) és indexszel működjön
+  workouts.forEach((workout, index) => {
     const div = document.createElement("div");
     div.className = "workout-item";
     div.innerHTML = `
-      <span>🏋️‍♂️ ${date}</span>
-      <button onclick="deleteWorkout('${date}')">🗑️</button>
+      <span onclick="openWorkoutNoteModal(${index})">🏋️‍♂️ ${workout.date}</span>
+      <div>
+        <button class="edit-note-btn" onclick="editWorkout(${index})">✏️</button>
+        <button onclick="deleteWorkout(${index})">🗑️</button>
+      </div>
     `;
     list.appendChild(div);
   });
 }
 
-async function deleteWorkout(date) { // Make async
-  if (!confirm(`Biztosan törlöd az edzést erről a napról: ${date}?`)) {
+async function deleteWorkout(index) { // Make async (index alapján törlünk, nem dátum alapján)
+  if (!confirm(`Biztosan törlöd az edzést erről a napról: ${workouts[index].date}?`)) {
     return;
   }
   
-  const indexToDelete = workouts.indexOf(date);
-  if (indexToDelete > -1) {
-    workouts.splice(indexToDelete, 1);
+  const deletedWorkout = workouts.splice(index, 1)[0];
+  if (deletedWorkout) {
     await saveWorkouts(); // await the save
-    logActivity(`🗑️ Edzés törölve: ${date}`); // logActivity will also save
+    logActivity(`🗑️ Edzés törölve: ${deletedWorkout.date}`); // logActivity will also save
     renderWorkouts();
   }
 }
@@ -1219,6 +1242,31 @@ async function deleteWorkout(date) { // Make async
 async function saveWorkouts() {
   // This function now just calls the main save function
   await saveDataToFirestore();
+}
+// =======================================================
+
+// ===== ÚJ FUNKCIÓ: EDZÉS SZERKESZTÉSE =====
+function editWorkout(index) {
+  editTarget = { type: 'workout', index: index };
+  
+  const workoutDate = workouts[index].date;
+  document.getElementById("editTitle").textContent = `🏋️‍♂️ Edzésjegyzet (${workoutDate})`;
+
+  // Elrejtünk minden más mezőt
+  document.getElementById("editLabel1").style.display = "none";
+  document.getElementById("editInput1").style.display = "none";
+  document.getElementById("editLabel2").style.display = "none";
+  document.getElementById("editInput2").style.display = "none";
+  document.getElementById("editLabel3").style.display = "none";
+  document.getElementById("editInput3").style.display = "none";
+
+  // Megjelenítjük a jegyzet mezőt (ugyanaz, mint a 'note' típusnál)
+  document.getElementById("editLabelText").textContent = "Jegyzet";
+  document.getElementById("editLabelText").style.display = "block";
+  document.getElementById("editInputText").value = workouts[index].note || ""; // Betöltjük a mentett jegyzetet
+  document.getElementById("editInputText").style.display = "block";
+
+  openModal('editModal');
 }
 // =======================================================
 
@@ -1463,6 +1511,15 @@ function openNoteModal(i) {
   document.getElementById("noteViewText").textContent = note.text;
   openModal('noteViewModal');
 }
+
+// ===== ÚJ FUNKCIÓ: EDZÉSJEGYZET MEGTEKINTÉSE =====
+function openWorkoutNoteModal(index) {
+  const workout = workouts[index];
+  document.getElementById("noteViewTitle").textContent = `Edzésjegyzet: ${workout.date}`;
+  document.getElementById("noteViewText").textContent = workout.note || "Ehhez az edzéshez nem tartozik jegyzet.";
+  openModal('noteViewModal');
+}
+// =======================================================
 
 function editNote(i) {
   editTarget = { type: 'note', index: i };
@@ -1759,6 +1816,14 @@ async function confirmEdit() { // Make async
     renderNotes();
     await logActivity(`✏️ Jegyzet szerkesztve: ${v1}`); // Will save
   }
+  // ===== ÚJ BLOKK HOZZÁADVA =====
+  else if (editTarget.type === 'workout') {
+    const vText = document.getElementById("editInputText").value.trim();
+    workouts[editTarget.index].note = vText;
+    // renderWorkouts(); // Nincs szükség renderelésre, mert csak a háttéradat változott
+    await logActivity(`✏️ Edzésjegyzet mentve: ${workouts[editTarget.index].date}`); // Ez menti az adatokat
+  }
+  // ===== BLOKK VÉGE =====
 
   closeModal('editModal');
 }
@@ -2014,3 +2079,4 @@ function renderAll() {
 
 </body>
 </html>
+
