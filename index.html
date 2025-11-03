@@ -2048,14 +2048,16 @@ function renderGoals() {
         ${g.points} pont
       </div>
       <div class="item-actions">
+	<button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>
         <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
-        ${!hasSubGoals ? (g.done 
-            ? `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>
-               <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>` 
-            : `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`)
-          : (g.done ? `<button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>` : '')
-        }
+        ${!hasSubGoals ? (
+          g.done 
+            ? `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>`
+            : `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`
+        )
+          : ''
+        }
       </div>
     `;
     list.appendChild(div);
