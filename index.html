@@ -146,6 +146,12 @@ button:hover {
 .card-header h2 {
   margin-bottom: 0;
 }
+/* ÚJ STÍLUS A FEJLÉC ARCHÍV GOMBJÁHOZ */
+.card-header .archive-header-btn {
+  background: #004d40;
+  font-size: 0.9em;
+  padding: 6px 12px;
+}
 /* ================================================== */
 
 /* ================================================== */
@@ -239,6 +245,19 @@ button:hover {
   cursor: pointer;
   padding: 5px;
 }
+
+/* ÚJ STÍLUSOK AZ ARCHIVÁLÁSHOZ */
+.item-actions button.archive-btn {
+  color: #004d40; /* Sötétzöld az archiváláshoz */
+}
+/* Stílus az archivált elemek gombjaihoz */
+#archivedGoalList .item-actions button.reactivate-btn {
+  color: #00796b; /* Zöld */
+}
+#archivedGoalList .item-actions button.delete-btn {
+  color: #c00; /* Piros */
+}
+
 
 .category-title {
   margin-top: 20px;
@@ -605,6 +624,8 @@ button:hover, .tab-btn:hover {
 	      <div class="card">
 	        <div class="card-header">
 	          <h2>✅ Célok</h2>
+	          <!-- ÚJ ARCHÍVUM GOMB HOZZÁADVA -->
+	          <button class="archive-header-btn" onclick="openArchiveModal()">📥 Archívum</button>
 	        </div>
 	        <div id="goalList"></div>
 	        <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
@@ -773,6 +794,20 @@ button:hover, .tab-btn:hover {
 	  </div>
 	</div>
 
+	<!-- ÚJ ARCHÍVUM MODAL HOZZÁADVA -->
+	<div class="modal" id="archiveModal">
+	  <div class="modal-content" style="max-width: 600px;">
+	    <h3>📥 Archivált Célok</h3>
+	    <div id="archivedGoalList" style="max-height: 400px; overflow-y: auto;">
+	      <!-- Archivált célok listája ide kerül dinamikusan -->
+	    </div>
+	    <div style="text-align:center;margin-top:15px;">
+	      <button style="background:#ccc;color:black;" onclick="closeModal('archiveModal')">Bezárás</button>
+	    </div>
+	  </div>
+	</div>
+
+
 </div> <!-- End of #appContainer -->
 
 
@@ -850,6 +885,7 @@ let logs = [];
 let workouts = [];
 let totalPoints = 0;
 let transactions = [];
+let archivedGoals = []; // ÚJ VÁLTOZÓ
 
 // App settings
 let goalWeightSetting = "";
@@ -924,6 +960,7 @@ async function loadDataFromFirestore() {
       // Ensure logs is an array, handle potential old data
       logs = Array.isArray(data.logs) ? data.logs : [];
       workouts = data.workouts || [];
+      archivedGoals = data.archivedGoals || []; // ÚJ SOR
       totalPoints = data.totalPoints || 0;
       // Ensure transactions is an array
       transactions = Array.isArray(data.transactions) ? data.transactions : [];
@@ -969,6 +1006,7 @@ async function saveDataToFirestore() {
     notes,
     logs,
     workouts,
+    archivedGoals, // ÚJ SOR
     totalPoints,
     transactions,
     goalWeight: goalWeightSetting,
@@ -1025,6 +1063,7 @@ auth.onAuthStateChanged(async (user) => {
     notes = [];
     logs = [];
     workouts = [];
+    archivedGoals = []; // ÚJ SOR
     totalPoints = 0;
     transactions = [];
     goalWeightSetting = "";
@@ -1653,9 +1692,13 @@ function renderGoals() {
         ${g.points} pont
       </div>
       <div class="item-actions">
-        <button onclick="editGoal(${i})">✏️</button>
-        <button onclick="deleteGoal(${i})">🗑️</button>
-        <button onclick="toggleGoal(${i})">${g.done ? '❌' : '✅'}</button>
+        <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
+        <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
+        ${g.done 
+          ? `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>
+             <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>` 
+          : `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`
+        }
       </div>
     `;
     list.appendChild(div);
@@ -1685,6 +1728,105 @@ function renderGoals() {
     });
   }
 }
+
+// =======================================================
+// ===== ÚJ ARCHÍVUM FUNKCIÓK =====
+// =======================================================
+function openArchiveModal() {
+  renderArchivedGoals();
+  openModal('archiveModal');
+}
+
+async function archiveGoal(index) {
+  // 1. Eltávolítjuk a célt a fő listáról
+  const goalToArchive = goals.splice(index, 1)[0];
+  
+  if (goalToArchive) {
+    // 2. Hozzáadjuk az archivált listához (már 'done: true')
+    archivedGoals.unshift(goalToArchive); // Előre tesszük, hogy a legújabb legyen felül
+    
+    // 3. Újrarenderelünk és mentünk
+    renderGoals();
+    // A logActivity menti az adatokat
+    await logActivity(`📥 Cél archiválva: ${goalToArchive.name}`); 
+  }
+}
+
+function renderArchivedGoals() {
+  const list = document.getElementById("archivedGoalList");
+  list.innerHTML = "";
+
+  if (archivedGoals.length === 0) {
+    list.innerHTML = "<p style='text-align: center; padding: 10px;'>Nincsenek archivált célok.</p>";
+    return;
+  }
+
+  archivedGoals.forEach((goal, index) => {
+    const div = document.createElement("div");
+    div.className = "goal-item completed"; // Mindig 'completed' stílussal
+    div.innerHTML = `
+      <div class="item-name">
+        ${goal.name}
+      </div>
+      <div class="item-points">
+        ${goal.points} pont
+      </div>
+      <div class="item-actions">
+        <button class="reactivate-btn" title="Visszaállítás" onclick="reactivateGoal(${index})">♻️</button>
+        <button class="delete-btn" title="Végleges törlés" onclick="deleteArchivedGoal(${index})">🗑️</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+async function reactivateGoal(index) {
+  // 1. Eltávolítjuk az archivált listáról
+  const goalToReactivate = archivedGoals.splice(index, 1)[0];
+  
+  if (goalToReactivate) {
+    // 2. Visszaállítjuk 'done: false'-ra
+    goalToReactivate.done = false;
+
+    // 3. VISSZAVONJUK A PONTOKAT --- TÖRÖLVE a kérésed alapján
+    /*
+    if (goalToReactivate.points > 0) {
+        totalPoints -= goalToReactivate.points;
+        animatePoints(totalPoints);
+    }
+    */
+    
+    // 4. Visszatesszük a fő listára
+    goals.push(goalToReactivate);
+    
+    // 5. Újrarenderelünk és mentünk
+    renderGoals();
+    renderArchivedGoals(); // Frissítjük az archív listát is
+    // A log üzenet frissítve, hogy ne mutasson pontlevonást
+    await logActivity(`♻️ Cél visszaállítva: ${goalToReactivate.name}`); // Ez ment
+  }
+}
+
+async function deleteArchivedGoal(index) {
+  if (confirm("Biztosan végleg törlöd ezt az archivált célt? Ez nem vonható vissza.")) {
+    // 1. Eltávolítjuk az archivált listáról
+    const deletedGoal = archivedGoals.splice(index, 1)[0];
+    
+    if (deletedGoal) {
+      // 2. VISSZAVONJUK A PONTOKAT (mivel végleg törölve van)
+      if (deletedGoal.points > 0) {
+          totalPoints -= deletedGoal.points;
+          animatePoints(totalPoints);
+      }
+
+      // 3. Újrarenderelünk és mentünk
+      renderArchivedGoals();
+      await logActivity(`🗑️ Archivált cél törölve: ${deletedGoal.name} (-${deletedGoal.points} pont)`); // Ez ment
+    }
+  }
+}
+// =======================================================
+
 
 // =======================================================
 // ===== JUTALMAK (REFACTORED) =====
@@ -1992,6 +2134,7 @@ function exportData() {
   const allData = {
     goals, rewards, notes, transactions, logs, totalPoints,
     workouts,
+    archivedGoals, // ÚJ SOR
     goalWeight: goalWeightSetting,
     goalWater: goalWaterSetting,
     goalCalories: goalCaloriesSetting
@@ -2017,6 +2160,7 @@ async function importData(event) { // Make async
       transactions = data.transactions || [];
       logs = data.logs || [];
       workouts = data.workouts || [];
+      archivedGoals = data.archivedGoals || []; // ÚJ SOR
       totalPoints = data.totalPoints || 0;
       
       goalWeightSetting = data.goalWeight || "";
@@ -2046,6 +2190,7 @@ async function resetAll() { // Make async
     transactions = [];
     logs = [];
     workouts = [];
+    archivedGoals = []; // ÚJ SOR
     totalPoints = 0;
     goalWeightSetting = "";
     goalWaterSetting = "";
@@ -2079,4 +2224,3 @@ function renderAll() {
 
 </body>
 </html>
-
