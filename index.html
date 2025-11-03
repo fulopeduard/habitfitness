@@ -596,71 +596,85 @@ button:hover, .tab-btn:hover {
 	      </button>
 	    </div>
 
-	    <div class="card" id="goalsDisplay">
-	      <div class="icon-box" id="goalSummary">
-	        
-	        <div class="icon-card">
-	          <button class="edit-btn" onclick="editGoals()">✏️</button>
-	          <i>⚖️</i>
-	          <span id="goalWeightText">Cél súly: nincs megadva</span>
-	          <div class="content-wrapper">
-	            <div class="progress-summary" id="weightSummary">Még nem adtál meg súlyt.</div>
-	            <div class="input-group">
-	              <input id="weightInput" type="number" placeholder="Jelenlegi súly (kg)">
-	              <button onclick="addTransaction('weight')">⚖️ Mentés</button>
-	            </div>
-	          </div>
-	        </div>
+	    <!-- ÚJ GOMB A CÉLOK VÁLTÁSÁHOZ -->
+	    <div class="card" id="goalsToggleCard" style="text-align:center; padding: 10px;">
+	      <button onclick="toggleGoalsDisplay()" style="width: 100%; padding: 10px; font-size: 1em;">
+	        🎯 Napi Célok Megnyitása/Elrejtése
+	      </button>
+	    </div>
 
-	        <div class="icon-card">
-	          <button class="edit-btn" onclick="editGoals()">✏️</button>
-	          <i>💧</i>
-	          <span id="goalWaterText">Víz cél: nincs megadva</span>
-	          <div class="content-wrapper">
-	            <div class="progress-bar-container">
-	              <div id="waterProgressBar" class="progress-bar"></div>
-	            </div>
-	            <div class="progress-summary" id="waterSummary">...</div>
-	            <div class="input-group">
-	              <input id="waterInput" type="number" step="0.1" placeholder="Hozzáad (L)">
-	              <button onclick="addTransaction('water')">💧 Hozzáad</button>
+	    <!-- A CÉL KÁRTYÁK ÚJ HELYTARTÓJA -->
+	    <div id="mainGoalsPlaceholder">
+	      <!-- JAVÍTOTT RÉSZ: VISSZAÁLLÍTOTTAM A HIÁNYZÓ KÁRTYÁKAT -->
+	      <div class="card" id="goalsDisplay" style="display: none;">
+	        <div class="icon-box" id="goalSummary">
+	          
+	          <!-- SÚLY KÁRTYA (VISSZAÁLLÍTVA) -->
+	          <div class="icon-card">
+	            <button class="edit-btn" onclick="editGoals()">✏️</button>
+	            <i>⚖️</i>
+	            <span id="goalWeightText">Cél súly: nincs megadva</span>
+	            <div class="content-wrapper">
+	              <div class="progress-summary" id="weightSummary">Még nem adtál meg súlyt.</div>
+	              <div class="input-group">
+	                <input id="weightInput" type="number" placeholder="Jelenlegi súly (kg)">
+	                <button onclick="addTransaction('weight')">⚖️ Mentés</button>
+	              </div>
 	            </div>
 	          </div>
-	        </div>
 
-	        <div class="icon-card">
-	          <button class="edit-btn" onclick="editGoals()">✏️</button>
-	          <i>🔥</i>
-	          <span id="goalCalText">Kalória cél: nincs megadva</span>
+	          <!-- VÍZ KÁRTYA (EZ EREDETILEG IS JÓ VOLT) -->
+	          <div class="icon-card">
+	            <button class="edit-btn" onclick="editGoals()">✏️</button>
+	            <i>💧</i>
+	            <span id="goalWaterText">Víz cél: nincs megadva</span>
 	            <div class="content-wrapper">
-	            <div class="progress-bar-container">
-	              <div id="calProgressBar" class="progress-bar"></div>
-	            </div>
-	            <div class="progress-summary" id="calSummary">...</div>
-	            <div class="input-group">
-	              <input id="calInput" type="number" placeholder="Hozzáad (kcal)">
-	              <button onclick="addTransaction('calories')">🔥 Hozzáad</button>
+	              <div class="progress-bar-container">
+	                <div id="waterProgressBar" class="progress-bar"></div>
+	              </div>
+	              <div class="progress-summary" id="waterSummary">...</div>
+	              <div class="input-group">
+	                <input id="waterInput" type="number" step="0.1" placeholder="Hozzáad (L)">
+	                <button onclick="addTransaction('water')">💧 Hozzáad</button>
+	              </div>
 	            </div>
 	          </div>
-	        </div>
-	        
-	        <!-- ÚJ PROTEIN KÁRTYA -->
-	        <div class="icon-card">
-	          <button class="edit-btn" onclick="editGoals()">✏️</button>
-	          <i>🥩</i>
-	          <span id="goalProteinText">Protein cél: nincs megadva</span>
-	            <div class="content-wrapper">
-	            <div class="progress-bar-container">
-	              <div id="proteinProgressBar" class="progress-bar"></div>
-	            </div>
-	            <div class="progress-summary" id="proteinSummary">...</div>
-	            <div class="input-group">
-	              <input id="proteinInput" type="number" placeholder="Hozzáad (g)">
-	              <button onclick="addTransaction('protein')">🥩 Hozzáad</button>
+
+	          <!-- KALÓRIA KÁRTYA (VISSZAÁLLÍTVA) -->
+	          <div class="icon-card">
+	            <button class="edit-btn" onclick="editGoals()">✏️</button>
+	            <i>🔥</i>
+	            <span id="goalCalText">Kalória cél: nincs megadva</span>
+	              <div class="content-wrapper">
+	              <div class="progress-bar-container">
+	                <div id="calProgressBar" class="progress-bar"></div>
+	              </div>
+	              <div class="progress-summary" id="calSummary">...</div>
+	              <div class="input-group">
+	                <input id="calInput" type="number" placeholder="Hozzáad (kcal)">
+	                <button onclick="addTransaction('calories')">🔥 Hozzáad</button>
+	              </div>
 	            </div>
 	          </div>
+	          
+	          <!-- PROTEIN KÁRTYA (VISSZAÁLLÍTVA) -->
+	          <div class="icon-card">
+	            <button class="edit-btn" onclick="editGoals()">✏️</button>
+	            <i>🥩</i>
+	            <span id="goalProteinText">Protein cél: nincs megadva</span>
+	              <div class="content-wrapper">
+	              <div class="progress-bar-container">
+	                <div id="proteinProgressBar" class="progress-bar"></div>
+	              </div>
+	              <div class="progress-summary" id="proteinSummary">...</div>
+	              <div class="input-group">
+	                <input id="proteinInput" type="number" placeholder="Hozzáad (g)">
+	                <button onclick="addTransaction('protein')">🥩 Hozzáad</button>
+	              </div>
+	            </div>
+	          </div>
+	          
 	        </div>
-	        
 	      </div>
 	    </div>
 
@@ -724,6 +738,9 @@ button:hover, .tab-btn:hover {
 	  
 	  <!-- ÚJ ÉTKEZÉS OLDAL TARTALMA -->
 	  <div id="meals" class="tab-content">
+	    <!-- ÚJ HELYTARTÓ A CÉLOKNAK -->
+	    <div id="mealsGoalsPlaceholder"></div>
+	    
 	    <div class="card">
 	      <h2>Mentett ételek</h2>
 	      <p>Itt kezelheted az ételeket, amiket gyakran fogyasztasz. Fogyaszd el őket, hogy automatikusan frissüljön a kalória- és fehérjebeviteled.</p>
@@ -968,6 +985,14 @@ button:hover, .tab-btn:hover {
 <!-- ================================================== -->
 
 
+<!-- Your existing Chart.js script -->
+<!-- JAVÍTÁS: ÁTHELYEZVE IDE, HOGY A FŐ SCRIPT ELŐTT BETÖLTSÖN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ======================================================= -->
+<!-- ===== ALL APP LOGIC (NOW FIREBASE ENABLED) ===== -->
+<!-- JAVÍTÁS: EGYESÍTVE EGY BLOKKBAN -->
+<!-- ======================================================= -->
 <script>
 // ======= POPUP VEZÉRLÉS =======
 function openModal(id) {
@@ -1015,15 +1040,9 @@ function editGoals() {
   document.getElementById("goalProteinInput").value = goalProteinSetting || ""; // HOZZÁADVA
   openModal('goalSetupModal');
 }
-</script>
-
-<!-- Your existing Chart.js script -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- ======================================================= -->
-<!-- ===== ALL APP LOGIC (NOW FIREBASE ENABLED) ===== -->
-<!-- ======================================================= -->
-<script>
+// =======================================================
+// ===== ALL APP LOGIC (NOW FIREBASE ENABLED) =====
+// =======================================================
 // =======================================================
 // ===== GLOBÁLIS VÁLTOZÓK (REFACTORED) =====
 // =======================================================
@@ -1364,6 +1383,39 @@ function showTab(id) {
   // ÚJ: Étkezés fül renderelése
   if (id === 'meals') {
     renderMeals();
+  }
+  
+  // ===== CÉL KÁRTYÁK ÁTHELYEZÉSE (ÚJ LOGIKA) =====
+  const goalsDisplayCard = document.getElementById('goalsDisplay');
+  const mainPlaceholder = document.getElementById('mainGoalsPlaceholder');
+  const mealsPlaceholder = document.getElementById('mealsGoalsPlaceholder');
+  const goalsToggleButton = document.getElementById('goalsToggleCard');
+
+  if (goalsDisplayCard && mainPlaceholder && mealsPlaceholder && goalsToggleButton) {
+    if (id === 'main') {
+      mainPlaceholder.appendChild(goalsDisplayCard);
+      // A gomb állapotától függően hagyjuk rejtve vagy mutatva, de alapból rejtve
+      // goalsDisplayCard.style.display = 'none'; // Alapból rejtve a főoldalon
+      goalsToggleButton.style.display = 'block'; // Gomb látható
+    } else if (id === 'meals') {
+      mealsPlaceholder.appendChild(goalsDisplayCard);
+      goalsDisplayCard.style.display = 'block'; // Alapból látható az étkezés oldalon
+      goalsToggleButton.style.display = 'none'; // Gomb rejtve
+    } else {
+      goalsToggleButton.style.display = 'none'; // Gomb rejtve minden más oldalon
+    }
+  }
+}
+
+// ===== ÚJ FUNKCIÓ: NAPI CÉLOK VÁLTÁSA =====
+function toggleGoalsDisplay() {
+  const goalsCard = document.getElementById('goalsDisplay');
+  if (!goalsCard) return;
+  
+  if (goalsCard.style.display === 'none') {
+    goalsCard.style.display = 'block';
+  } else {
+    goalsCard.style.display = 'none';
   }
 }
 
