@@ -217,7 +217,8 @@ button:hover {
   padding: 10px 15px;
   background: #e8f5e9; /* Világos zöld */
   display: flex;
-  align-items: center;
+  flex-direction: column; /* MÓDOSÍTVA */
+  align-items: flex-start; /* MÓDOSÍTVA */
 }
 .item-points {
   flex-shrink: 0;
@@ -287,6 +288,39 @@ button:hover {
 }
 #goalList .category-title:first-of-type {
   margin-top: 10px;
+}
+
+/* ================================================== */
+/* ===== ÚJ ALCÉL (SUB-GOAL) STÍLUSOK ===== */
+/* ================================================== */
+.subgoal-list {
+  margin-top: 10px;
+  padding-left: 15px;
+  font-size: 0.9em;
+  text-align: left;
+  width: 100%; /* Kitölti a .item-name szélességét */
+}
+.subgoal-list div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  text-decoration: none; /* Ne húzza át az alcél szövegét */
+}
+.subgoal-list input[type="checkbox"] {
+  width: auto;
+  margin: 0 10px 0 0;
+}
+.subgoal-list span.subgoal-done {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+/* Amikor a FŐ cél kész, a FŐ cím áthúzva */
+.goal-item.completed .item-name-main {
+  text-decoration: line-through;
+}
+/* De a sub-goal lista soha (csak a belső span) */
+.goal-item.completed .subgoal-list {
+  text-decoration: none;
 }
 /* ================================================== */
 
@@ -831,6 +865,10 @@ button:hover, .tab-btn:hover {
 	      <!-- JavaScript tölti fel dinamikusan -->
 	    </datalist>
 	    
+	    <!-- ÚJ ALCÉL MEZŐ -->
+	    <label>Alcélok (opcionális, minden sor egy alcél)</label>
+	    <textarea id="goalSubGoalsInput" rows="5" placeholder="pl. Csere cipő&#10;Edző nadrág&#10;Törölköző..."></textarea>
+	    
 	    <div style="text-align:center;margin-top:15px;">
 	      <button onclick="saveGoal()">✅ Mentés</button>
 	      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
@@ -864,6 +902,10 @@ button:hover, .tab-btn:hover {
 	    
 	    <label id="editLabel3" style="display:none;"></label>
 	    <input id="editInput3" type="text" style="display:none;">
+	    
+	    <!-- ÚJ: ALCÉL SZERKESZTŐ -->
+	    <label id="editLabelSubGoals" style="display:none;">Alcélok (minden sor egy alcél)</label>
+	    <textarea id="editInputSubGoals" rows="5" style="display:none;"></textarea>
 
 	    <label id="editLabelText" style="display:none;">Szöveg</label>
 	    <textarea id="editInputText" style="display:none;"></textarea>
@@ -1000,6 +1042,8 @@ function openModal(id) {
   // HOZZÁADVA: Kategória lista feltöltése, amikor a cél modalt nyitjuk meg
   if (id === 'goalModal') {
     populateCategoryDatalist();
+    // Töröljük a régi alcél bevitelt
+    document.getElementById("goalSubGoalsInput").value = "";
   }
 }
 // ÚJ: Az étel modal megnyitása (alaphelyzetbe állítás)
@@ -1030,6 +1074,9 @@ function closeModal(id) {
     document.getElementById("editLabelText").style.display = "none";
     document.getElementById("editInputText").style.display = "none";
     document.getElementById("editMealFields").style.display = "none";
+    // Alcél mező elrejtése
+    document.getElementById("editLabelSubGoals").style.display = "none";
+    document.getElementById("editInputSubGoals").style.display = "none";
   }
 }
 function editGoals() {
@@ -1500,6 +1547,8 @@ function editWorkout(index) {
   document.getElementById("editLabel3").style.display = "none";
   document.getElementById("editInput3").style.display = "none";
   document.getElementById("editMealFields").style.display = "none";
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
 
   document.getElementById("editLabelText").textContent = "Jegyzet";
   document.getElementById("editLabelText").style.display = "block";
@@ -1805,6 +1854,8 @@ function editNote(i) {
   document.getElementById("editLabel3").style.display = "none";
   document.getElementById("editInput3").style.display = "none";
   document.getElementById("editMealFields").style.display = "none";
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
 
   openModal('editModal');
 }
@@ -1822,11 +1873,22 @@ async function saveGoal() { // Make async
   if (!name) return alert("A célnak nevet kell adni!");
   if (isNaN(points) || points < 0) return alert("Érvénytelen pontszám! Adj meg 0-t vagy nagyobbat.");
   
-  goals.push({ name, points, done: false, category: category });
+  // ÚJ: Alcélok beolvasása
+  const subGoalsText = document.getElementById("goalSubGoalsInput").value;
+  let subGoals = [];
+  if (subGoalsText.trim() !== "") {
+    subGoals = subGoalsText.split('\n')
+      .map(text => text.trim())
+      .filter(text => text.length > 0)
+      .map(text => ({ text: text, done: false }));
+  }
+  
+  goals.push({ name, points, done: false, category: category, subGoals: subGoals });
   
   document.getElementById("goalNameInput").value = "";
   document.getElementById("goalPointsInput").value = "";
   document.getElementById("goalCategoryInput").value = "";
+  document.getElementById("goalSubGoalsInput").value = ""; // Textarea ürítése
   
   closeModal('goalModal');
   renderGoals();
@@ -1838,6 +1900,12 @@ async function toggleGoal(i) { // Make async
       console.error("Invalid index for toggleGoal:", i);
       return;
   }
+  // ÚJ: Ellenőrzés, hogy van-e alcél. Ha igen, ez a funkció nem futhat.
+  if (goals[i].subGoals && goals[i].subGoals.length > 0) {
+    console.warn("toggleGoal called on a goal with sub-goals. This shouldn't happen.");
+    return; 
+  }
+  
   goals[i].done = !goals[i].done;
   if (goals[i].done) {
     totalPoints += goals[i].points;
@@ -1850,6 +1918,45 @@ async function toggleGoal(i) { // Make async
   await saveDataToFirestore(); 
   renderGoals();
 }
+
+// ===== ÚJ FUNKCIÓ: ALCÉL KIPIPÁLÁSA =====
+async function toggleSubGoal(goalIndex, subGoalIndex) {
+  const goal = goals[goalIndex];
+  if (!goal || !goal.subGoals || !goal.subGoals[subGoalIndex]) {
+    console.error("Invalid sub-goal toggle.", goalIndex, subGoalIndex);
+    return;
+  }
+  
+  const wasMainGoalDone = goal.done;
+  
+  // 1. Alcél állapotának váltása
+  goal.subGoals[subGoalIndex].done = !goal.subGoals[subGoalIndex].done;
+  
+  // 2. Ellenőrzés, hogy az összes alcél kész van-e
+  const allDone = goal.subGoals.length > 0 && goal.subGoals.every(sg => sg.done);
+  
+  // 3. Fő cél állapotának és pontoknak frissítése
+  if (allDone && !wasMainGoalDone) {
+    // Épp most lett kész
+    goal.done = true;
+    totalPoints += goal.points;
+    animatePoints(totalPoints);
+    await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
+  } else if (!allDone && wasMainGoalDone) {
+    // Épp most lett visszavonva
+    goal.done = false;
+    totalPoints -= goal.points;
+    animatePoints(totalPoints);
+    await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
+  } else {
+    // A fő cél állapota nem változott, csak az alcélé
+    await saveDataToFirestore();
+  }
+  
+  // 4. Fő cél lista újra-rajzolása (hogy a pipa megjelenjen/eltűnjön)
+  renderGoals();
+}
+
 
 function editGoal(i) {
   editTarget = { type: 'goal', index: i };
@@ -1867,9 +1974,18 @@ function editGoal(i) {
   
   document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
   document.getElementById("editInput3").value = goals[i].category || "";
-  document.getElementById("editLabel3").style.display = "block";
   document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editInput3").style.display = "block";
+  
+  // ÚJ: Alcélok betöltése a szerkesztőbe
+  const subGoalsText = (goals[i].subGoals || [])
+    .map(sg => sg.text)
+    .join('\n');
+  document.getElementById("editLabelSubGoals").style.display = "block";
+  document.getElementById("editInputSubGoals").value = subGoalsText;
+  document.getElementById("editInputSubGoals").style.display = "block";
 
+  // Más mezők elrejtése
   document.getElementById("editLabelText").style.display = "none";
   document.getElementById("editInputText").style.display = "none";
   document.getElementById("editMealFields").style.display = "none";
@@ -1918,9 +2034,29 @@ function renderGoals() {
   const renderItem = (g, i) => {
     const div = document.createElement("div");
     div.className = "goal-item" + (g.done ? " completed" : "");
+    
+    // ===== ALCÉL LOGIKA KEZDETE =====
+    let subGoalsHTML = "";
+    let hasSubGoals = g.subGoals && g.subGoals.length > 0;
+    
+    if (hasSubGoals) {
+      subGoalsHTML = '<div class="subgoal-list">';
+      g.subGoals.forEach((sg, subIndex) => {
+        subGoalsHTML += `
+          <div>
+            <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
+            <span class="${sg.done ? 'subgoal-done' : ''}">${sg.text}</span>
+          </div>
+        `;
+      });
+      subGoalsHTML += '</div>';
+    }
+    // ===== ALCÉL LOGIKA VÉGE =====
+    
     div.innerHTML = `
       <div class="item-name">
-        ${g.name}
+        <div class="item-name-main">${g.name}</div>
+        ${subGoalsHTML}
       </div>
       <div class="item-points">
         ${g.points} pont
@@ -1928,10 +2064,11 @@ function renderGoals() {
       <div class="item-actions">
         <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
-        ${g.done 
-          ? `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>
-             <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>` 
-          : `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`
+        ${!hasSubGoals ? (g.done 
+            ? `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>
+               <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>` 
+            : `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`)
+          : (g.done ? `<button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>` : '')
         }
       </div>
     `;
@@ -1995,7 +2132,7 @@ function renderArchivedGoals() {
     div.className = "goal-item completed";
     div.innerHTML = `
       <div class="item-name">
-        ${goal.name}
+        <div class="item-name-main">${goal.name}</div>
       </div>
       <div class="item-points">
         ${goal.points} pont
@@ -2014,6 +2151,14 @@ async function reactivateGoal(index) {
   
   if (goalToReactivate) {
     goalToReactivate.done = false;
+    
+    // ÚJ: Alcélok "kipipálatlanítása"
+    if (goalToReactivate.subGoals && goalToReactivate.subGoals.length > 0) {
+      goalToReactivate.subGoals.forEach(sg => {
+        sg.done = false;
+      });
+    }
+    
     goals.push(goalToReactivate);
     
     renderGoals();
@@ -2087,6 +2232,8 @@ function editReward(i) {
   document.getElementById("editLabelText").style.display = "none";
   document.getElementById("editInputText").style.display = "none";
   document.getElementById("editMealFields").style.display = "none";
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
 
   openModal('editModal');
 }
@@ -2107,7 +2254,7 @@ function renderRewards() {
 
     div.innerHTML = `
       <div class="item-name">
-        ${r.name}
+        <div class="item-name-main">${r.name}</div>
       </div>
       <div class="item-points">
         ${r.cost} pont
@@ -2189,7 +2336,7 @@ function renderMeals() {
     
     div.innerHTML = `
       <div class="item-name">
-        ${meal.name}
+        <div class="item-name-main">${meal.name}</div>
       </div>
       <div class="item-details">
         ${detailsText}
@@ -2224,6 +2371,8 @@ function editMeal(i) {
   document.getElementById("editInput3").style.display = "none";
   document.getElementById("editLabelText").style.display = "none";
   document.getElementById("editInputText").style.display = "none";
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
   
   // Megjelenítjük az étel-specifikus mezőket
   document.getElementById("editMealFields").style.display = "block";
@@ -2337,6 +2486,42 @@ async function confirmEdit() { // Make async
     goals[editTarget.index].name = v1;
     goals[editTarget.index].points = v2;
     goals[editTarget.index].category = v3;
+    
+    // ÚJ: Alcélok frissítése
+    const newSubGoalsText = document.getElementById("editInputSubGoals").value;
+    const oldSubGoals = goals[editTarget.index].subGoals || [];
+    let newSubGoals = [];
+
+    if (newSubGoalsText.trim() !== "") {
+      newSubGoals = newSubGoalsText.split('\n')
+        .map(text => text.trim())
+        .filter(text => text.length > 0)
+        .map(text => {
+          // Megőrizzük a 'done' státuszt, ha a szöveg ugyanaz
+          const existing = oldSubGoals.find(sg => sg.text === text);
+          return existing ? existing : { text: text, done: false };
+        });
+    }
+    
+    goals[editTarget.index].subGoals = newSubGoals;
+    
+    // ÚJ: Állapot újraszámolása szerkesztés után
+    const goal = goals[editTarget.index];
+    const wasMainGoalDone = goal.done;
+    const allDone = newSubGoals.length > 0 && newSubGoals.every(sg => sg.done);
+
+    if (allDone && !wasMainGoalDone) {
+      goal.done = true;
+      totalPoints += goal.points;
+      animatePoints(totalPoints);
+      // Itt nem kell logolni, mert a saveDataToFirestore ment, és a pontokat már kezeltük
+    } else if (!allDone && wasMainGoalDone) {
+      goal.done = false;
+      totalPoints -= goal.points;
+      animatePoints(totalPoints);
+      // Itt sem kell logolni
+    }
+    
     renderGoals();
     await logActivity(`✏️ Cél szerkesztve: ${v1}`);
   }
@@ -2393,6 +2578,8 @@ async function confirmEdit() { // Make async
   document.getElementById("editLabelText").style.display = "none";
   document.getElementById("editInputText").style.display = "none";
   document.getElementById("editMealFields").style.display = "none";
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
 }
 
 // ===== NAPLÓ (REFACTORED) =====
@@ -2654,4 +2841,3 @@ function renderAll() {
 
 </body>
 </html>
-
