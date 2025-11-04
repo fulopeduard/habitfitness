@@ -808,22 +808,6 @@ button:hover, .tab-btn:hover {
 	        <button onclick="openModal('rewardModal')" class="new-item-button">+ Új jutalom</button>
 	      </div>
 	    </div>
-
-	    <div class="card">
-	      <h2>📜 Napló</h2>
-	      <div class="log" id="activityLog"></div>
-	      <button style="margin-top:10px" onclick="clearAllLogs()">🧹 Napló törlése</button>
-	    </div>
-	    
-	    <div class="card fade-in" id="controlPanel">
-	      <h2>🧠 Fejedelem Kontrollpanel</h2>
-	      <p>Adatmentés, visszaállítás és teljes reset</p>
-	      <button onclick="exportData()">💾 Exportálás</button>
-	      <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
-	      <input type="file" id="importFile" accept=".json" onchange="importData(event)">
-	      <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
-          <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
-	    </div>
 	    
 	  </div>
 	  
@@ -874,12 +858,32 @@ button:hover, .tab-btn:hover {
 	    </div>
 	  </div>
 
-	  <div id="history" class="tab-content">
+<div id="history" class="tab-content">
 	    <div class="card">
 	      <h2>📅 Adat Történet (Súly, Víz, Kalória, Protein)</h2>
 	      <div id="historyList" class="log"></div>
 	    </div>
-	  </div>
+
+		<div class="card">
+	      <h2>💎 Pont Történet</h2>
+	      <div id="pointsHistoryList" class="log"></div>
+	      </div>
+		<div class="card">
+	      <h2>📜 Napló</h2>
+	      <div class="log" id="activityLog"></div>
+	      <button style="margin-top:10px" onclick="clearAllLogs()">🧹 Napló törlése</button>
+	    </div>
+	    
+	    <div class="card fade-in" id="controlPanel">
+	      <h2>🧠 Fejedelem Kontrollpanel</h2>
+	      <p>Adatmentés, visszaállítás és teljes reset</p>
+	      <button onclick="exportData()">💾 Exportálás</button>
+	      <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
+	      <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+	      <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
+          <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
+	    </div>
+		</div>
 
 	  <div id="workouts" class="tab-content">
 	    <div class="card">
@@ -1341,6 +1345,7 @@ let reminders = []; // ÚJ EMLÉKEZTETŐ TÖMB
 let totalPoints = 0;
 let transactions = [];
 let archivedGoals = [];
+let pointsLog = []; // ÚJ PONT TÖRTÉNET TÖMB
 
 // App settings
 let goalWeightSetting = "";
@@ -1449,7 +1454,7 @@ async function loadDataFromFirestore() {
       archivedGoals = data.archivedGoals || [];
       totalPoints = data.totalPoints || 0;
       transactions = Array.isArray(data.transactions) ? data.transactions : [];
-      
+      pointsLog = data.pointsLog || []; // PONTNAPLÓ BETÖLTÉSE
       // Also load the settings
       goalWeightSetting = data.goalWeight || "";
       goalWaterSetting = data.goalWater || "";
@@ -1491,6 +1496,7 @@ async function saveDataToFirestore() {
     archivedGoals,
     totalPoints,
     transactions,
+	pointsLog, // PONTNAPLÓ MENTÉSE
     goalWeight: goalWeightSetting,
     goalWater: goalWaterSetting,
     goalCalories: goalCaloriesSetting,
@@ -1544,6 +1550,7 @@ auth.onAuthStateChanged(async (user) => {
     reminders = []; // ÚJ
     archivedGoals = [];
     totalPoints = 0;
+	pointsLog = []; // PONTNAPLÓ NULLÁZÁSA
     transactions = [];
     goalWeightSetting = "";
     goalWaterSetting = "";
@@ -1679,6 +1686,12 @@ function showTab(id) {
   if (id === 'reminders') {
     checkNotificationPermission(); // Rákérdez az engedélyre
     renderReminders();
+  }
+  
+  // ÚJ: Haladás fül naplóinak frissítése
+  if (id === 'history') {
+    renderLogs();
+    renderPointsLog();
   }
   
   // ===== CÉL KÁRTYÁK ÁTHELYEZÉSE (MÓDOSÍTOTT LOGIKA) =====
@@ -2295,6 +2308,7 @@ async function toggleGoal(i) { // Make async
     if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
       goal.lastCompleted = new Date().toISOString();
+	  addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
       await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
       
       // Áthelyezés az archívumba
@@ -2308,6 +2322,7 @@ async function toggleGoal(i) { // Make async
       }
     } else {
       // --- NEM ISMÉTLŐDŐ CÉL TELJESÍTVE ---
+	  addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
       await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
       renderGoals(); // Csak a cél listát rajzoljuk újra (áthúzáshoz)
     }
@@ -2320,6 +2335,7 @@ async function toggleGoal(i) { // Make async
       goal.done = false;
       totalPoints -= goal.points;
       animatePoints(totalPoints);
+	  addPointsLogEntry(-goal.points, `❌ Cél visszavonva: ${goal.name}`);
       await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
       await saveDataToFirestore(); 
       renderGoals();
@@ -2353,6 +2369,7 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
     if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
       goal.lastCompleted = new Date().toISOString();
+	  addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
       await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
       
       // Áthelyezés az archívumba
@@ -2364,6 +2381,7 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
       }
     } else {
       // --- NEM ISMÉTLŐDŐ CÉL TELJESÍTVE ---
+	  addPointsLogEntry(goal.points, `✅ Cél (alcélokkal): ${goal.name}`);
       await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
     }
     
@@ -2378,7 +2396,7 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
     if (goal.isRecurring) {
       goal.lastCompleted = null;
     }
-    
+    addPointsLogEntry(-goal.points, `❌ Cél (alcélokkal): ${goal.name}`);
     await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
     await saveDataToFirestore();
 
@@ -2633,6 +2651,7 @@ async function deleteArchivedGoal(index) {
           animatePoints(totalPoints);
       }
       renderArchivedGoals();
+	  addPointsLogEntry(-deletedGoal.points, `🗑️ Archivált cél törölve: ${deletedGoal.name}`);
       await logActivity(`🗑️ Archivált cél törölve: ${deletedGoal.name} (-${deletedGoal.points} pont)`);
     }
   }
@@ -2683,6 +2702,7 @@ async function claimReward(i) { // Make async
       totalPoints -= rewards[i].cost;
       animatePoints(totalPoints);
       renderRewards();
+	  addPointsLogEntry(-rewards[i].cost, `🎉 Jutalom kiváltva: ${rewards[i].name}`);
       await logActivity(`🎉 Jutalom kiváltva: ${rewards[i].name} (-${rewards[i].cost} pont)`);
     }
   } else {
@@ -2955,11 +2975,14 @@ async function confirmEdit() { // Make async
     if (!v1) return alert("A célnak nevet kell adni!");
     if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pontszám! Adj meg 0-t vagy nagyobbat.");
 
-    if(goals[editTarget.index].done) {
-        let diff = v2 - goals[editTarget.index].points;
-        totalPoints += diff;
-        animatePoints(totalPoints);
-    }
+if(goals[editTarget.index].done) {
+        let diff = v2 - goals[editTarget.index].points;
+        if (diff !== 0) {
+          totalPoints += diff;
+          addPointsLogEntry(diff, `✏️ Pontérték módosítva: ${goals[editTarget.index].name}`);
+          animatePoints(totalPoints);
+        }
+    }
     goals[editTarget.index].name = v1;
     goals[editTarget.index].points = v2;
     goals[editTarget.index].category = v3;
@@ -3128,6 +3151,96 @@ async function clearAllLogs() { // Make async
     logs = [];
     renderLogs();
     await saveDataToFirestore();
+  }
+}
+
+// =======================================================
+// ===== ÚJ PONT TÖRTÉNET FUNKCIÓK =====
+// =======================================================
+
+/**
+ * Létrehoz egy bejegyzést a pontnaplóban.
+ * Ezt a függvényt NEM kell await-elni, és NEM ment magától.
+ */
+function addPointsLogEntry(amount, reason) {
+  if (amount === 0) return; // 0 pontos változást nem naplózunk
+
+  const entry = {
+    id: Date.now() + Math.random(), // Egyedi ID a törléshez
+    time: new Date(),
+    amount: amount,
+    reason: reason
+  };
+  pointsLog.unshift(entry);
+  if (pointsLog.length > 100) pointsLog.pop(); // Limitáljuk a naplót
+}
+
+/**
+ * Kirajzolja a ponttörténet listáját.
+ */
+function renderPointsLog() {
+  const logDiv = document.getElementById("pointsHistoryList");
+  if (!logDiv) return; // Ha nincs meg a div, ne fusson
+  
+  logDiv.innerHTML = "";
+  
+  if (pointsLog.length === 0) {
+    logDiv.innerHTML = "<p style='text-align: center; padding: 10px;'>Még nincsenek pontbejegyzések.</p>";
+    return;
+  }
+  
+  pointsLog.forEach((entry) => {
+    let displayTime = "...";
+    if (entry.time) {
+      if (typeof entry.time.toDate === 'function') {
+        displayTime = entry.time.toDate().toLocaleString();
+      } else {
+        displayTime = new Date(entry.time).toLocaleString();
+      }
+    }
+    
+    const amountColor = entry.amount > 0 ? '#00796b' : '#c00'; // Zöld vagy piros
+    const amountSign = entry.amount > 0 ? '+' : '';
+
+    const div = document.createElement("div");
+    div.className = "log-entry";
+    div.innerHTML = `
+      <span>
+        <strong style="color: ${amountColor};">
+          ${amountSign}${entry.amount} pont
+        </strong>
+        - ${entry.reason}
+      </span>
+      <small>${displayTime}</small>
+      <button style="background:none;color:#c00" onclick="deletePointsLogEntry(${entry.id})">🗑️</button>
+    `;
+    logDiv.appendChild(div);
+  });
+}
+
+/**
+ * Töröl egy pontbejegyzést és visszavonja a pontszámot.
+ */
+async function deletePointsLogEntry(id) {
+  const index = pointsLog.findIndex(e => e.id === id);
+  if (index === -1) {
+    console.error("Nem található a pontbejegyzés:", id);
+    return;
+  }
+  
+  const entry = pointsLog.splice(index, 1)[0];
+  
+  if (entry && entry.amount) {
+    // VISSZAVONJUK A PONTOKAT
+    totalPoints -= entry.amount;
+    animatePoints(totalPoints);
+    
+    // Frissítjük a nézetet és mentünk
+    renderPointsLog();
+    // Speciális naplózás magáról a törlésről (de ez nem kerül a pontnaplóba)
+    await logActivity(`🗑️ Pontnapló törölve: ${entry.reason} (${-entry.amount} pont)`);
+    // a logActivity már ment, de a biztonság kedvéért a totalPoints-ot is mentjük
+    await saveDataToFirestore(); 
   }
 }
 
@@ -3322,7 +3435,8 @@ function renderAll() {
   renderRewards();
   renderNotes();
   renderLogs();
-  renderReminders(); // ÚJ
+  renderPointsLog(); // ÚJ PONTNAPLÓ RENDERELÉSE
+  renderReminders(); // ÚJ
   
   updateAllSummaries();
   updateHistory();
