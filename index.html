@@ -726,10 +726,7 @@ button:hover, .tab-btn:hover {
 	    <div class="tab-btn" onclick="showTab('history')">📈 Haladás</div>
 	    <div class="tab-btn" onclick="showTab('workouts')">🏋️‍♂️ Edzések</div>
 	  </div>
-
-	  <div id="main" class="tab-content active">
-
-<div id="compactGoalsContainer">
+	  <div id="compactGoalsContainer">
 	      
 	      <div class="compact-goal-item">
 	        <span class="label">Súly ⚖️</span>
@@ -771,77 +768,10 @@ button:hover, .tab-btn:hover {
 	        <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
 	        <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
 	        <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
-	      </div>
 	    </div>
+</div>
+	  <div id="main" class="tab-content active">
 
-	    <div id="mainGoalsPlaceholder">
-	      <div class="card" id="goalsDisplay" style="display: none;">
-	        <div class="icon-box" id="goalSummary">
-	          
-	          <div class="icon-card">
-	            <button class="edit-btn" onclick="editGoals()">✏️</button>
-	            <i>⚖️</i>
-	            <span id="goalWeightText">Cél súly: nincs megadva</span>
-	            <div class="content-wrapper">
-	              <div class="progress-summary" id="weightSummary">Még nem adtál meg súlyt.</div>
-	              <div class="input-group">
-	                <input id="weightInput" type="number" placeholder="Jelenlegi súly (kg)">
-	                <button onclick="addTransaction('weight')">⚖️ Mentés</button>
-	              </div>
-	            </div>
-	          </div>
-
-	          <div class="icon-card">
-	            <button class="edit-btn" onclick="editGoals()">✏️</button>
-	            <i>💧</i>
-	            <span id="goalWaterText">Víz cél: nincs megadva</span>
-	            <div class="content-wrapper">
-	              <div class="progress-bar-container">
-	                <div id="waterProgressBar" class="progress-bar"></div>
-	              </div>
-	              <div class="progress-summary" id="waterSummary">...</div>
-	              <div class="input-group">
-	                <input id="waterInput" type="number" step="0.1" placeholder="Hozzáad (L)">
-	                <button onclick="addTransaction('water')">💧 Hozzáad</button>
-	              </div>
-	            </div>
-	          </div>
-
-	          <div class="icon-card">
-	            <button class="edit-btn" onclick="editGoals()">✏️</button>
-	            <i>🔥</i>
-	            <span id="goalCalText">Kalória cél: nincs megadva</span>
-	              <div class="content-wrapper">
-	              <div class="progress-bar-container">
-	                <div id="calProgressBar" class="progress-bar"></div>
-	              </div>
-	              <div class="progress-summary" id="calSummary">...</div>
-	              <div class="input-group">
-	                <input id="calInput" type="number" placeholder="Hozzáad (kcal)">
-	                <button onclick="addTransaction('calories')">🔥 Hozzáad</button>
-	              </div>
-	            </div>
-	          </div>
-	          
-	          <div class="icon-card">
-	            <button class="edit-btn" onclick="editGoals()">✏️</button>
-	            <i>🥩</i>
-	            <span id="goalProteinText">Protein cél: nincs megadva</span>
-	              <div class="content-wrapper">
-	              <div class="progress-bar-container">
-	                <div id="proteinProgressBar" class="progress-bar"></div>
-	              </div>
-	              <div class="progress-summary" id="proteinSummary">...</div>
-	              <div class="input-group">
-	                <input id="proteinInput" type="number" placeholder="Hozzáad (g)">
-	                <button onclick="addTransaction('protein')">🥩 Hozzáad</button>
-	              </div>
-	            </div>
-	          </div>
-	          
-	        </div>
-	      </div>
-	    </div>
 
 	    <div class="flex-container">
 	      <div class="card">
@@ -905,7 +835,6 @@ button:hover, .tab-btn:hover {
 	    </div>
 	  </div>
       <div id="meals" class="tab-content">
-	    <div id="mealsGoalsPlaceholder"></div>
 	    
 	    <div class="card">
 	      <h2>Mentett ételek</h2>
@@ -1297,49 +1226,57 @@ function openQuickAddModal() {
 }
 
 async function saveQuickAdd() {
-  const weight = parseFloat(document.getElementById("quickWeightInput").value);
-  const water = parseFloat(document.getElementById("quickWaterInput").value);
-  const calories = parseFloat(document.getElementById("quickCalInput").value);
-  const protein = parseFloat(document.getElementById("quickProteinInput").value);
-  
-  // Súly rögzítése (speciális, 'weightInput' ID-t használ)
-  if (weight && weight > 0) {
-    // Külön tranzakciót hozunk létre a súlynak, mert az nem "összeadódik"
-    const transaction = {
-        id: Date.now(), type: 'weight', value: weight, date: new Date()
-    };
-    transactions.push(transaction);
-    dailyProgress.lastWeight = weight;
-    await logActivity(`⚖️ Súly rögzítve: ${weight}kg`);
-  }
-  
-  // Víz hozzáadása
-  if (water && water > 0) {
-    document.getElementById("waterInput").value = water;
-    await addTransaction('water'); // 'addTransaction' már kezeli a logolást
-  }
-  
-  // Kalória hozzáadása
-  if (calories && calories > 0) {
-    document.getElementById("calInput").value = calories;
-    await addTransaction('calories');
-  }
-  
-  // Protein hozzáadása
-  if (protein && protein > 0) {
-    document.getElementById("proteinInput").value = protein;
-    await addTransaction('protein');
-  }
-  
-  closeModal('quickAddModal');
-  
-  // Frissítjük az összes nézetet
-  calculateDailyProgress();
-  updateAllSummaries(); 
-  updateHistory();
-  if (document.getElementById('chartModal').style.display === 'flex') {
-    updateChart();
-  }
+  const weight = parseFloat(document.getElementById("quickWeightInput").value);
+  const water = parseFloat(document.getElementById("quickWaterInput").value);
+  const calories = parseFloat(document.getElementById("quickCalInput").value);
+  const protein = parseFloat(document.getElementById("quickProteinInput").value);
+  
+  // Súly rögzítése
+  if (weight && weight > 0) {
+    const transaction = {
+        id: Date.now(), type: 'weight', value: weight, date: new Date()
+    };
+    transactions.push(transaction);
+    // A dailyProgress.lastWeight-et a calculateDailyProgress() frissíti
+    await logActivity(`⚖️ Súly rögzítve: ${weight}kg`);
+  }
+  
+  // Víz hozzáadása
+  if (water && water > 0) {
+    const transaction = {
+        id: Date.now(), type: 'water', value: water, date: new Date()
+    };
+    transactions.push(transaction);
+    await logActivity(`💧 Víz hozzáadva: ${water}L`);
+  }
+  
+  // Kalória hozzáadása
+  if (calories && calories > 0) {
+    const transaction = {
+        id: Date.now(), type: 'calories', value: calories, date: new Date()
+    };
+    transactions.push(transaction);
+    await logActivity(`🔥 Kalória hozzáadva: ${calories}kcal`);
+  }
+  
+  // Protein hozzáadása
+  if (protein && protein > 0) {
+    const transaction = {
+        id: Date.now(), type: 'protein', value: protein, date: new Date()
+    };
+    transactions.push(transaction);
+    await logActivity(`🥩 Protein hozzáadva: ${protein}g`);
+  }
+  
+  closeModal('quickAddModal');
+  
+  // Frissítjük az összes nézetet
+  calculateDailyProgress(); // Ez újraszámolja a dailyProgress-t
+  updateAllSummaries();  // Ez frissíti a kompakt sávot
+  updateHistory();
+  if (document.getElementById('chartModal').style.display === 'flex') {
+    updateChart();
+  }
 }
 
 // ===== ÚJ FUNKCIÓ: Kompakt nézet frissítése =====
@@ -1835,34 +1772,19 @@ function showTab(id) {
     renderPointsLog();
   }
   
-  // ===== CÉL KÁRTYÁK ÁTHELYEZÉSE (MÓDOSÍTOTT LOGIKA) =====
-  const goalsDisplayCard = document.getElementById('goalsDisplay'); // A NAGY kártya
-  const mainPlaceholder = document.getElementById('mainGoalsPlaceholder');
-  const mealsPlaceholder = document.getElementById('mealsGoalsPlaceholder');
-  const compactGoalsBar = document.getElementById('compactGoalsContainer'); // AZ ÚJ KICSI sáv
-
-  if (goalsDisplayCard && mainPlaceholder && mealsPlaceholder && compactGoalsBar) {
-    if (id === 'main') {
-      // Főoldal: Kicsi sáv látszik, nagy kártya a háttérben marad (rejtve)
-      mainPlaceholder.appendChild(goalsDisplayCard);
-      goalsDisplayCard.style.display = 'none'; // A NAGY kártya REJTVE
-      compactGoalsBar.style.display = 'flex'; // A KICSI sáv LÁTSZIK
-    } else if (id === 'meals') {
-      // Étkezés oldal: Nagy kártya látszik, kicsi sáv rejtve
-      mealsPlaceholder.appendChild(goalsDisplayCard);
-      goalsDisplayCard.style.display = 'block'; // A NAGY kártya LÁTSZIK
-      compactGoalsBar.style.display = 'none'; // A KICSI sáv REJTVE
-    } else {
-      // Bármely más oldal: Mindkettő rejtve
-      compactGoalsBar.style.display = 'none';
-      // A 'goalsDisplayCard' már el van rejtve a mainPlaceholderben, 
-      // de a biztonság kedvéért itt is elrejthetjük, ha a meals fülről jövünk
-      if (goalsDisplayCard.style.display !== 'none') {
-          goalsDisplayCard.style.display = 'none';
-      }
-    }
-  }
-  // ===== MÓDOSÍTOTT LOGIKA VÉGE =====
+// ===== ÚJ KOMPAKT SÁV MEGJELENÍTÉSI LOGIKA =====
+	  const compactGoalsBar = document.getElementById('compactGoalsContainer');
+	  if (compactGoalsBar) {
+	    if (id === 'main' || id === 'meals') {
+			  // A kompakt sáv megjelenítése a Főoldalon és az Étkezés fülön.
+			  // A CSS-ed 'display: grid'-et használ, ezért azt állítjuk be.
+	      compactGoalsBar.style.display = 'grid'; 
+	    } else {
+			  // Minden más fülön elrejtjük.
+	      compactGoalsBar.style.display = 'none';
+	    }
+	  }
+	  // ===== MÓDOSÍTOTT LOGIKA VÉGE =====
 }
 
 
@@ -2087,167 +2009,19 @@ async function saveGoalSettings() { // Make async
 }
 
 function updateAllSummaries() {
-  const gw = parseFloat(goalWeightSetting);
-  const gwat = parseFloat(goalWaterSetting);
-  const gcal = parseFloat(goalCaloriesSetting);
-  const gprot = parseFloat(goalProteinSetting); // ÚJ
-  
-  const dp = dailyProgress;
-
-  // --- Súly (Weight) ---
-  const goalWeightText = document.getElementById("goalWeightText");
-  const weightSummary = document.getElementById("weightSummary");
-  if (gw) {
-    goalWeightText.textContent = `Cél súly: ${gw} kg`;
-    if (dp.lastWeight > 0) {
-      const diff = dp.lastWeight - gw;
-      if (diff > 0) {
-        weightSummary.textContent = `Még ${diff.toFixed(1)} kg-t kell leadnod.`;
-      } else if (diff === 0) {
-         weightSummary.textContent = `🎉 Elérted a célsúlyod! Gratulálok!`;
-      } else {
-        weightSummary.textContent = `Cél túlteljesítve! (${Math.abs(diff).toFixed(1)} kg-al)`;
-      }
-    } else {
-      weightSummary.textContent = "Még nem adtál meg súlyt.";
-    }
-  } else {
-    goalWeightText.textContent = "Cél súly: nincs megadva";
-    weightSummary.textContent = "";
-  }
-
-  // --- Víz (Water) ---
-  const goalWaterText = document.getElementById("goalWaterText");
-  const waterSummary = document.getElementById("waterSummary");
-  const waterBar = document.getElementById("waterProgressBar");
-  if (gwat) {
-    goalWaterText.textContent = `Víz cél: ${gwat} L`;
-    const rem_water = gwat - dp.water;
-    let perc_water = (dp.water / gwat) * 100;
-    
-    if (rem_water > 0) {
-      waterSummary.textContent = `Még ${rem_water.toFixed(1)} L hiányzik.`;
-    } else {
-      waterSummary.textContent = `Cél teljesítve! (${dp.water.toFixed(1)} L)`;
-    }
-    if (perc_water > 100) perc_water = 100;
-    if (perc_water < 0) perc_water = 0;
-    waterBar.style.width = perc_water + '%';
-  } else {
-    goalWaterText.textContent = "Víz cél: nincs megadva";
-    waterSummary.textContent = "Nincs napi cél beállítva.";
-    waterBar.style.width = '0%';
-  }
-
-  // --- Kalória (Calories) ---
-  const goalCalText = document.getElementById("goalCalText");
-  const calSummary = document.getElementById("calSummary");
-  const calBar = document.getElementById("calProgressBar");
-  if (gcal) {
-    goalCalText.textContent = `Kalória cél: ${gcal} kcal`;
-    const rem_cal = gcal - dp.calories;
-    let perc_cal = (dp.calories / gcal) * 100;
-    
-    if (rem_cal > 0) {
-      calSummary.textContent = `Még ${rem_cal.toFixed(0)} kcal van hátra.`;
-    } else {
-      calSummary.textContent = `Cél elérve! (${dp.calories.toFixed(0)} kcal)`;
-    }
-    if (perc_cal > 100) perc_cal = 100;
-    if (perc_cal < 0) perc_cal = 0;
-    calBar.style.width = perc_cal + '%';
-  } else {
-    goalCalText.textContent = "Kalória cél: nincs megadva";
-    calSummary.textContent = "Nincs napi cél beállítva.";
-    calBar.style.width = '0%';
-  }
-  
-  // --- ÚJ: PROTEIN ---
-  const goalProteinText = document.getElementById("goalProteinText");
-  const proteinSummary = document.getElementById("proteinSummary");
-  const proteinBar = document.getElementById("proteinProgressBar");
-  if (gprot) {
-    goalProteinText.textContent = `Protein cél: ${gprot} g`;
-    const rem_prot = gprot - dp.protein;
-    let perc_prot = (dp.protein / gprot) * 100;
-    
-    if (rem_prot > 0) {
-      proteinSummary.textContent = `Még ${rem_prot.toFixed(0)} g hiányzik.`;
-    } else {
-      proteinSummary.textContent = `Cél teljesítve! (${dp.protein.toFixed(0)} g)`;
-    }
-    if (perc_prot > 100) perc_prot = 100;
-    if (perc_prot < 0) perc_prot = 0;
-    proteinBar.style.width = perc_prot + '%';
-  } else {
-    goalProteinText.textContent = "Protein cél: nincs megadva";
-    proteinSummary.textContent = "Nincs napi cél beállítva.";
-    proteinBar.style.width = '0%';
-  }
-  
-  // ITT A JAVÍTÁS:
-  // Frissítjük a kompakt nézetet is, amikor a nagy nézet frissül
-  updateCompactSummaries();
+  // Ez a függvény korábban a régi, nagy kártyákat frissítette.
+  // Mivel azok törölve lettek, a tartalmát kiürítettük,
+  // de a kompakt sáv frissítését itt hagyjuk,
+  // hogy a program többi része (pl. saveQuickAdd) zökkenőmentesen működjön.
+  
+  // Frissítjük a kompakt nézetet
+  updateCompactSummaries();
 }
 
 
 // =======================================================
 // ===== ADATBEVITEL ÉS TÖRLÉS (REFACTORED) =====
 // =======================================================
-async function addTransaction(type) { // Make async
-  let inputElem, value, logText;
-  
-  if (type === 'weight') {
-    inputElem = document.getElementById("weightInput");
-    value = parseFloat(inputElem.value);
-    if (!value || value <= 0) return alert("Érvénytelen súly!");
-    logText = `⚖️ Súly rögzítve: ${value}kg`;
-    dailyProgress.lastWeight = value;
-  }
-  else if (type === 'water') {
-    inputElem = document.getElementById("waterInput");
-    value = parseFloat(inputElem.value);
-    if (!value || value < 0) return;
-    logText = `💧 Víz hozzáadva: ${value}L`;
-    dailyProgress.water += value;
-  }
-  else if (type === 'calories') {
-    inputElem = document.getElementById("calInput");
-    value = parseFloat(inputElem.value);
-    if (!value || value < 0) return;
-    logText = `🔥 Kalória hozzáadva: ${value}kcal`;
-    dailyProgress.calories += value;
-  }
-  else if (type === 'protein') { // ÚJ
-    inputElem = document.getElementById("proteinInput");
-    value = parseFloat(inputElem.value);
-    if (!value || value < 0) return;
-    logText = `🥩 Protein hozzáadva: ${value}g`;
-    dailyProgress.protein += value;
-  }
-  else {
-    return;
-  }
-  
-  const transaction = {
-    id: Date.now(),
-    type: type,
-    value: value,
-    date: new Date()
-  };
-  transactions.push(transaction);
-  await logActivity(logText);
-  
-  updateAllSummaries();
-  updateHistory();
-  if (type === 'weight') {
-    if (document.getElementById('chartModal').style.display === 'flex') {
-        updateChart();
-    }
-  }
-  
-  inputElem.value = "";
-}
 
 async function deleteTransaction(index) { // Make async
   if (!confirm("Biztosan törlöd ezt a bejegyzést?")) {
