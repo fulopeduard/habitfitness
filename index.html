@@ -141,16 +141,23 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
 }
 .card-header h2 {
   margin-bottom: 0;
 }
 /* ÚJ STÍLUS A FEJLÉC ARCHÍV GOMBJÁHOZ */
-.card-header .archive-header-btn {
-  background: #004d40;
-  font-size: 0.9em;
-  padding: 6px 12px;
+.card-header .card-header-add-btn {
+  background: #00796b;  /* Világosabb zöld, mint az archív gomb */
+  font-size: 0.9em;
+  padding: 6px 12px;
+  font-weight: bold;
+}
+.card-header .new-note-btn-left {
+    margin-right: auto; /* Ez tolja el a gombot balra, amennyire csak lehet */
+
+}
+.card-header .card-header-add-btn:hover {
+  background: #004d40; /* Sötétebb zöld hover-re */
 }
 /* ================================================== */
 
@@ -771,8 +778,6 @@ button:hover, .tab-btn:hover {
 	    </div>
 </div>
 	  <div id="main" class="tab-content active">
-
-
 	    <div class="flex-container">
 	      <div class="card">
 	        <div class="card-header">
@@ -782,7 +787,6 @@ button:hover, .tab-btn:hover {
 	        <div id="goalList"></div>
 	        <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
 	      </div>
-
 	      <div class="card">
 	        <div class="card-header">
 	          <h2>🎁 Jutalmak</h2>
@@ -795,20 +799,16 @@ button:hover, .tab-btn:hover {
 	        <div id="rewardList"></div>
 	        <button onclick="openModal('rewardModal')" class="new-item-button">+ Új jutalom</button>
 	      </div>
-	    </div>
-	    
+	    </div> 
 	  </div>
-	  
 	  <div id="notes" class="tab-content">
 	    <div class="card">
 	    	<div class="card-header">
-	      		<h2>📝 Jegyzetek</h2>
+	      		<button onclick="openAddNoteModal()" class="card-header-add-btn new-note-btn-left">+ Új jegyzet</button>
 	    	</div>
-	    	<button onclick="openAddNoteModal()" class="new-item-button">+ Új jegyzet</button>
-	      	<div id="notesList" style="margin-top: 15px;"></div>
+	    	<div id="notesList"></div>
 	    </div>
 	  </div>
-
       <div id="reminders" class="tab-content">
 	    <div class="card">
 	      <h2>🔔 Új emlékeztető</h2>
@@ -821,8 +821,7 @@ button:hover, .tab-btn:hover {
 	      <input type="datetime-local" id="reminderTimeInput">
 	      
 	      <button onclick="addReminder()" style="margin-top: 10px;">💾 Emlékeztető Mentése</button>
-	    </div>
-	    
+	    </div> 
 	    <div class="card">
 	      <h2>Aktív emlékeztetők</h2>
 	      <div id="reminderList" class="log" style="max-height: 400px; overflow-y: auto;">
