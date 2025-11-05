@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FitGarden 2.0 – Fejedelem Edition 💪🌿</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
 
 <style>
 body {
@@ -546,64 +545,94 @@ button:hover, .tab-btn:hover {
   background: white;
   border-radius: 18px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  padding: 10px 15px;
+  padding: 12px 15px; /* Kicsit több hely függőlegesen */
   margin-bottom: 5px;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap; /* Reszponzivitás kisebb képernyőn */
+  align-items: flex-end; /* Alulra igazítja az elemeket */
+  gap: 12px; /* Kicsit több hely az elemek között */
+  flex-wrap: nowrap; /* JAVÍTVA: Ez megakadályozza a sortörést */
 }
 .compact-goal-item {
   flex: 1;
-  min-width: 110px; /* Hogy elférjen a szöveg */
-  text-align: center;
+  min-width: 0; /* JAVÍTVA: Ez lehetővé teszi az elemek zsugorodását */
+  text-align: left; /* Balra igazítjuk a tartalmat */
 }
 .compact-goal-item .label {
   font-size: 0.85em;
   color: #00796b;
   display: block;
   font-weight: bold;
-  white-space: nowrap; /* Ne törjön két sorba a címke */
+  white-space: nowrap; 
 }
 .compact-goal-item .value {
-  font-size: 1.05em;
-  color: #004d40;
-  font-weight: bold;
   display: block;
-  margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* A Súly speciális stílusa (nem / formátum) */
-.compact-goal-item .value-weight {
-  font-size: 0.95em;
-  color: #333;
-  font-weight: normal;
+/* ÚJ: Felső szöveg (pl. 0.7/2.0 L) */
+.compact-goal-item .value-top {
+  font-size: 1.0em;
+  color: #333; /* Kevésbé hangsúlyos */
+  font-weight: 500;
+  margin-top: 2px;
 }
+/* ÚJ: Alsó szöveg (pl. Még 1.3 L) */
+.compact-goal-item .value-bottom {
+  font-size: 0.9em;
+  color: #004d40;
+  font-weight: bold;
+  margin-top: 3px;
+}
+/* A Súly felső sora másképp néz ki */
+.compact-goal-item .value-weight-top {
+  font-size: 0.9em;
+  color: #333;
+  font-weight: 500;
+}
+
 
 #compactBtnWrapper {
   display: flex;
   gap: 8px;
   margin-left: auto; /* Jobbra tolja a gombokat */
   flex-shrink: 0;
+  align-self: center; /* A gombok középre igazítva */
 }
 
-#quickAddBtn, #compactEditBtn {
-  flex-shrink: 0; /* Ne zsugorodjon */
-  background: #004d40;
-  padding: 10px 12px;
-  font-size: 1.2em;
-  line-height: 1;
-  border-radius: 12px;
+#quickAddBtn, #compactEditBtn, #compactChartBtn {
+  flex-shrink: 0; 
+  background: #004d40;
+  padding: 10px 12px;
+  font-size: 1.2em;
+  line-height: 1;
+  border-radius: 12px;
 }
 
-/* A szerkesztés gomb legyen egy kicsit visszafogottabb */
-#compactEditBtn {
+#compactEditBtn, #compactChartBtn {
+  background: #00796b;
+  font-size: 1.1em; 
+  padding: 11px 12px; 
+}
+.compact-progress-bar-container {
+  background: #c8e6c9;
+  border-radius: 10px;
+  height: 10px; 
+  width: 100%;
+  margin-top: 4px; /* Közelebb a felső szöveghez */
+  overflow: hidden;
+  border: 1px solid #a5d6a7;
+}
+.compact-progress-bar {
   background: #00796b;
-  font-size: 1.1em; /* Kicsit kisebb, mint a + */
-  padding: 11px 12px; /* Igazítás a + gombhoz */
+  height: 100%;
+  width: 0%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
 }
-/* ================================================== */
+/* Protein sáv színe */
+#compactProteinBar, #compactWeightBar { /* Súly is lila lesz */
+  background: #8e24aa; 
+}
 /* ================================================== */
 /* ===== ÚJ EDZÉS STÍLUSOK (NAPTÁR TÖRÖLVE) ===== */
 /* ================================================== */
@@ -686,32 +715,47 @@ button:hover, .tab-btn:hover {
 	  </div>
 
 	  <div id="main" class="tab-content active">
-	    
-	    <div class="card" style="text-align:center; padding: 10px;">
-	      <button onclick="openChartModal()" style="width: 100%; padding: 10px; font-size: 1em;">
-	        📈 Súly Grafikon Megnyitása
-	      </button>
-	    </div>
 
 <div id="compactGoalsContainer">
+	      
 	      <div class="compact-goal-item">
 	        <span class="label">Súly ⚖️</span>
-	        <span class="value value-weight" id="compactWeight">-- kg / Cél: -- kg</span>
+	        <span class="value value-top" id="compactWeightTop">--/-- kg</span>
+	        <div class="compact-progress-bar-container">
+	          <div class="compact-progress-bar" id="compactWeightBar"></div>
+	        </div>
+	        <span class="value value-bottom" id="compactWeightBottom">Még...</span>
 	      </div>
+	      
 	      <div class="compact-goal-item">
 	        <span class="label">Víz 💧</span>
-	        <span class="value" id="compactWater">--/-- L</span>
+	        <span class="value value-top" id="compactWaterTop">--/-- L</span>
+	        <div class="compact-progress-bar-container">
+	          <div class="compact-progress-bar" id="compactWaterBar"></div>
+	        </div>
+	        <span class="value value-bottom" id="compactWaterBottom">Még...</span>
 	      </div>
+	      
 	      <div class="compact-goal-item">
 	        <span class="label">Kalória 🔥</span>
-	        <span class="value" id="compactCal">--/-- kcal</span>
+	        <span class="value value-top" id="compactCalTop">--/-- kcal</span>
+	        <div class="compact-progress-bar-container">
+	          <div class="compact-progress-bar" id="compactCalBar"></div>
+	        </div>
+	        <span class="value value-bottom" id="compactCalBottom">Még...</span>
 	      </div>
+	      
 	      <div class="compact-goal-item">
 	        <span class="label">Protein 🥩</span>
-	        <span class="value" id="compactProtein">--/-- g</span>
+	        <span class="value value-top" id="compactProteinTop">--/-- g</span>
+	        <div class="compact-progress-bar-container">
+	          <div class="compact-progress-bar" id="compactProteinBar"></div>
+	        </div>
+	        <span class="value value-bottom" id="compactProteinBottom">Még...</span>
 	      </div>
 	      
 	      <div id="compactBtnWrapper">
+	        <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
 	        <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
 	        <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
 	      </div>
@@ -1287,46 +1331,129 @@ async function saveQuickAdd() {
 
 // ===== ÚJ FUNKCIÓ: Kompakt nézet frissítése =====
 function updateCompactSummaries() {
-    const gw = parseFloat(goalWeightSetting);
-    const gwat = parseFloat(goalWaterSetting);
-    const gcal = parseFloat(goalCaloriesSetting);
-    const gprot = parseFloat(goalProteinSetting);
+    // Célbeállítások
+    const gw = parseFloat(goalWeightSetting);     // Cél súly
+    const gwat = parseFloat(goalWaterSetting);  // Cél víz
+    const gcal = parseFloat(goalCaloriesSetting); // Cél kalória
+    const gprot = parseFloat(goalProteinSetting); // Cél protein
+    
+    // Napi haladás
     const dp = dailyProgress;
-
-    const compactWeight = document.getElementById("compactWeight");
-    const compactWater = document.getElementById("compactWater");
-    const compactCal = document.getElementById("compactCal");
-    const compactProtein = document.getElementById("compactProtein");
-
-    if (!compactWeight) return; // Ha nem a főoldalon vagyunk, ne fusson le
-
-    // Súly
-    let weightText = `${dp.lastWeight > 0 ? dp.lastWeight : '--'} kg`;
-    if (gw) {
-        weightText += ` / Cél: ${gw} kg`;
+    
+    // Súly logikához: megkeressük az első súlybejegyzést. Ez lesz az "út" kiindulópontja.
+    let startWeight = dp.lastWeight; // Alapértelmezett, ha nincs más
+    const firstWeightEntry = transactions.find(t => t.type === 'weight');
+    if (firstWeightEntry) {
+        startWeight = firstWeightEntry.value;
     }
-    compactWeight.textContent = weightText;
 
-    // Víz
-    let waterText = `${dp.water.toFixed(1)} L`;
+    // Felső szöveges elemek
+    const compactWeightTop = document.getElementById("compactWeightTop");
+    const compactWaterTop = document.getElementById("compactWaterTop");
+    const compactCalTop = document.getElementById("compactCalTop");
+    const compactProteinTop = document.getElementById("compactProteinTop");
+
+    // Alsó "Még X" elemek
+    const compactWeightBottom = document.getElementById("compactWeightBottom");
+    const compactWaterBottom = document.getElementById("compactWaterBottom");
+    const compactCalBottom = document.getElementById("compactCalBottom");
+    const compactProteinBottom = document.getElementById("compactProteinBottom");
+    
+    // Haladósáv elemek
+    const compactWeightBar = document.getElementById("compactWeightBar");
+    const compactWaterBar = document.getElementById("compactWaterBar");
+    const compactCalBar = document.getElementById("compactCalBar");
+    const compactProteinBar = document.getElementById("compactProteinBar");
+
+    // Ha nem a főoldalon vagyunk, ne fusson le
+    if (!compactWeightTop) return; 
+
+    // --- Súly (JAVÍTOTT logika) ---
+    if (gw && dp.lastWeight > 0 && startWeight > 0) {
+        const goalDiff = gw - dp.lastWeight; // Mennyi van hátra a célig (pl. 69.5 - 76.8 = -7.3)
+        
+        // A teljes utazás abszolút értéke (kezdő súlytól a célig)
+        const totalJourneyAbs = Math.abs(startWeight - gw); 
+        // A már megtett út abszolút értéke (kezdő súlytól a jelenlegiig)
+        const journeyDoneAbs = Math.abs(startWeight - dp.lastWeight); 
+
+        let perc_weight = 0;
+        if (totalJourneyAbs === 0) {
+             // Ha a cél a kezdő súly, és elértük, 100%
+             perc_weight = (dp.lastWeight === gw) ? 100 : 0;
+        } else {
+             perc_weight = (journeyDoneAbs / totalJourneyAbs) * 100;
+        }
+        
+        if (perc_weight > 100) perc_weight = 100; // Ne menjen 100% fölé
+        if (perc_weight < 0) perc_weight = 0;
+
+        compactWeightTop.textContent = `${dp.lastWeight.toFixed(1)} kg / Cél: ${gw} kg`;
+        
+        // JAVÍTOTT RÉSZ: Csak akkor írja, hogy "Cél elérve", ha a különbség 0.
+        if (goalDiff.toFixed(1) == 0) { // Kerekítve nézzük
+            compactWeightBottom.textContent = "Cél elérve! 🎉";
+            perc_weight = 100; // Biztos, ami biztos
+        } else {
+            // A "Még" szöveg előjelének formázása
+            const diffSign = goalDiff > 0 ? '+' : '';
+            compactWeightBottom.textContent = `Még ${diffSign}${goalDiff.toFixed(1)} kg`;
+        }
+        
+        compactWeightBar.style.width = perc_weight + '%';
+    } else {
+        compactWeightTop.textContent = `${dp.lastWeight > 0 ? dp.lastWeight : '--'} kg / Cél: ${gw ? gw : '--'} kg`;
+        compactWeightBottom.textContent = "Nincs súlycél";
+        compactWeightBar.style.width = '0%';
+    }
+
+    // --- Víz (Marad a helyes logika) ---
     if (gwat) {
-        waterText = `${dp.water.toFixed(1)}/${gwat.toFixed(1)} L`;
+        const rem_water = gwat - dp.water;
+        let perc_water = (dp.water / gwat) * 100;
+        if (perc_water > 100) perc_water = 100;
+        if (perc_water < 0) perc_water = 0;
+        
+        compactWaterTop.textContent = `${dp.water.toFixed(1)} / ${gwat.toFixed(1)} L`;
+        compactWaterBottom.textContent = rem_water > 0 ? `Még ${rem_water.toFixed(1)} L` : `Cél teljesítve!`;
+        compactWaterBar.style.width = perc_water + '%';
+    } else {
+        compactWaterTop.textContent = `${dp.water.toFixed(1)} L`;
+        compactWaterBottom.textContent = "Nincs vízcél";
+        compactWaterBar.style.width = '0%';
     }
-    compactWater.textContent = waterText;
 
-    // Kalória
-    let calText = `${dp.calories.toFixed(0)} kcal`;
+    // --- Kalória (Marad a helyes logika) ---
     if (gcal) {
-        calText = `${dp.calories.toFixed(0)}/${gcal.toFixed(0)} kcal`;
-    }
-    compactCal.textContent = calText;
+        const rem_cal = gcal - dp.calories;
+        let perc_cal = (dp.calories / gcal) * 100;
+        if (perc_cal > 100) perc_cal = 100;
+        if (perc_cal < 0) perc_cal = 0;
 
-    // Protein
-    let protText = `${dp.protein.toFixed(0)} g`;
-    if (gprot) {
-        protText = `${dp.protein.toFixed(0)}/${gprot.toFixed(0)} g`;
+        compactCalTop.textContent = `${dp.calories.toFixed(0)} / ${gcal.toFixed(0)} kcal`;
+        compactCalBottom.textContent = rem_cal > 0 ? `Még ${rem_cal.toFixed(0)} kcal` : `Cél elérve!`;
+        compactCalBar.style.width = perc_cal + '%';
+    } else {
+        compactCalTop.textContent = `${dp.calories.toFixed(0)} kcal`;
+        compactCalBottom.textContent = "Nincs kalóriacél";
+        compactCalBar.style.width = '0%';
     }
-    compactProtein.textContent = protText;
+
+    // --- Protein (Marad a helyes logika) ---
+    if (gprot) {
+        const rem_prot = gprot - dp.protein;
+        let perc_prot = (dp.protein / gprot) * 100;
+        if (perc_prot > 100) perc_prot = 100;
+        if (perc_prot < 0) perc_prot = 0;
+        
+        compactProteinTop.textContent = `${dp.protein.toFixed(0)} / ${gprot.toFixed(0)} g`;
+        compactProteinBottom.textContent = rem_prot > 0 ? `Még ${rem_prot.toFixed(0)} g` : `Cél teljesítve!`;
+        compactProteinBar.style.width = perc_prot + '%';
+    } else {
+        compactProteinTop.textContent = `${dp.protein.toFixed(0)} g`;
+        compactProteinBottom.textContent = "Nincs proteincél";
+        compactProteinBar.style.width = '0%';
+    }
 }
 // =======================================================
 // ===== ALL APP LOGIC (NOW FIREBASE ENABLED) =====
