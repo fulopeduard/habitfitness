@@ -800,18 +800,14 @@ button:hover, .tab-btn:hover {
 	  </div>
 	  
 	  <div id="notes" class="tab-content">
-	    <div class="card">
-	      <h2>📝 Új Jegyzet</h2>
-	      <label for="noteTitleInput">Cím</label>
-	      <input type="text" id="noteTitleInput" placeholder="Jegyzet címe...">
-	      <label for="noteTextInput">Szöveg</label>
-	      <textarea id="noteTextInput" placeholder="Írj ide valamit..."></textarea>
-	      <button onclick="addNote()">Mentés</button>
-	      
-	      <h2 style="margin-top: 25px;">Mentett Jegyzetek</h2>
-	      <div id="notesList"></div>
-	    </div>
-	  </div>
+	    <div class="card">
+	    	<div class="card-header">
+	      		<h2>📝 Jegyzetek</h2>
+	    	</div>
+	    	<button onclick="openAddNoteModal()" class="new-item-button">+ Új jegyzet</button>
+	      	<div id="notesList" style="margin-top: 15px;"></div>
+	    </div>
+	  </div>
 
       <div id="reminders" class="tab-content">
 	    <div class="card">
@@ -909,6 +905,25 @@ button:hover, .tab-btn:hover {
 	      <button style="background:#ccc;color:black;" onclick="closeModal('chartModal')">Bezárás</button>
 	    </div>
 	  </div>
+	</div>
+	<div class="modal" id="noteModal">
+	  <div class="modal-content">
+	    <h3>📝 Új jegyzet</h3>
+	    <label for="noteTitleInput">Cím</label>
+	    <input id="noteTitleInput" type="text" placeholder="Jegyzet címe...">
+	    
+	    <label for="noteCategoryInput">Kategória (opcionális)</label>
+	    <input id="noteCategoryInput" type="text" placeholder="pl. Edzésterv, Bevásárlás..." list="noteCategoryDatalist">
+	    <datalist id="noteCategoryDatalist"></datalist>
+	    
+	    <label for="noteTextInput">Szöveg</label>
+	    <textarea id="noteTextInput" rows="6" placeholder="Írj ide valamit..."></textarea>
+	    
+	    <div style="text-align:center;margin-top:15px;">
+	      <button onclick="saveNote()">✅ Mentés</button>
+	      <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('noteModal')">Mégse</button>
+	    </div>
+	  </div>
 	</div>
 	<div class="modal" id="goalSetupModal">
 	  <div class="modal-content">
@@ -1148,6 +1163,29 @@ button:hover, .tab-btn:hover {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+// =======================================================
+// ===== ÚJ FUNKCIÓ: JEGYZET KATEGÓRIA LISTA LÉTREHOZÁSA =====
+// =======================================================
+function populateNoteCategoryDatalist() {
+  const datalist = document.getElementById('noteCategoryDatalist');
+  if (!datalist) return;
+
+  datalist.innerHTML = ""; // Töröljük a régi opciókat
+
+  // Összegyűjtjük a meglévő kategóriákat (csak egyedi értékek)
+  const existingCategories = new Set(
+    notes
+      .map(note => note.category)
+      .filter(category => category) // Csak a létező kategóriák
+  );
+
+  // Hozzáadjuk őket a listához
+  existingCategories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    datalist.appendChild(option);
+  });
+}
 // ======= POPUP VEZÉRLÉS =======
 function openModal(id) {
   document.getElementById(id).style.display = 'flex';
@@ -2044,59 +2082,121 @@ async function deleteTransaction(index) { // Make async
 // =======================================================
 // ===== JEGYZETEK FUNKCIÓK (REFACTORED) =====
 // =======================================================
-async function addNote() { // Make async
-  const title = document.getElementById("noteTitleInput").value.trim();
-  const text = document.getElementById("noteTextInput").value.trim();
-  
-  if (!title || !text) return alert("Kérlek adj meg egy címet és szöveget is!");
-  
-  const note = { 
-    title, 
-    text, 
-    date: new Date()
-  };
-  notes.unshift(note);
-  
-  document.getElementById("noteTitleInput").value = "";
-  document.getElementById("noteTextInput").value = "";
-  
-  renderNotes();
-  await logActivity("📝 Jegyzet hozzáadva");
+// ÚJ: Megnyitja a jegyzet hozzáadása modált
+function openAddNoteModal() {
+  // Töröljük a modál tartalmát
+  document.getElementById("noteTitleInput").value = "";
+  document.getElementById("noteCategoryInput").value = "";
+  document.getElementById("noteTextInput").value = "";
+  
+  // Feltöltjük a kategória javaslatokat
+  populateNoteCategoryDatalist();
+  
+  openModal('noteModal');
 }
 
+// MÓDOSÍTVA: Mentés a modálból
+async function saveNote() {
+  const title = document.getElementById("noteTitleInput").value.trim();
+  const category = document.getElementById("noteCategoryInput").value.trim();
+  const text = document.getElementById("noteTextInput").value.trim();
+  
+  if (!title || !text) return alert("Kérlek adj meg egy címet és szöveget is!");
+  
+  const note = { 
+    title,
+    category: category || null, // Menti a kategóriát, vagy null-t ha üres
+    text, 
+    date: new Date()
+  };
+  notes.unshift(note); // Az elejére szúrja be
+  
+  closeModal('noteModal');
+  renderNotes(); // Újrarajzolás
+  await logActivity(`📝 Jegyzet hozzáadva: ${title}`);
+}
+
+// TELJESEN ÚJ RENDERNOTES FÜGGVÉNY (KATEGÓRIÁKKAL)
 function renderNotes() {
-  const container = document.getElementById("notesList");
-  container.innerHTML = "";
-  if (notes.length === 0) {
-    container.innerHTML = "<p>Még nincsenek mentett jegyzeteid.</p>";
-    return;
-  }
-  
-  notes.forEach((n, i) => {
-    let displayDate = "...";
-    if (n.date) {
-      if (typeof n.date.toDate === 'function') {
-        displayDate = n.date.toDate().toLocaleString().split(',')[0];
-      } else {
-        displayDate = new Date(n.date).toLocaleString().split(',')[0];
-      }
-    }
+  // JAVÍTÁS: Ez a 7 sor hiányzott. Definiálja a tárolót és kezeli az üres listát.
+  const container = document.getElementById("notesList");
+  if (!container) return; // Biztonsági ellenőrzés
+  container.innerHTML = "";
+  if (notes.length === 0) {
+    container.innerHTML = "<p style='text-align:center; padding: 10px;'>Még nincsenek mentett jegyzeteid.</p>";
+    return;
+  }
 
-    const div = document.createElement("div");
-    div.className = "note-summary-item";
-    div.innerHTML = `
-      <div>
-        <span class="note-summary-title" onclick="openNoteModal(${i})">${n.title}</span>
-        <span class="note-summary-date">${displayDate}</span>
-      </div>
-      <div class="note-summary-actions">
-        <button onclick='editNote(${i})'>✏️</button>
-        <button onclick='deleteNote(${i})'>🗑️</button>
-      </div>`;
-    container.appendChild(div);
-  });
+  // 1. Csoportosítás
+  const categorized = {};
+  const uncategorized = [];
+
+  notes.forEach((note, i) => {
+    // Fontos, hogy megőrizzük az eredeti indexet a törléshez/szerkesztéshez
+    const item = { ...note, originalIndex: i }; 
+    
+    if (item.category) {
+      if (!categorized[item.category]) {
+        categorized[item.category] = [];
+      }
+      categorized[item.category].push(item);
+    } else {
+      uncategorized.push(item);
+    }
+  });
+
+  // 2. Megjelenítő segédfüggvény
+  const renderItem = (n, index) => {
+    let displayDate = "...";
+    if (n.date) {
+      if (typeof n.date.toDate === 'function') {
+        displayDate = n.date.toDate().toLocaleString().split(',')[0];
+      } else {
+        displayDate = new Date(n.date).toLocaleString().split(',')[0];
+      }
+    }
+
+    const div = document.createElement("div");
+    div.className = "note-summary-item";
+    div.innerHTML = `
+      <div>
+        <span class="note-summary-title" onclick="openNoteModal(${index})">${n.title}</span>
+        <span class="note-summary-date">${displayDate}</span>
+      </div>
+      <div class="note-summary-actions">
+        <button onclick='editNote(${index})'>✏️</button>
+        <button onclick='deleteNote(${index})'>🗑️</button>
+      </div>`;
+    container.appendChild(div);
+  };
+
+  // 3. Kategóriák kirajzolása (ABC sorrendben)
+  const categoryNames = Object.keys(categorized).sort();
+  categoryNames.forEach(categoryName => {
+    const title = document.createElement("h3");
+    title.className = "category-title"; // Újrahasznosítjuk a Céloknál lévő stílust
+    title.textContent = categoryName;
+    container.appendChild(title);
+
+    categorized[categoryName].forEach(item => {
+      renderItem(item, item.originalIndex); // Az eredeti indexet adjuk át!
+    });
+  });
+
+  // 4. Kategória nélküliek kirajzolása
+  if (uncategorized.length > 0) {
+    if (categoryNames.length > 0) { // Csak akkor írjuk ki, hogy "Egyéb", ha már voltak kategóriák
+      const title = document.createElement("h3");
+      title.className = "category-title";
+      title.textContent = "Egyéb";
+      container.appendChild(title);
+    }
+    uncategorized.forEach(item => {
+      renderItem(item, item.originalIndex); // Az eredeti indexet adjuk át!
+    });
+  }
 }
-
+  
 async function deleteNote(i) { // Make async
   if (!confirm(`Biztosan törlöd ezt a jegyzetet: "${notes[i].title}"?`)) {
     return;
@@ -2122,27 +2222,33 @@ function openWorkoutNoteModal(index) {
 }
 
 function editNote(i) {
-  editTarget = { type: 'note', index: i };
-  
-  document.getElementById("editTitle").textContent = "📝 Jegyzet szerkesztése";
-  document.getElementById("editLabel1").textContent = "Cím";
-  document.getElementById("editInput1").value = notes[i].title;
-  document.getElementById("editInput1").style.display = "block";
-  document.getElementById("editLabel1").style.display = "block";
+  editTarget = { type: 'note', index: i };
+  
+  document.getElementById("editTitle").textContent = "📝 Jegyzet szerkesztése";
+  document.getElementById("editLabel1").textContent = "Cím";
+  document.getElementById("editInput1").value = notes[i].title;
+  document.getElementById("editInput1").style.display = "block";
+  document.getElementById("editLabel1").style.display = "block";
 
-  document.getElementById("editLabelText").style.display = "block";
-  document.getElementById("editInputText").value = notes[i].text;
-  document.getElementById("editInputText").style.display = "block";
-  
-  document.getElementById("editLabel2").style.display = "none";
-  document.getElementById("editInput2").style.display = "none";
-  document.getElementById("editLabel3").style.display = "none";
-  document.getElementById("editInput3").style.display = "none";
-  document.getElementById("editMealFields").style.display = "none";
-  document.getElementById("editLabelSubGoals").style.display = "none";
-  document.getElementById("editInputSubGoals").style.display = "none";
+  // ÚJ: Kategória mező betöltése
+  document.getElementById("editLabel3").textContent = "Kategória";
+  document.getElementById("editInput3").value = notes[i].category || "";
+  document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editLabel3").style.display = "block";
 
-  openModal('editModal');
+  document.getElementById("editLabelText").style.display = "block";
+  document.getElementById("editInputText").value = notes[i].text;
+  document.getElementById("editInputText").style.display = "block";
+  
+  // Elrejtjük a felesleges mezőket
+  document.getElementById("editLabel2").style.display = "none";
+  document.getElementById("editInput2").style.display = "none";
+  document.getElementById("editMealFields").style.display = "none";
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
+  document.getElementById("editRecurringFields").style.display = "none"; // Ezt is rejtsük el
+
+  openModal('editModal');
 }
 // =======================================================
 
@@ -2967,15 +3073,17 @@ if(goals[editTarget.index].done) {
     await logActivity(`✏️ Jutalom szerkesztve: ${v1}`);
   }
   else if (editTarget.type === 'note') {
-    const vText = document.getElementById("editInputText").value.trim();
-    if (!v1 || !vText) return alert("A cím és a szöveg nem lehet üres!");
+    const v3 = document.getElementById("editInput3").value.trim(); // Kategória olvasása
+    const vText = document.getElementById("editInputText").value.trim();
+    if (!v1 || !vText) return alert("A cím és a szöveg nem lehet üres!");
 
-    notes[editTarget.index].title = v1;
-    notes[editTarget.index].text = vText;
-    notes[editTarget.index].date = new Date();
-    renderNotes();
-    await logActivity(`✏️ Jegyzet szerkesztve: ${v1}`);
-  }
+    notes[editTarget.index].title = v1;
+    notes[editTarget.index].category = v3 || null; // Kategória mentése
+    notes[editTarget.index].text = vText;
+    notes[editTarget.index].date = new Date(); // Dátum frissítése
+    renderNotes(); // Újrarajzolás (hogy a kategória frissüljön)
+    await logActivity(`✏️ Jegyzet szerkesztve: ${v1}`);
+  }
   else if (editTarget.type === 'workout') {
     const vText = document.getElementById("editInputText").value.trim();
     workouts[editTarget.index].note = vText;
