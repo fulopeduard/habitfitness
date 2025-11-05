@@ -541,20 +541,20 @@ button:hover, .tab-btn:hover {
 /* ===== ÚJ KOMPAKT FŐOLDALI CÉLOK STÍLUS ===== */
 /* ================================================== */
 #compactGoalsContainer {
-  display: flex;
+  display: grid; /* JAVÍTÁS: Átállás Grid-re */
+  grid-template-columns: 1fr 1fr 1fr 1fr auto; /* Alapértelmezett: 4 adat oszlop + 1 gomb oszlop */
   background: white;
   border-radius: 18px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  padding: 12px 15px; /* Kicsit több hely függőlegesen */
+  padding: 12px 15px;
   margin-bottom: 5px;
-  align-items: flex-end; /* Alulra igazítja az elemeket */
-  gap: 12px; /* Kicsit több hely az elemek között */
-  flex-wrap: nowrap; /* JAVÍTVA: Ez megakadályozza a sortörést */
+  align-items: center; /* JAVÍTÁS: Függőlegesen középre igazítjuk az egészet */
+  gap: 12px; 
+  /* flex-wrap törölve */
 }
 .compact-goal-item {
-  flex: 1;
-  min-width: 0; /* JAVÍTVA: Ez lehetővé teszi az elemek zsugorodását */
-  text-align: left; /* Balra igazítjuk a tartalmat */
+  min-width: 0; /* Ez marad, hogy a szöveg levágódhasson (...) */
+  text-align: left; 
 }
 .compact-goal-item .label {
   font-size: 0.85em;
@@ -594,9 +594,9 @@ button:hover, .tab-btn:hover {
 #compactBtnWrapper {
   display: flex;
   gap: 8px;
-  margin-left: auto; /* Jobbra tolja a gombokat */
-  flex-shrink: 0;
-  align-self: center; /* A gombok középre igazítva */
+  /* margin-left: auto; TÖRÖLVE */
+  /* flex-shrink: 0; TÖRÖLVE */
+  align-self: center; 
 }
 
 #quickAddBtn, #compactEditBtn, #compactChartBtn {
@@ -632,6 +632,19 @@ button:hover, .tab-btn:hover {
 /* Protein sáv színe */
 #compactProteinBar, #compactWeightBar { /* Súly is lila lesz */
   background: #8e24aa; 
+}
+
+/* ÚJ: Reszponzív töréspont telefonra */
+@media (max-width: 800px) {
+  #compactGoalsContainer {
+    grid-template-columns: 1fr 1fr; /* 2 oszlopos elrendezés */
+    gap: 15px; /* Nagyobb térköz mobilon */
+    align-items: flex-end; /* Visszaállítjuk alulra igazításra */
+  }
+  #compactBtnWrapper {
+    grid-column: 1 / -1; /* A gombok átnyúlnak mindkét oszlopon */
+    justify-content: center; /* Középre igazítja a gombokat a soron belül */
+  }
 }
 /* ================================================== */
 /* ===== ÚJ EDZÉS STÍLUSOK (NAPTÁR TÖRÖLVE) ===== */
