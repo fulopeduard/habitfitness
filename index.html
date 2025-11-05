@@ -701,6 +701,46 @@ button:hover, .tab-btn:hover {
   color: #00796b; /* Téma zöld */
   font-size: 1.1em;
 }
+
+/* ================================================== */
+/* ===== ÚJ ÉTEL PROGRESS BAR STÍLUSOK ===== */
+/* ================================================== */
+.meal-progress-container {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.meal-progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85em;
+}
+.meal-progress-label {
+    width: 65px; /* Szélesebb a "Kalória:" miatt */
+    font-weight: bold;
+    color: #333;
+    flex-shrink: 0;
+}
+.meal-progress-bar-bg {
+    background: #e0e0e0;
+    border-radius: 5px;
+    height: 10px;
+    width: 100%;
+    overflow: hidden;
+}
+.meal-progress-bar-fill {
+    background: #ff9800; /* Kalória - narancs */
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+.meal-progress-bar-fill.protein {
+    background: #8e24aa; /* Protein - lila */
+}
+/* ================================================== */
 /* ================================================== */
 </style>
 </head>
@@ -2832,40 +2872,74 @@ async function saveMeal() {
 
 // Ételek listájának kirajzolása
 function renderMeals() {
-  const list = document.getElementById("mealList");
-  list.innerHTML = "";
-  
-  if (meals.length === 0) {
-    list.innerHTML = "<p style='text-align:center; padding: 10px;'>Még nincsenek mentett ételeid. Adj hozzá egyet!</p>";
-    return;
-  }
-  
-  meals.forEach((meal, i) => {
-    const div = document.createElement("div");
-    div.className = "food-item"; // Új CSS osztály
+    const list = document.getElementById("mealList");
+    list.innerHTML = "";
     
-    let detailsText = "";
-    if (meal.type === 'unit') {
-      detailsText = `<span>${meal.kcal} kcal/db</span><span>${meal.protein}g prot./db</span>`;
-    } else {
-      detailsText = `<span>${meal.kcal} kcal/100g</span><span>${meal.protein}g prot./100g</span>`;
+    if (meals.length === 0) {
+        list.innerHTML = "<p style='text-align:center; padding: 10px;'>Még nincsenek mentett ételeid. Adj hozzá egyet!</p>";
+        return;
     }
     
-    div.innerHTML = `
-      <div class="item-name">
-        <div class="item-name-main">${meal.name}</div>
-      </div>
-      <div class="item-details">
-        ${detailsText}
-      </div>
-      <div class="item-actions">
-        <button onclick="editMeal(${i})" title="Szerkesztés">✏️</button>
-        <button onclick="deleteMeal(${i})" title="Törlés">🗑️</button>
-        <button onclick="openConsumeModal(${i})" title="Fogyasztás">🍽️</button>
-      </div>
-    `;
-    list.appendChild(div);
-  });
+    meals.forEach((meal, i) => {
+        const div = document.createElement("div");
+        div.className = "food-item"; // Új CSS osztály
+        
+        // --- ÚJ: Progress bar számítások ---
+        const maxCal = 1000;
+        const maxProt = 100;
+        
+        let calPercent = (meal.kcal / maxCal) * 100;
+        let protPercent = (meal.protein / maxProt) * 100;
+        
+        if (calPercent > 100) calPercent = 100;
+        if (protPercent > 100) protPercent = 100;
+        if (calPercent < 0) calPercent = 0;
+        if (protPercent < 0) protPercent = 0;
+
+        // --- VÉGE: Progress bar számítások ---
+
+        let detailsText = "";
+        if (meal.type === 'unit') {
+            detailsText = `<span>${meal.kcal} kcal/db</span><span>${meal.protein}g prot./db</span>`;
+        } else {
+            detailsText = `<span>${meal.kcal} kcal/100g</span><span>${meal.protein}g prot./100g</span>`;
+        }
+        
+        // --- ÚJ: HTML a progress barokhoz ---
+        const progressHTML = `
+        <div class="meal-progress-container">
+            <div class="meal-progress-wrapper">
+                <span class="meal-progress-label">Kalória:</span>
+                <div class="meal-progress-bar-bg">
+                    <div class="meal-progress-bar-fill" style="width: ${calPercent}%;"></div>
+                </div>
+            </div>
+            <div class="meal-progress-wrapper">
+                <span class="meal-progress-label">Protein:</span>
+                <div class="meal-progress-bar-bg">
+                    <div class="meal-progress-bar-fill protein" style="width: ${protPercent}%;"></div>
+                </div>
+            </div>
+        </div>
+        `;
+        // --- VÉGE: Progress bar HTML ---
+        
+        div.innerHTML = `
+        <div class="item-name">
+            <div class="item-name-main">${meal.name}</div>
+            ${progressHTML}
+        </div>
+        <div class="item-details">
+            ${detailsText}
+        </div>
+        <div class="item-actions">
+            <button onclick="editMeal(${i})" title="Szerkesztés">✏️</button>
+            <button onclick="deleteMeal(${i})" title="Törlés">🗑️</button>
+            <button onclick="openConsumeModal(${i})" title="Fogyasztás">🍽️</button>
+        </div>
+        `;
+        list.appendChild(div);
+    });
 }
 
 // Étel szerkesztése (megnyitja a szerkesztő modalt)
