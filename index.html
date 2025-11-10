@@ -364,6 +364,24 @@ button:hover {
   text-align: left;
   width: 100%; /* Kitölti a .item-name szélességét */
 }
+.subgoal-header {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #004d40; /* Sötét zöld, mint a kategória címek */
+  margin-top: 15px;
+  margin-bottom: 5px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #dcedc8; /* Finom vonal alatta */
+}
+.subgoal-list .subgoal-header:first-child {
+  margin-top: 5px; /* Kisebb margó, ha ez az első elem */
+}
+.subgoal-separator {
+  border: none;
+  border-top: 2px dashed #b2dfdb; /* Szaggatott vonal a téma színével */
+  margin: 10px 0;
+}
+
 .subgoal-list div {
   display: flex;
   align-items: center;
@@ -920,7 +938,7 @@ button:hover, .tab-btn:hover {
             <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
             <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
             <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
-        </div>
+          </div>
 </div>
       <div id="main" class="tab-content active">
         <div class="flex-container">
@@ -980,7 +998,7 @@ button:hover, .tab-btn:hover {
           <h2>Mentett ételek</h2>
           <div id="mealList">
           </div>
-		  <button onclick="openMealModal()" class="new-item-button">+ Új étel hozzáadása</button>
+    <button onclick="openMealModal()" class="new-item-button">+ Új étel hozzáadása</button>
         </div>
       </div>
 
@@ -1028,249 +1046,249 @@ button:hover, .tab-btn:hover {
 
     </main>
 	<div class="modal" id="noteViewModal">
-      <div class="modal-content">
-        <h3 id="noteViewTitle">Jegyzet címe</h3>
-        <div id="noteViewText">
-          Jegyzet tartalma...
-        </div>
-        <div style="text-align:center;margin-top:15px;">
-          <button style="background:#ccc;color:black;" onclick="closeModal('noteViewModal')">Bezárás</button>
-        </div>
+    <div class="modal-content">
+      <h3 id="noteViewTitle">Jegyzet címe</h3>
+      <div id="noteViewText">
+        Jegyzet tartalma...
+      </div>
+      <div style="text-align:center;margin-top:15px;">
+        <button style="background:#ccc;color:black;" onclick="closeModal('noteViewModal')">Bezárás</button>
       </div>
     </div>
+  </div>
 
-    <div class="modal" id="chartModal">
-      <div class="modal-content" id="chartModalContent">
-        <h3>📈 Súly Grafikon</h3>
-        <canvas id="progressChart"></canvas>
-        <div style="text-align:center;margin-top:15px;">
-          <button style="background:#ccc;color:black;" onclick="closeModal('chartModal')">Bezárás</button>
-        </div>
+  <div class="modal" id="chartModal">
+    <div class="modal-content" id="chartModalContent">
+      <h3>📈 Súly Grafikon</h3>
+      <canvas id="progressChart"></canvas>
+      <div style="text-align:center;margin-top:15px;">
+        <button style="background:#ccc;color:black;" onclick="closeModal('chartModal')">Bezárás</button>
       </div>
     </div>
-    <div class="modal" id="noteModal">
-      <div class="modal-content">
-        <h3>📝 Új jegyzet</h3>
-        <label for="noteTitleInput">Cím</label>
-        <input id="noteTitleInput" type="text" placeholder="Jegyzet címe...">
-        
-        <label for="noteCategoryInput">Kategória (opcionális)</label>
-        <input id="noteCategoryInput" type="text" placeholder="pl. Edzésterv, Bevásárlás..." list="noteCategoryDatalist">
-        <datalist id="noteCategoryDatalist"></datalist>
-        
-        <label for="noteTextInput">Szöveg</label>
-        <textarea id="noteTextInput" rows="6" placeholder="Írj ide valamit..."></textarea>
-        
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveNote()">✅ Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('noteModal')">Mégse</button>
-        </div>
+  </div>
+  <div class="modal" id="noteModal">
+    <div class="modal-content">
+      <h3>📝 Új jegyzet</h3>
+      <label for="noteTitleInput">Cím</label>
+      <input id="noteTitleInput" type="text" placeholder="Jegyzet címe...">
+      
+      <label for="noteCategoryInput">Kategória (opcionális)</label>
+      <input id="noteCategoryInput" type="text" placeholder="pl. Edzésterv, Bevásárlás..." list="noteCategoryDatalist">
+      <datalist id="noteCategoryDatalist"></datalist>
+      
+      <label for="noteTextInput">Szöveg</label>
+      <textarea id="noteTextInput" rows="6" placeholder="Írj ide valamit..."></textarea>
+      
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveNote()">✅ Mentés</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('noteModal')">Mégse</button>
       </div>
     </div>
-    <div class="modal" id="goalSetupModal">
-      <div class="modal-content">
-        <h3>🎯 Célok beállítása</h3>
-        <label>Ideális súly (kg)</label>
-        <input id="goalWeightInput" type="number" placeholder="pl. 75">
-        <label>Napi víz cél (liter)</label>
-        <input id="goalWaterInput" type="number" step="0.1" placeholder="pl. 2.5">
-        <label>Napi kalória cél (kcal)</label>
-        <input id="goalCalInput" type="number" placeholder="pl. 2200">
-        <label>Napi protein cél (gramm)</label>
-        <input id="goalProteinInput" type="number" placeholder="pl. 120">
-        
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveGoalSettings()">💾 Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalSetupModal')">Mégse</button>
-        </div>
+  </div>
+  <div class="modal" id="goalSetupModal">
+    <div class="modal-content">
+      <h3>🎯 Célok beállítása</h3>
+      <label>Ideális súly (kg)</label>
+      <input id="goalWeightInput" type="number" placeholder="pl. 75">
+      <label>Napi víz cél (liter)</label>
+      <input id="goalWaterInput" type="number" step="0.1" placeholder="pl. 2.5">
+      <label>Napi kalória cél (kcal)</label>
+      <input id="goalCalInput" type="number" placeholder="pl. 2200">
+      <label>Napi protein cél (gramm)</label>
+      <input id="goalProteinInput" type="number" placeholder="pl. 120">
+      
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveGoalSettings()">💾 Mentés</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalSetupModal')">Mégse</button>
       </div>
     </div>
+  </div>
 
-    <div class="modal" id="goalModal">
-      <div class="modal-content">
-        <h3>🎯 Új cél</h3>
-        <label>Cél neve</label>
-        <input id="goalNameInput" type="text" placeholder="pl. 10.000 lépés">
-        <label>Pont érték</label>
-        <input id="goalPointsInput" type="number" placeholder="pl. 10 (0 is lehet)">
-        <label>Kategória (opcionális)</label>
-        <input id="goalCategoryInput" type="text" placeholder="pl. Valóság (válassz vagy írj be újat)" list="categoryDatalist">
-        <datalist id="categoryDatalist">
-        </datalist>
-        
-        <label>Alcélok (opcionális, minden sor egy alcél)</label>
-    <textarea id="goalSubGoalsInput" rows="5" placeholder="pl. Csere cipő&#10;Edző nadrág&#10;Törölköző..."></textarea>
+  <div class="modal" id="goalModal">
+    <div class="modal-content">
+      <h3>🎯 Új cél</h3>
+      <label>Cél neve</label>
+      <input id="goalNameInput" type="text" placeholder="pl. 10.000 lépés">
+      <label>Pont érték</label>
+      <input id="goalPointsInput" type="number" placeholder="pl. 10 (0 is lehet)">
+      <label>Kategória (opcionális)</label>
+      <input id="goalCategoryInput" type="text" placeholder="pl. Valóság (válassz vagy írj be újat)" list="categoryDatalist">
+      <datalist id="categoryDatalist">
+      </datalist>
+      
+      <label>Alcélok (opcionális, minden sor egy alcél)</label>
+    <textarea id="goalSubGoalsInput" rows="5" placeholder="Alcélok...&#10;# Címsor (nem pipálható)&#10;--- (Elválasztó)&#10;Ez egy pipálható feladat"></textarea>
     
     <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
-            <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
-        </div>
-        <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
-            <label for="goalRecurrenceSelect">Ismétlődés gyakorisága</label>
-            <select id="goalRecurrenceSelect">
-                <option value="daily">Naponta</option>
-                <option value="2days">2 naponta</option>
-                <option value="3days">3 naponta</option>
-                <option value="4days">4 naponta</option>
-                <option value="5days">5 naponta</option>
-                <option value="6days">6 naponta</option>
-                <option value="weekly">Hetente</option>
-                <option value="monthly">Havonta</option>
-            </select>
-        </div>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+          <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
+          <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+      </div>
+      <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
+          <label for="goalRecurrenceSelect">Ismétlődés gyakorisága</label>
+          <select id="goalRecurrenceSelect">
+              <option value="daily">Naponta</option>
+              <option value="2days">2 naponta</option>
+              <option value="3days">3 naponta</option>
+              <option value="4days">4 naponta</option>
+              <option value="5days">5 naponta</option>
+              <option value="6days">6 naponta</option>
+              <option value="weekly">Hetente</option>
+              <option value="monthly">Havonta</option>
+          </select>
+      </div>
     </div>
     <div style="text-align:center;margin-top:15px;">
       <button onclick="saveGoal()">✅ Mentés</button>
       <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
     </div>
+    </div>
+  </div>
+
+  <div class="modal" id="rewardModal">
+    <div class="modal-content">
+      <h3>🎁 Új jutalom</h3>
+      <label>Jutalom neve</label>
+      <input id="rewardNameInput" type="text" placeholder="pl. Pihenőnap">
+      <label>Pont ára</label>
+      <input id="rewardCostInput" type="number" placeholder="pl. 20">
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveReward()">✅ Mentés</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
       </div>
     </div>
+  </div>
 
-    <div class="modal" id="rewardModal">
-      <div class="modal-content">
-        <h3>🎁 Új jutalom</h3>
-        <label>Jutalom neve</label>
-        <input id="rewardNameInput" type="text" placeholder="pl. Pihenőnap">
-        <label>Pont ára</label>
-        <input id="rewardCostInput" type="number" placeholder="pl. 20">
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveReward()">✅ Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
-        </div>
-      </div>
-    </div>
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h3 id="editTitle">✏️ Szerkesztés</h3>
+      
+      <label id="editLabel1"></label>
+      <input id="editInput1" type="text">
+      
+      <label id="editLabel2"></label>
+      <input id="editInput2" type="number">
+      
+      <label id="editLabel3" style="display:none;"></label>
+      <input id="editInput3" type="text" style="display:none;">
+      <label id="editLabelSubGoals" style="display:none;">Alcélok (minden sor egy alcél)</label>
+      <textarea id="editInputSubGoals" rows="5" style="display:none;"></textarea>
 
-    <div class="modal" id="editModal">
-      <div class="modal-content">
-        <h3 id="editTitle">✏️ Szerkesztés</h3>
-        
-        <label id="editLabel1"></label>
-        <input id="editInput1" type="text">
-        
-        <label id="editLabel2"></label>
-        <input id="editInput2" type="number">
-        
-        <label id="editLabel3" style="display:none;"></label>
-        <input id="editInput3" type="text" style="display:none;">
-        <label id="editLabelSubGoals" style="display:none;">Alcélok (minden sor egy alcél)</label>
-        <textarea id="editInputSubGoals" rows="5" style="display:none;"></textarea>
-
-        <label id="editLabelText" style="display:none;">Szöveg</label>
-        <textarea id="editInputText" style="display:none;"></textarea>
-        
+      <label id="editLabelText" style="display:none;">Szöveg</label>
+      <textarea id="editInputText" style="display:none;"></textarea>
+      
 <div id="editRecurringFields" style="display: none; margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="editIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
-            <input type="checkbox" id="editIsRecurringInput" onchange="document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
-        </div>
-        <div id="editRecurrenceOptions" style="display: none; margin-top: 10px;">
-            <label for="editRecurrenceSelect">Ismétlődés gyakorisága</label>
-            <select id="editRecurrenceSelect">
-                <option value="daily">Naponta</option>
-                <option value="2days">2 naponta</option>
-                <option value="3days">3 naponta</option>
-                <option value="4days">4 naponta</option>
-                <option value="5days">5 naponta</option>
-                <option value="6days">6 naponta</option>
-                <option value="weekly">Hetente</option>
-                <option value="monthly">Havonta</option>
-            </select>
-        </div>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+          <label for="editIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
+          <input type="checkbox" id="editIsRecurringInput" onchange="document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+      </div>
+      <div id="editRecurrenceOptions" style="display: none; margin-top: 10px;">
+          <label for="editRecurrenceSelect">Ismétlődés gyakorisága</label>
+          <select id="editRecurrenceSelect">
+              <option value="daily">Naponta</option>
+              <option value="2days">2 naponta</option>
+              <option value="3days">3 naponta</option>
+              <option value="4days">4 naponta</option>
+              <option value="5days">5 naponta</option>
+              <option value="6days">6 naponta</option>
+              <option value="weekly">Hetente</option>
+              <option value="monthly">Havonta</option>
+          </select>
+      </div>
     </div>
-        <div id="editMealFields" style="display: none;">
-            <label for="editMealType">Típus</label>
-            <select id="editMealType">
-                <option value="unit">Darab alapú</option>
-                <option value="weight">Súly alapú (100g)</option>
-            </select>
-            <label for="editMealKcal">Kalória (kcal)</label>
-            <input id="editMealKcal" type="number" placeholder="pl. 150">
-            <label for="editMealProtein">Fehérje (g)</label>
-            <input id="editMealProtein" type="number" placeholder="pl. 12">
-        </div>
+      <div id="editMealFields" style="display: none;">
+          <label for="editMealType">Típus</label>
+          <select id="editMealType">
+              <option value="unit">Darab alapú</option>
+              <option value="weight">Súly alapú (100g)</option>
+          </select>
+          <label for="editMealKcal">Kalória (kcal)</label>
+          <input id="editMealKcal" type="number" placeholder="pl. 150">
+          <label for="editMealProtein">Fehérje (g)</label>
+          <input id="editMealProtein" type="number" placeholder="pl. 12">
+      </div>
 
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="confirmEdit()">💾 Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('editModal')">Mégse</button>
-        </div>
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="confirmEdit()">💾 Mentés</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('editModal')">Mégse</button>
       </div>
     </div>
+  </div>
 
-    <div class="modal" id="archiveModal">
-      <div class="modal-content" style="max-width: 600px;">
-        <h3>📥 Archivált Célok</h3>
-        <div id="archivedGoalList" style="max-height: 400px; overflow-y: auto;">
-        </div>
-        <div style="text-align:center;margin-top:15px;">
-          <button style="background:#ccc;color:black;" onclick="closeModal('archiveModal')">Bezárás</button>
-        </div>
+  <div class="modal" id="archiveModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <h3>📥 Archivált Célok</h3>
+      <div id="archivedGoalList" style="max-height: 400px; overflow-y: auto;">
+      </div>
+      <div style="text-align:center;margin-top:15px;">
+        <button style="background:#ccc;color:black;" onclick="closeModal('archiveModal')">Bezárás</button>
       </div>
     </div>
+  </div>
     
-    <div class="modal" id="mealModal">
-      <div class="modal-content">
-        <h3>Új étel hozzáadása</h3>
-        <label for="mealNameInput">Étel neve</label>
-        <input id="mealNameInput" type="text" placeholder="pl. Főtt tojás">
-        
-        <label for="mealTypeSelect">Számolás típusa</label>
-        <select id="mealTypeSelect" onchange="updateMealModalLabels()">
-            <option value="unit">Darab alapú</option>
-            <option value="weight">Súly alapú (100g)</option>
-        </select>
-        
-        <label id="mealKcalLabel" for="mealKcalInput">Kalória (kcal/darab)</label>
-        <input id="mealKcalInput" type="number" placeholder="pl. 78">
-        
-        <label id="mealProteinLabel" for="mealProteinInput">Fehérje (g/darab)</label>
-        <input id="mealProteinInput" type="number" placeholder="pl. 6">
-        
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveMeal()">✅ Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealModal')">Mégse</button>
-        </div>
+  <div class="modal" id="mealModal">
+    <div class="modal-content">
+      <h3>Új étel hozzáadása</h3>
+      <label for="mealNameInput">Étel neve</label>
+      <input id="mealNameInput" type="text" placeholder="pl. Főtt tojás">
+      
+      <label for="mealTypeSelect">Számolás típusa</label>
+      <select id="mealTypeSelect" onchange="updateMealModalLabels()">
+          <option value="unit">Darab alapú</option>
+          <option value="weight">Súly alapú (100g)</option>
+      </select>
+      
+      <label id="mealKcalLabel" for="mealKcalInput">Kalória (kcal/darab)</label>
+      <input id="mealKcalInput" type="number" placeholder="pl. 78">
+      
+      <label id="mealProteinLabel" for="mealProteinInput">Fehérje (g/darab)</label>
+      <input id="mealProteinInput" type="number" placeholder="pl. 6">
+      
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveMeal()">✅ Mentés</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealModal')">Mégse</button>
       </div>
     </div>
+  </div>
     
-    <div class="modal" id="consumeModal">
-      <div class="modal-content">
-        <h3 id="consumeMealTitle">Étel fogyasztása</h3>
-        <p style="text-align: center; font-weight: bold;" id="consumeMealDetails"></p>
-        
-        <label id="consumeAmountLabel" for="consumeAmountInput">Mennyiség (Darab)</label>
-        <input id="consumeAmountInput" type="number" placeholder="pl. 2">
-        
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="confirmConsume()">🍽️ Fogyasztás</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('consumeModal')">Mégse</button>
-        </div>
+  <div class="modal" id="consumeModal">
+    <div class="modal-content">
+      <h3 id="consumeMealTitle">Étel fogyasztása</h3>
+      <p style="text-align: center; font-weight: bold;" id="consumeMealDetails"></p>
+      
+      <label id="consumeAmountLabel" for="consumeAmountInput">Mennyiség (Darab)</label>
+      <input id="consumeAmountInput" type="number" placeholder="pl. 2">
+      
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="confirmConsume()">🍽️ Fogyasztás</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('consumeModal')">Mégse</button>
       </div>
     </div>
+  </div>
     
-    <div class="modal" id="quickAddModal">
-      <div class="modal-content">
-        <h3>⚡ Gyors Bejegyzés</h3>
-        <p style="text-align: center; margin-top: -10px; margin-bottom: 15px;">Add meg a mai napi adatokat.</p>
-        
-        <label>Jelenlegi súly (kg) - Felülírja a mait</label>
-        <input id="quickWeightInput" type="number" placeholder="pl. 75.5">
-        
-        <label>Víz hozzáadása (Liter)</label>
-        <input id="quickWaterInput" type="number" step="0.1" placeholder="pl. 0.5">
-        
-        <label>Kalória hozzáadása (kcal)</label>
-        <input id="quickCalInput" type="number" placeholder="pl. 500">
-        
-        <label>Protein hozzáadása (gramm)</label>
-        <input id="quickProteinInput" type="number" placeholder="pl. 30">
-        
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('quickAddModal')">Mégse</button>
-        </div>
+  <div class="modal" id="quickAddModal">
+    <div class="modal-content">
+      <h3>⚡ Gyors Bejegyzés</h3>
+      <p style="text-align: center; margin-top: -10px; margin-bottom: 15px;">Add meg a mai napi adatokat.</p>
+      
+      <label>Jelenlegi súly (kg) - Felülírja a mait</label>
+      <input id="quickWeightInput" type="number" placeholder="pl. 75.5">
+      
+      <label>Víz hozzáadása (Liter)</label>
+      <input id="quickWaterInput" type="number" step="0.1" placeholder="pl. 0.5">
+      
+      <label>Kalória hozzáadása (kcal)</label>
+      <input id="quickCalInput" type="number" placeholder="pl. 500">
+      
+      <label>Protein hozzáadása (gramm)</label>
+      <input id="quickProteinInput" type="number" placeholder="pl. 30">
+      
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('quickAddModal')">Mégse</button>
       </div>
     </div>
+  </div>
 
 
 </div> <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -1398,12 +1416,11 @@ function openQuickAddModal() {
   
   // Betölti a jelenlegi súlyt, ha van -> EZ A RÉSZ EL LETT TÁVOLÍTVA
   // if (dailyProgress.lastWeight > 0) {
-  //     document.getElementById("quickWeightInput").value = dailyProgress.lastWeight;
+  //    document.getElementById("quickWeightInput").value = dailyProgress.lastWeight;
   // }
   
   openModal('quickAddModal');
 }
-
 async function saveQuickAdd() {
   const weight = parseFloat(document.getElementById("quickWeightInput").value);
   const water = parseFloat(document.getElementById("quickWaterInput").value);
@@ -1960,11 +1977,11 @@ function showTab(id) {
     const compactGoalsBar = document.getElementById('compactGoalsContainer');
     if (compactGoalsBar) {
       if (id === 'main' || id === 'meals') {
-            // A kompakt sáv megjelenítése a Főoldalon és az Étkezés fülön.
-            // A CSS-ed 'display: grid'-et használ, ezért azt állítjuk be.
+          // A kompakt sáv megjelenítése a Főoldalon és az Étkezés fülön.
+          // A CSS-ed 'display: grid'-et használ, ezért azt állítjuk be.
         compactGoalsBar.style.display = 'grid'; 
       } else {
-            // Minden más fülön elrejtjük.
+          // Minden más fülön elrejtjük.
         compactGoalsBar.style.display = 'none';
       }
     }
@@ -2408,15 +2425,25 @@ async function saveGoal() { // Make async
   if (!name) return alert("A célnak nevet kell adni!");
   if (isNaN(points) || points < 0) return alert("Érvénytelen pontszám! Adj meg 0-t vagy nagyobbat.");
   
-  // ÚJ: Alcélok beolvasása
+  // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS KEZDETE =====
   const subGoalsText = document.getElementById("goalSubGoalsInput").value;
   let subGoals = [];
   if (subGoalsText.trim() !== "") {
     subGoals = subGoalsText.split('\n')
       .map(text => text.trim())
       .filter(text => text.length > 0)
-      .map(text => ({ text: text, done: false }));
+      .map(rawText => {
+        // Típus meghatározása
+        if (rawText.startsWith('#')) {
+          return { type: 'header', text: rawText.substring(1).trim() };
+        } else if (rawText === '---') {
+          return { type: 'separator', text: '---' };
+        } else {
+          return { type: 'task', text: rawText, done: false };
+        }
+      });
   }
+  // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS VÉGE =====
   
   // ÚJ: Ismétlődés beolvasása
   const isRecurring = document.getElementById("goalIsRecurringInput").checked;
@@ -2516,13 +2543,26 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
     return;
   }
   
+  // ===== ÚJ BIZTONSÁGI ELLENŐRZÉS =====
+  // Csak 'task' típust (vagy régitípusú 'undefined'-et) engedünk pipálni
+  const subGoal = goal.subGoals[subGoalIndex];
+  const sgType = subGoal.type || 'task'; // Alapértelmezett a 'task' a régi adatok miatt
+  
+  if (sgType !== 'task') {
+    console.warn("Nem 'task' típusú alcél pipálása kísérlet megakadályozva.");
+    return; // Megállítjuk a futást
+  }
+  // ===== VÉGE =====
+  
   const wasMainGoalDone = goal.done;
   
   // 1. Alcél állapotának váltása
-  goal.subGoals[subGoalIndex].done = !goal.subGoals[subGoalIndex].done;
+  subGoal.done = !subGoal.done;
   
-  // 2. Ellenőrzés, hogy az összes alcél kész van-e
-  const allDone = goal.subGoals.length > 0 && goal.subGoals.every(sg => sg.done);
+  // 2. Ellenőrzés, hogy az összes 'task' típusú alcél kész van-e
+  // Csak a 'task' típusúakat vesszük számításba!
+  const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
+  const allDone = taskSubGoals.length > 0 && taskSubGoals.every(sg => sg.done);
   
   // 3. Fő cél állapotának és pontoknak frissítése
   if (allDone && !wasMainGoalDone) {
@@ -2599,8 +2639,18 @@ function editGoal(i) {
   
   // ÚJ: Alcélok betöltése a szerkesztőbe
   const subGoalsText = (goals[i].subGoals || [])
-    .map(sg => sg.text)
+    .map(sg => {
+      // MÓDOSÍTVA: Visszaalakítjuk a Markdown szintaxist a szerkesztőhöz
+      const sgType = sg.type || 'task';
+      if (sgType === 'header') {
+        return `# ${sg.text}`;
+      } else if (sgType === 'separator') {
+        return '---';
+      }
+      return sg.text; // 'task'
+    })
     .join('\n');
+
   document.getElementById("editLabelSubGoals").style.display = "block";
   document.getElementById("editInputSubGoals").value = subGoalsText;
   document.getElementById("editInputSubGoals").style.display = "block";
@@ -2658,23 +2708,44 @@ function renderGoals() {
     const div = document.createElement("div");
     div.className = "goal-item" + (g.done ? " completed" : "");
     
-    // ===== ALCÉL LOGIKA KEZDETE =====
+    // ===== MÓDOSÍTOTT ALCÉL LOGIKA KEZDETE =====
     let subGoalsHTML = "";
     let hasSubGoals = g.subGoals && g.subGoals.length > 0;
+    let hasTasks = false; // Új: Figyeljük, van-e egyáltalán pipálható elem
     
     if (hasSubGoals) {
       subGoalsHTML = '<div class="subgoal-list">';
       g.subGoals.forEach((sg, subIndex) => {
-        subGoalsHTML += `
-          <div>
-            <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
-            <span class="${sg.done ? 'subgoal-done' : ''}">${sg.text}</span>
-          </div>
-        `;
+        // Alapértelmezett típus 'task' a régi adatok kompatibilitása miatt
+        const sgType = sg.type || 'task'; 
+
+        switch (sgType) {
+          case 'header':
+            // Címsor renderelése
+            subGoalsHTML += `<h4 class="subgoal-header">${sg.text}</h4>`;
+            break;
+          
+          case 'separator':
+            // Elválasztó renderelése
+            subGoalsHTML += `<hr class="subgoal-separator">`;
+            break;
+            
+          case 'task':
+          default:
+            hasTasks = true; // Találtunk pipálható elemet
+            // Normál, pipálható alcél renderelése
+            subGoalsHTML += `
+              <div>
+                <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
+                <span class="${sg.done ? 'subgoal-done' : ''}">${sg.text}</span>
+              </div>
+            `;
+            break;
+        }
       });
       subGoalsHTML += '</div>';
     }
-    // ===== ALCÉL LOGIKA VÉGE =====
+    // ===== MÓDOSÍTOTT ALCÉL LOGIKA VÉGE =====
     
     div.innerHTML = `
       <div class="item-name">
@@ -2685,10 +2756,10 @@ function renderGoals() {
         ${g.points} pont
       </div>
       <div class="item-actions">
-    <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>
+      <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>
         <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
-        ${!hasSubGoals ? (
+        ${!hasTasks ? ( // MÓDOSÍTVA: Csak akkor mutatjuk a ✅/❌ gombot, ha NINCSENEK pipálható alcélok
           g.done 
             ? `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>`
             : `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`
@@ -3177,7 +3248,7 @@ async function confirmEdit() { // Make async
     if (!v1) return alert("A célnak nevet kell adni!");
     if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pontszám! Adj meg 0-t vagy nagyobbat.");
 
-if(goals[editTarget.index].done) {
+  if(goals[editTarget.index].done) {
         let diff = v2 - goals[editTarget.index].points;
         if (diff !== 0) {
           totalPoints += diff;
@@ -3189,44 +3260,55 @@ if(goals[editTarget.index].done) {
     goals[editTarget.index].points = v2;
     goals[editTarget.index].category = v3;
     
-	// ÚJ: Alcélok frissítése (JAVÍTOTT LOGIKÁVAL)
-    const newSubGoalsText = document.getElementById("editInputSubGoals").value;
-    
-    // Létrehozunk egy MÁSOLATOT a régi alcélokból, amiből "elfogyaszthatjuk" az elemeket
-    const availableOldSubGoals = [...(goals[editTarget.index].subGoals || [])];
-    let newSubGoals = [];
+  // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS KEZDETE (JAVÍTOTT LOGIKÁVAL) =====
+    const newSubGoalsText = document.getElementById("editInputSubGoals").value;
+    
+    // Létrehozunk egy MÁSOLATOT a régi alcélokból, amiből "elfogyaszthatjuk" az elemeket
+    const availableOldSubGoals = [...(goals[editTarget.index].subGoals || [])];
+    let newSubGoals = [];
 
-    if (newSubGoalsText.trim() !== "") {
-      newSubGoals = newSubGoalsText.split('\n')
-        .map(text => text.trim())
-        .filter(text => text.length > 0)
-        .map(text => {
-          // Megkeressük az ELSŐ elérhető, egyező szövegű alcélt
-          const existingIndex = availableOldSubGoals.findIndex(sg => sg.text === text);
-          
-          if (existingIndex > -1) {
-            // Ha találtunk...
-            // 1. Kivesszük az "elfogyasztott" elemet a másolat tömbből (ez a kulcs!)
-            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
-            // 2. Visszaadjuk a régi, "done" állapotot is tartalmazó objektumot
-            return existing;
-          } else {
-            // Ha nem találtunk, ez egy új alcél
-            return { text: text, done: false };
-          }
-        });
-    }
-    
-    goals[editTarget.index].subGoals = newSubGoals;
+    if (newSubGoalsText.trim() !== "") {
+      newSubGoals = newSubGoalsText.split('\n')
+        .map(text => text.trim())
+        .filter(text => text.length > 0)
+        .map(rawText => {
+          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
+          let newItem;
+          if (rawText.startsWith('#')) {
+            newItem = { type: 'header', text: rawText.substring(1).trim() };
+          } else if (rawText === '---') {
+            newItem = { type: 'separator', text: '---' };
+          } else {
+            newItem = { type: 'task', text: rawText, done: false };
+          }
+
+          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
+          const existingIndex = availableOldSubGoals.findIndex(
+            sg => (sg.type || 'task') === (newItem.type || 'task') && sg.text === newItem.text
+          );
+          
+          if (existingIndex > -1) {
+            // Ha találtunk...
+            // 1. Kivesszük az "elfogyasztott" elemet a másolat tömbből
+            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
+            // 2. Visszaadjuk a régi, "done" állapotot is tartalmazó objektumot
+            return existing;
+          } else {
+            // Ha nem találtunk, ez egy új alcél
+            return newItem;
+          }
+        });
+    }
+    // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS VÉGE =====
+    
+    goals[editTarget.index].subGoals = newSubGoals;
     
     // ÚJ: Ismétlődés frissítése
     const isRecurring = document.getElementById("editIsRecurringInput").checked;
     if (isRecurring) {
       goals[editTarget.index].isRecurring = true;
       goals[editTarget.index].recurrence = document.getElementById("editRecurrenceSelect").value;
-      // a lastCompleted értéket nem bántjuk, megmarad, amíg nem teljesíti újra
     } else {
-      // Ha kivettük az ismétlődést, töröljük a tulajdonságokat
       delete goals[editTarget.index].isRecurring;
       delete goals[editTarget.index].recurrence;
       delete goals[editTarget.index].lastCompleted;
@@ -3235,17 +3317,18 @@ if(goals[editTarget.index].done) {
     // ÚJ: Állapot újraszámolása szerkesztés után
     const goal = goals[editTarget.index];
     const wasMainGoalDone = goal.done;
-    const allDone = newSubGoals.length > 0 && newSubGoals.every(sg => sg.done);
+    
+    // MÓDOSÍTVA: Csak a 'task' típusú alcélokat számoljuk
+    const taskSubGoals = newSubGoals.filter(sg => (sg.type || 'task') === 'task');
+    const allDone = taskSubGoals.length > 0 && taskSubGoals.every(sg => sg.done);
 
     if (allDone && !wasMainGoalDone) {
       goal.done = true;
-      // ÚJ: Dátum beállítása, ha ismétlődő
       if (goal.isRecurring) goal.lastCompleted = new Date().toISOString();
       totalPoints += goal.points;
       animatePoints(totalPoints);
     } else if (!allDone && wasMainGoalDone) {
       goal.done = false;
-      // ÚJ: Dátum törlése, ha ismétlődő
       if (goal.isRecurring) goal.lastCompleted = null;
       totalPoints -= goal.points;
       animatePoints(totalPoints);
@@ -3311,7 +3394,6 @@ if(goals[editTarget.index].done) {
   document.getElementById("editMealFields").style.display = "none";
   document.getElementById("editLabelSubGoals").style.display = "none";
   document.getElementById("editInputSubGoals").style.display = "none";
-  // ÚJ: Ismétlődés mező elrejtése
   document.getElementById("editRecurringFields").style.display = "none";
 }
 
