@@ -3189,23 +3189,35 @@ if(goals[editTarget.index].done) {
     goals[editTarget.index].points = v2;
     goals[editTarget.index].category = v3;
     
-    // ÚJ: Alcélok frissítése
-    const newSubGoalsText = document.getElementById("editInputSubGoals").value;
-    const oldSubGoals = goals[editTarget.index].subGoals || [];
-    let newSubGoals = [];
+	// ÚJ: Alcélok frissítése (JAVÍTOTT LOGIKÁVAL)
+    const newSubGoalsText = document.getElementById("editInputSubGoals").value;
+    
+    // Létrehozunk egy MÁSOLATOT a régi alcélokból, amiből "elfogyaszthatjuk" az elemeket
+    const availableOldSubGoals = [...(goals[editTarget.index].subGoals || [])];
+    let newSubGoals = [];
 
-    if (newSubGoalsText.trim() !== "") {
-      newSubGoals = newSubGoalsText.split('\n')
-        .map(text => text.trim())
-        .filter(text => text.length > 0)
-        .map(text => {
-          // Megőrizzük a 'done' státuszt, ha a szöveg ugyanaz
-          const existing = oldSubGoals.find(sg => sg.text === text);
-          return existing ? existing : { text: text, done: false };
-        });
-    }
-    
-    goals[editTarget.index].subGoals = newSubGoals;
+    if (newSubGoalsText.trim() !== "") {
+      newSubGoals = newSubGoalsText.split('\n')
+        .map(text => text.trim())
+        .filter(text => text.length > 0)
+        .map(text => {
+          // Megkeressük az ELSŐ elérhető, egyező szövegű alcélt
+          const existingIndex = availableOldSubGoals.findIndex(sg => sg.text === text);
+          
+          if (existingIndex > -1) {
+            // Ha találtunk...
+            // 1. Kivesszük az "elfogyasztott" elemet a másolat tömbből (ez a kulcs!)
+            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
+            // 2. Visszaadjuk a régi, "done" állapotot is tartalmazó objektumot
+            return existing;
+          } else {
+            // Ha nem találtunk, ez egy új alcél
+            return { text: text, done: false };
+          }
+        });
+    }
+    
+    goals[editTarget.index].subGoals = newSubGoals;
     
     // ÚJ: Ismétlődés frissítése
     const isRecurring = document.getElementById("editIsRecurringInput").checked;
