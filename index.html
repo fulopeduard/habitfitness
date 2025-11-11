@@ -997,7 +997,46 @@
       background: #8e24aa;
       /* Protein - lila */
     }
+/* ================================================== */
+    /* ===== ÚJ KIEMELT EMLÉKEZTETŐ STÍLUS ===== */
+    /* ================================================== */
+    #highlightContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
 
+    .highlight-box {
+      background: #ffebee; /* Világos piros háttér */
+      border: 2px solid #e57373; /* Sötétebb piros keret */
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(200, 0, 0, 0.1);
+    }
+
+    .highlight-box h3 {
+      margin: 0 0 8px 0;
+      color: #c62828; /* Sötét piros cím */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2em;
+    }
+
+    .highlight-box p {
+      margin: 0;
+      color: #444;
+      font-size: 1em;
+      font-weight: 500;
+    }
+
+    .highlight-box .highlight-time {
+      font-size: 0.9em;
+      font-weight: bold;
+      color: #c62828;
+    }
+    /* ================================================== */
     /* ================================================== */
     /* ===== ÉTEL SÁV ELRENDEZÉS MÓDOSÍTÁSA ===== */
     /* ================================================== */
@@ -1138,6 +1177,7 @@
         </div>
       </div>
       <div id="main" class="tab-content active">
+		<div id="highlightContainer"></div>
         <div class="flex-container">
           <div class="card">
             <div class="card-header">
@@ -1178,8 +1218,15 @@
           <input type="text" id="reminderTextInput" placeholder="pl. Idd meg a vizet!">
 
           <label for="reminderTimeInput">Időpont</label>
+		  <label for="reminderTimeInput">Időpont</label>
           <input type="datetime-local" id="reminderTimeInput">
 
+          <div style="margin-top: 15px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+            <label for="reminderHighlightCheck" style="display:inline; margin-right: 10px; cursor: pointer;">Kiemelés a főoldalon?</label>
+            <input type="checkbox" id="reminderHighlightCheck" style="width: auto; margin: 0; transform: scale(1.3);">
+            <label for="reminderHighlightDateInput" style="margin-top: 10px;">Kiemelés kezdete (ettől a naptól látszik)</label>
+            <input type="date" id="reminderHighlightDateInput" style="margin-top: 5px;">
+          </div>
           <button onclick="addReminder()" style="margin-top: 10px;">💾 Emlékeztető Mentése</button>
         </div>
         <div class="card">
@@ -1706,7 +1753,64 @@ function openModal(id) {
         updateChart();
       }
     }
+// =======================================================
+    // ===== ÚJ KIEMELT EMLÉKEZTETŐK RENDERELÉSE =====
+    // =======================================================
+    function renderHighlights() {
+      const container = document.getElementById("highlightContainer");
+      // Csak akkor fuss, ha a főoldali container létezik (tehát a Főoldal fülön vagyunk)
+      if (!container) return; 
 
+      container.innerHTML = "";
+      const now = new Date();
+
+      const highlightsToShow = reminders.filter(r => 
+        r.highlight &&                 // 1. Kérve van a kiemelés
+        !r.triggered &&                // 2. Még nem járt le az emlékeztető
+        new Date(r.highlightDate) <= now // 3. Elérkezett a kiemelés kezdő dátuma
+      );
+
+      // Rendezés, hogy a legkorábbi legyen felül
+      highlightsToShow.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+      highlightsToShow.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "highlight-box fade-in"; // Használjuk a fade-in animációt
+
+        const reminderTime = new Date(r.time);
+        // Dátum formázása (pl. "2025. 11. 27. 17:00")
+        const displayTime = reminderTime.toLocaleString('hu-HU', { 
+          year: 'numeric', 
+          month: 'numeric', 
+          day: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+        
+        // Visszaszámláló logika
+        const diffMs = reminderTime - now;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        
+        let countdownText = "";
+        if (diffDays > 0) {
+          countdownText = ` (még ${diffDays} nap, ${diffHours} óra)`;
+        } else if (diffHours > 0) {
+          countdownText = ` (még ${diffHours} óra)`;
+        } else {
+          countdownText = " (most esedékes!)";
+        }
+
+        div.innerHTML = `
+          <h3>
+            <span>🔔 Kiemelt Emlékeztető</span>
+            <span class="highlight-time">${displayTime}${countdownText}</span>
+          </h3>
+          <p>${r.text}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
     // ===== ÚJ FUNKCIÓ: Kompakt nézet frissítése =====
     function updateCompactSummaries() {
       // Célbeállítások
@@ -2184,6 +2288,9 @@ function openModal(id) {
     // =======================================================
     function showTab(id) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+	  if (id === 'main') {
+        renderHighlights();
+      }
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
 
       if (event && event.target) {
@@ -4113,7 +4220,7 @@ async function resetAll() { // Make async
 
 function renderAll() {
   calculateDailyProgress();
-
+  renderHighlights();
   document.getElementById("totalPointsDisplay").textContent = totalPoints;
 
   renderGoals();
@@ -4170,55 +4277,83 @@ function checkNotificationPermission() {
 /**
  * Hozzáad egy új emlékeztetőt a listához.
  */
-async function addReminder() {
-  const textInput = document.getElementById("reminderTextInput");
-  const timeInput = document.getElementById("reminderTimeInput");
-
-  const text = textInput.value.trim();
-  const time = timeInput.value;
-
-  if (!text || !time) {
-    alert("Kérlek adj meg egy szöveget és egy időpontot!");
-    return;
-  }
-
-  const reminderTime = new Date(time);
-  if (reminderTime <= new Date()) {
-    alert("Az emlékeztető időpontjának a jövőben kell lennie!");
-    return;
-  }
-
-  reminders.push({
-    id: Date.now(),
-    text: text,
-    time: reminderTime.toISOString(), // ISO stringként tároljuk
-    triggered: false // Még nem lett aktiválva
-  });
-
-  textInput.value = "";
-  timeInput.value = "";
-
-  renderReminders();
-  await saveDataToFirestore();
-}
-
 /**
- * Töröl egy emlékeztetőt az indexe alapján.
- */
-async function deleteReminder(id) {
-  if (!confirm("Biztosan törlöd ezt az emlékeztetőt?")) {
-    return;
-  }
+     * Hozzáad egy új emlékeztetőt a listához.
+     */
+    async function addReminder() {
+      const textInput = document.getElementById("reminderTextInput");
+      const timeInput = document.getElementById("reminderTimeInput");
+      
+      // === ÚJ VÁLTOZÓK BEOLVASÁSA ===
+      const highlightCheck = document.getElementById("reminderHighlightCheck");
+      const highlightDateInput = document.getElementById("reminderHighlightDateInput");
 
-  reminders = reminders.filter(r => r.id !== id);
+      const text = textInput.value.trim();
+      const time = timeInput.value;
+      
+      // === ÚJ VÁLTOZÓK BEOLVASÁSA ===
+      const highlight = highlightCheck.checked;
+      const highlightDate = highlightDateInput.value;
 
-  renderReminders();
-  await saveDataToFirestore();
-}
+      if (!text || !time) {
+        alert("Kérlek adj meg egy szöveget és egy időpontot!");
+        return;
+      }
 
+      const reminderTime = new Date(time);
+      if (reminderTime <= new Date()) {
+        alert("Az emlékeztető időpontjának a jövőben kell lennie!");
+        return;
+      }
+      
+      // === ÚJ ELLENŐRZÉS ===
+      if (highlight && !highlightDate) {
+        alert("Ha kiemelést kérsz, meg kell adnod a kiemelés kezdő dátumát!");
+        return;
+      }
+      
+      // === ÚJ ELLENŐRZÉS ===
+      if (highlight && new Date(highlightDate) > reminderTime) {
+        alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
+        return;
+      }
+
+      reminders.push({
+        id: Date.now(),
+        text: text,
+        time: reminderTime.toISOString(), // ISO stringként tároljuk
+        triggered: false, // Még nem lett aktiválva
+        // === ÚJ ADATOK HOZZÁADÁSA ===
+        highlight: highlight,
+        highlightDate: highlight ? new Date(highlightDate).toISOString() : null
+      });
+
+      textInput.value = "";
+      timeInput.value = "";
+      // === ÚJ MEZŐK RESETELÉSE ===
+      highlightCheck.checked = false;
+      highlightDateInput.value = "";
+
+      // === RENDERALL HÍVÁSA ===
+      // renderReminders(); helyett renderAll(), hogy a főoldal is frissüljön
+      renderAll(); 
+      await saveDataToFirestore();
+    }
 /**
  * Kirajzolja az aktív emlékeztetők listáját.
  */
+async function deleteReminder(id) {
+      if (!confirm("Biztosan törlöd ezt az emlékeztetőt?")) {
+        return;
+      }
+    
+      reminders = reminders.filter(r => r.id !== id);
+    
+      // Frissítünk mindent (a főoldalt is)
+      renderAll();
+      await saveDataToFirestore();
+    }
+	
 function renderReminders() {
   const list = document.getElementById("reminderList");
   if (!list) return; // Ha a fül még nem aktív, ne csináljon semmit
@@ -4282,15 +4417,12 @@ function checkReminders() {
   });
 
   if (needsSave) {
-    // Frissítjük a listát (hogy eltűnjenek a kisültek) és mentünk
-    // Csak akkor renderelünk, ha épp az a fül van nyitva
-    if (document.getElementById('reminders').classList.contains('active')) {
-      renderReminders();
-    }
-    saveDataToFirestore();
-  }
-}
-
+        // Frissítünk mindent (hogy a főoldali kiemelés is eltűnjön)
+        // és mentünk.
+        renderAll();
+        saveDataToFirestore();
+      }
+	}
 /**
  * Megjeleníti a böngésző értesítést.
  */
