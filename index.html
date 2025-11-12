@@ -1491,7 +1491,8 @@
 
         <label id="mealProteinLabel" for="mealProteinInput">Fehérje (g/darab)</label>
         <input id="mealProteinInput" type="number" placeholder="pl. 6">
-
+        <label for="mealNoteInput">Jegyzet (opcionális)</label>
+        <textarea id="mealNoteInput" rows="4" placeholder="Recept, elkészítési javaslat, link..."></textarea>
         <div style="text-align:center;margin-top:15px;">
           <button onclick="saveMeal()">✅ Mentés</button>
           <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealModal')">Mégse</button>
@@ -2837,10 +2838,13 @@ function openNoteModal(i) {
   openModal('noteViewModal');
 }
 
-function openWorkoutNoteModal(index) {
-  const workout = workouts[index];
-  document.getElementById("noteViewTitle").textContent = `Edzésjegyzet: ${workout.date}`;
-  document.getElementById("noteViewText").textContent = workout.note || "Ehhez az edzéshez nem tartozik jegyzet.";
+// ===== ÚJ FUNKCIÓ AZ ÉTEL JEGYZETHEZ =====
+function openMealNoteModal(index) {
+  // A 'meals' tömbből vesszük az indexet, amit a renderMeals adott át
+  const meal = meals[index];
+  
+  document.getElementById("noteViewTitle").textContent = `Jegyzet: ${meal.name}`;
+  document.getElementById("noteViewText").textContent = meal.note; // A 'note' mezőt jelenítjük meg
   openModal('noteViewModal');
 }
 
@@ -3508,35 +3512,38 @@ function updateMealModalLabels() {
 
 // Új étel mentése
 async function saveMeal() {
-  const name = document.getElementById("mealNameInput").value.trim();
-  const category = document.getElementById("mealCategoryInput").value.trim(); // <- HOZZÁADVA
-  const type = document.getElementById("mealTypeSelect").value;
-  const kcal = parseFloat(document.getElementById("mealKcalInput").value);
-  const protein = parseFloat(document.getElementById("mealProteinInput").value);
+  const name = document.getElementById("mealNameInput").value.trim();
+  const category = document.getElementById("mealCategoryInput").value.trim();
+  const type = document.getElementById("mealTypeSelect").value;
+  const kcal = parseFloat(document.getElementById("mealKcalInput").value);
+  const protein = parseFloat(document.getElementById("mealProteinInput").value);
+  const note = document.getElementById("mealNoteInput").value.trim(); // <-- ÚJ SOR
 
-  if (!name) return alert("Az ételnek nevet kell adni!");
-  if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
-  if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
+  if (!name) return alert("Az ételnek nevet kell adni!");
+  if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
+  if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
 
-  const meal = {
-    name,
-    category: category || null,
-    type,
-    kcal,
-    protein
-  }; // <- MÓDOSÍTVA
+  const meal = {
+    name,
+    category: category || null,
+    type,
+    kcal,
+    protein,
+    note: note || "" // <-- ÚJ SOR (vagy null, de az "" egyszerűbb)
+  };
 
-  meals.push(meal);
+  meals.push(meal);
 
-  document.getElementById("mealNameInput").value = "";
-  document.getElementById("mealCategoryInput").value = ""; // <- HOZZÁADVA
-  document.getElementById("mealTypeSelect").value = "unit";
-  document.getElementById("mealKcalInput").value = "";
-  document.getElementById("mealProteinInput").value = "";
+  document.getElementById("mealNameInput").value = "";
+  document.getElementById("mealCategoryInput").value = "";
+  document.getElementById("mealTypeSelect").value = "unit";
+  document.getElementById("mealKcalInput").value = "";
+  document.getElementById("mealProteinInput").value = "";
+  document.getElementById("mealNoteInput").value = ""; // <-- ÚJ SOR
 
-  closeModal('mealModal');
-  renderMeals();
-  await logActivity(`🍽️ Új étel mentve: ${name}`);
+  closeModal('mealModal');
+  renderMeals();
+  await logActivity(`🍽️ Új étel mentve: ${name}`);
 }
 // Ételek listájának kirajzolása
 function renderMeals() {
@@ -3629,12 +3636,20 @@ function renderMeals() {
     </div>
     `;
 
-    div.innerHTML = `
-    <div class="food-item-row1">
-        <div class="item-name">
-            <div class="item-name-main">${meal.name}</div>
-        </div>
-        <div class="item-details">
+// === MÓDOSÍTÁS KEZDETE ===
+    const hasNote = meal.note && meal.note.trim() !== "";
+    const noteIcon = hasNote ? ' 🗒️' : ''; // Ikon, ha van jegyzet
+    const noteTitle = hasNote ? 'Kattints a jegyzet megtekintéséhez' : '';
+    const noteOnClick = hasNote ? `onclick="openMealNoteModal(${i})"` : ''; // Csak akkor kattintható, ha van jegyzet
+    const noteStyle = hasNote ? 'cursor: pointer; text-decoration: underline; text-decoration-style: dotted;' : ''; // Stílus, ha van jegyzet
+    // === MÓDOSÍTÁS VÉGE ===
+
+    div.innerHTML = `
+    <div class="food-item-row1">
+        <div class="item-name">
+                        <div class="item-name-main" ${noteOnClick} style="${noteStyle}" title="${noteTitle}">${meal.name}${noteIcon}</div>
+        </div>
+        <div class="item-details">
             ${detailsText}
         </div>
         <div class="item-actions">
@@ -3677,44 +3692,50 @@ function renderMeals() {
 }
 // Étel szerkesztése (megnyitja a szerkesztő modalt)
 function editMeal(i) {
-  editTarget = {
-    type: 'meal',
-    index: i
-  };
-  const meal = meals[i];
+  editTarget = {
+    type: 'meal',
+    index: i
+  };
+  const meal = meals[i];
 
-  document.getElementById("editTitle").textContent = "🍽️ Étel szerkesztése";
+  document.getElementById("editTitle").textContent = "🍽️ Étel szerkesztése";
 
-  // Alap mezők (átnevezve)
-  document.getElementById("editLabel1").textContent = "Étel neve";
-  document.getElementById("editInput1").value = meal.name;
-  document.getElementById("editInput1").style.display = "block";
-  document.getElementById("editLabel1").style.display = "block";
+  // Alap mezők (átnevezve)
+  document.getElementById("editLabel1").textContent = "Étel neve";
+  document.getElementById("editInput1").value = meal.name;
+  document.getElementById("editInput1").style.display = "block";
+  document.getElementById("editLabel1").style.display = "block";
 
-  // Elrejtjük a felesleges 'points' mezőt
-  document.getElementById("editLabel2").style.display = "none";
-  document.getElementById("editInput2").style.display = "none";
+  // Elrejtjük a felesleges 'points' mezőt
+  document.getElementById("editLabel2").style.display = "none";
+  document.getElementById("editInput2").style.display = "none";
 
-  // Használjuk a 'v3' mezőt a kategóriának
-  document.getElementById("editLabel3").textContent = "Kategória";
-  document.getElementById("editInput3").value = meal.category || "";
-  document.getElementById("editInput3").style.display = "block";
-  document.getElementById("editLabel3").style.display = "block";
+  // Használjuk a 'v3' mezőt a kategóriának
+  document.getElementById("editLabel3").textContent = "Kategória";
+  document.getElementById("editInput3").value = meal.category || "";
+  document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editLabel3").style.display = "block";
 
-  // Elrejtjük a többit
-  document.getElementById("editLabelText").style.display = "none";
-  document.getElementById("editInputText").style.display = "none";
-  document.getElementById("editLabelSubGoals").style.display = "none";
-  document.getElementById("editInputSubGoals").style.display = "none";
-  document.getElementById("editRecurringFields").style.display = "none";
+  // Elrejtjük a többit (kivéve a jegyzetet)
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
+  document.getElementById("editRecurringFields").style.display = "none";
 
-  // Megjelenítjük az étel-specifikus mezőket
-  document.getElementById("editMealFields").style.display = "block";
-  document.getElementById("editMealType").value = meal.type;
-  document.getElementById("editMealKcal").value = meal.kcal;
-  document.getElementById("editMealProtein").value = meal.protein;
+  // ===== MÓDOSÍTÁS ITT =====
+  // Megjelenítjük a Jegyzet mezőt (ezt használja a notes és workout is)
+  document.getElementById("editLabelText").textContent = "Jegyzet (opcionális)";
+  document.getElementById("editLabelText").style.display = "block";
+  document.getElementById("editInputText").value = meal.note || "";
+  document.getElementById("editInputText").style.display = "block";
+  // ===== MÓDOSÍTÁS VÉGE =====
 
-  openModal('editModal');
+  // Megjelenítjük az étel-specifikus mezőket
+  document.getElementById("editMealFields").style.display = "block";
+  document.getElementById("editMealType").value = meal.type;
+  document.getElementById("editMealKcal").value = meal.kcal;
+  document.getElementById("editMealProtein").value = meal.protein;
+
+  openModal('editModal');
 }
 
 // Étel törlése
@@ -3939,28 +3960,30 @@ async function confirmEdit() { // Make async
     workouts[editTarget.index].note = vText;
     await logActivity(`✏️ Edzésjegyzet mentve: ${workouts[editTarget.index].date}`);
   }
-  // ÚJ: ÉTEL SZERKESZTÉSÉNEK MENTÉSE
-  else if (editTarget.type === 'meal') {
-    const name = v1;
-    const category = document.getElementById("editInput3").value.trim(); // <- HOZZÁADVA
-    const type = document.getElementById("editMealType").value;
-    const kcal = parseFloat(document.getElementById("editMealKcal").value);
-    const protein = parseFloat(document.getElementById("editMealProtein").value);
+// ÚJ: ÉTEL SZERKESZTÉSÉNEK MENTÉSE
+  else if (editTarget.type === 'meal') {
+    const name = v1;
+    const category = document.getElementById("editInput3").value.trim();
+    const type = document.getElementById("editMealType").value;
+    const kcal = parseFloat(document.getElementById("editMealKcal").value);
+    const protein = parseFloat(document.getElementById("editMealProtein").value);
+    const note = document.getElementById("editInputText").value.trim(); // <-- ÚJ SOR
 
-    if (!name) return alert("Az ételnek nevet kell adni!");
-    if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
-    if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
+    if (!name) return alert("Az ételnek nevet kell adni!");
+    if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
+    if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
 
-    meals[editTarget.index] = {
-      name,
-      category: category || null,
-      type,
-      kcal,
-      protein
-    }; // <- MÓDOSÍTVA
-    renderMeals();
-    await logActivity(`✏️ Étel szerkesztve: ${name}`);
-  }
+    meals[editTarget.index] = {
+      name,
+      category: category || null,
+      type,
+      kcal,
+      protein,
+      note: note || "" // <-- ÚJ SOR
+    };
+    renderMeals();
+    await logActivity(`✏️ Étel szerkesztve: ${name}`);
+  }
   else if (editTarget.type === 'reminder') {
     const text = document.getElementById("editInput1").value.trim();
     const time = document.getElementById("editInput2").value; // 'datetime-local' string
