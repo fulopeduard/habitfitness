@@ -3760,7 +3760,7 @@ function renderStructuredArrayToHTML(arrayOrString) {
 async function saveReward() { // Make async
   const name = document.getElementById("rewardNameInput").value.trim();
   const cost = parseInt(document.getElementById("rewardCostInput").value);
-  if (!name || isNaN(cost) || cost <= 0) return alert("Érvénytelen név vagy pontszám!");
+  if (!name || isNaN(cost) || cost < 0) return alert("Érvénytelen név vagy pontszám! (0 vagy nagyobb lehet)");
 
   rewards.push({
     name,
@@ -4333,7 +4333,7 @@ async function confirmEdit() { // Make async
     const v2 = parseInt(document.getElementById("editInput2").value); // Ár
 
     if (!v1) return alert("A jutalomnak nevet kell adni!");
-    if (isNaN(v2) || v2 <= 0) return alert("Érvénytelen pont ár! Nagyobbnak kell lennie 0-nál.");
+    if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pont ár! A 0 vagy nagyobb érték megengedett.");
 
     rewards[editTarget.index].name = v1;
     rewards[editTarget.index].cost = v2;
