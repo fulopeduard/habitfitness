@@ -3740,7 +3740,8 @@ function renderMeals() {
 
     // === VÉGLEGES JAVÍTÁS KEZDETE ===
     // 1. JAVÍTÁS: Helyesen ellenőrizzük, hogy a 'meal.note' tömb nem üres-e
-    const hasNote = meal.note && meal.note.trim() !== "";
+    const hasNote = (Array.isArray(meal.note) && meal.note.length > 0) || 
+                (typeof meal.note === 'string' && meal.note.trim() !== "");
     // 2. JAVÍTÁS: Az ikont szóköz nélkül definiáljuk
     const noteIcon = hasNote ? '🗒️' : '';
     const noteTitle = hasNote ? 'Kattints a jegyzet megtekintéséhez' : '';
