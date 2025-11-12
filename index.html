@@ -1659,6 +1659,14 @@ function openModal(id) {
         document.getElementById("editInputSubGoals").style.display = "none";
         // ÚJ: Ismétlődő mezők elrejtése
         document.getElementById("editRecurringFields").style.display = "none";
+		// ÚJ: Ismétlődő mezők elrejtése
+        document.getElementById("editRecurringFields").style.display = "none";
+        
+        // ===== INNEN ILLESZD BE A 4 SORT =====
+        // Típusok visszaállítása az emlékeztető szerkesztés után
+        document.getElementById("editInput2").type = "number";
+        document.getElementById("editInput3").type = "text";
+        document.getElementById("editIsRecurringInput").onchange = function() { document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none' };
       }
     }
 
@@ -1974,6 +1982,27 @@ function openModal(id) {
       date: ""
     }; // 'protein' HOZZÁADVA
     let reminderCheckInterval = null; // ÚJ EMLÉKEZTETŐ IDŐZÍTŐ
+	// Segédfüggvény: ISO stringet (amit tárolunk) alakít "datetime-local" formátumra
+    function toLocalISOString(isoString) {
+      if (!isoString) return "";
+      const date = new Date(isoString);
+      const y = date.getFullYear();
+      const m = (date.getMonth() + 1).toString().padStart(2, '0');
+      const d = date.getDate().toString().padStart(2, '0');
+      const h = date.getHours().toString().padStart(2, '0');
+      const min = date.getMinutes().toString().padStart(2, '0');
+      return `${y}-${m}-${d}T${h}:${min}`;
+    }
+
+    // Segédfüggvény: ISO stringet (amit tárolunk) alakít "date" (YYYY-MM-DD) formátumra
+    function toDateInputString(isoString) {
+      if (!isoString) return "";
+      const date = new Date(isoString);
+      const y = date.getFullYear();
+      const m = (date.getMonth() + 1).toString().padStart(2, '0');
+      const d = date.getDate().toString().padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
 
 
     // =======================================================
@@ -2317,6 +2346,7 @@ function openModal(id) {
       // ÚJ: Emlékeztető fül renderelése és engedélykérés
       if (id === 'reminders') {
         checkNotificationPermission(); // Rákérdez az engedélyre
+		document.getElementById("reminderHighlightDateInput").value = toDateInputString(new Date());
         renderReminders();
       }
 
@@ -2410,7 +2440,78 @@ function openModal(id) {
     async function saveWorkouts() {
       await saveDataToFirestore();
     }
+	function editReminder(id) {
+      const index = reminders.findIndex(r => r.id === id);
+      if (index === -1) return;
+      const reminder = reminders[index];
 
+      editTarget = {
+        type: 'reminder',
+        index: index
+      };
+
+      document.getElementById("editTitle").textContent = "🔔 Emlékeztető szerkesztése";
+
+      // 1. Szöveg
+      document.getElementById("editLabel1").textContent = "Emlékeztető szövege";
+      document.getElementById("editInput1").value = reminder.text;
+      document.getElementById("editInput1").style.display = "block";
+      document.getElementById("editLabel1").style.display = "block";
+
+      // 2. Időpont (Típus átállítása 'datetime-local'-ra)
+      document.getElementById("editLabel2").textContent = "Időpont";
+      const timeInput = document.getElementById("editInput2");
+      timeInput.type = "datetime-local"; // Típus módosítása
+      timeInput.value = toLocalISOString(reminder.time);
+      timeInput.style.display = "block";
+      document.getElementById("editLabel2").style.display = "block";
+
+      // 3. Kiemelés Checkbox (az 'editRecurringFields' újrahasznosításával)
+      const recurringFields = document.getElementById("editRecurringFields");
+      recurringFields.style.display = "block";
+      recurringFields.querySelector('label[for="editIsRecurringInput"]').textContent = "Kiemelés a főoldalon?";
+      const highlightCheck = document.getElementById("editIsRecurringInput");
+      highlightCheck.checked = reminder.highlight;
+
+      // Elrejtjük az ismétlődés legördülőt, mert az nem kell
+      const recurrenceOptions = document.getElementById("editRecurrenceOptions");
+      recurrenceOptions.style.display = "none";
+
+      // 4. Kiemelés Dátuma (az 'editInput3' újrahasznosításával)
+      document.getElementById("editLabel3").textContent = "Kiemelés kezdete";
+      const dateInput = document.getElementById("editInput3");
+      dateInput.type = "date"; // Típus módosítása
+      dateInput.value = toDateInputString(reminder.highlightDate || new Date());
+      // JAVÍTVA: Ha van mentett dátum, azt, ha nincs, a mait tölti be
+
+      // 5. Checkbox eseménykezelő felülírása
+      highlightCheck.onchange = function() {
+        // Elrejtjük az ismétlődés opciót (ami itt nem kell)
+        document.getElementById("editRecurrenceOptions").style.display = "none";
+        // Mutatjuk/elrejtjük a dátumválasztót
+        const showDate = this.checked;
+        document.getElementById("editLabel3").style.display = showDate ? "block" : "none";
+        document.getElementById("editInput3").style.display = showDate ? "block" : "none";
+      };
+
+      // Dátum mező alapértelmezett láthatósága
+      if (reminder.highlight) {
+        document.getElementById("editLabel3").style.display = "block";
+        dateInput.style.display = "block";
+      } else {
+        document.getElementById("editLabel3").style.display = "none";
+        dateInput.style.display = "none";
+      }
+
+      // 6. Felesleges mezők elrejtése
+      document.getElementById("editLabelSubGoals").style.display = "none";
+      document.getElementById("editInputSubGoals").style.display = "none";
+      document.getElementById("editLabelText").style.display = "none";
+      document.getElementById("editInputText").style.display = "none";
+      document.getElementById("editMealFields").style.display = "none";
+
+      openModal('editModal');
+    }
     function editWorkout(index) {
       editTarget = {
         type: 'workout',
@@ -3861,6 +3962,39 @@ async function confirmEdit() { // Make async
     renderMeals();
     await logActivity(`✏️ Étel szerkesztve: ${name}`);
   }
+  else if (editTarget.type === 'reminder') {
+    const text = document.getElementById("editInput1").value.trim();
+    const time = document.getElementById("editInput2").value; // 'datetime-local' string
+    const highlight = document.getElementById("editIsRecurringInput").checked;
+    const highlightDate = document.getElementById("editInput3").value; // 'date' string
+
+    if (!text || !time) {
+      return alert("A szöveg és az időpont nem lehet üres!");
+    }
+
+    const reminderTime = new Date(time);
+
+    if (highlight && !highlightDate) {
+      return alert("Ha kiemelést kérsz, meg kell adnod a kiemelés kezdő dátumát!");
+    }
+
+    if (highlight && new Date(highlightDate) > reminderTime) {
+      return alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
+    }
+
+    // Objektum frissítése a tömbben
+    const reminder = reminders[editTarget.index];
+    reminder.text = text;
+    reminder.time = reminderTime.toISOString();
+    reminder.highlight = highlight;
+    reminder.highlightDate = highlight ? new Date(highlightDate).toISOString() : null;
+    
+    // Visszaállítjuk 'triggered' állapotra, hogy újra elsülhessen
+    reminder.triggered = false; 
+
+    renderAll(); // Újrarajzol mindent (emlékeztető lista, főoldali kiemelés)
+    await logActivity(`✏️ Emlékeztető szerkesztve: ${text}`);
+   }
   closeModal('editModal');
   // Visszaállítjuk az editModal mezőit alaphelyzetbe
   document.getElementById("editLabel1").style.display = "block";
@@ -4332,7 +4466,7 @@ function checkNotificationPermission() {
       timeInput.value = "";
       // === ÚJ MEZŐK RESETELÉSE ===
       highlightCheck.checked = false;
-      highlightDateInput.value = "";
+      highlightDateInput.value = toDateInputString(new Date()); // Visszaállítás mai dátumra
 
       // === RENDERALL HÍVÁSA ===
       // renderReminders(); helyett renderAll(), hogy a főoldal is frissüljön
@@ -4378,7 +4512,8 @@ function renderReminders() {
     div.innerHTML = `
         <span>🔔 <b>${r.text}</b></span>
         <small>${displayTime}</small>
-        <button style="background:none;color:#c00" onclick="deleteReminder(${r.id})">🗑️</button>
+        <button style="background:none;color:#00796b" onclick="editReminder(${r.id})" title="Szerkesztés">✏️</button>
+        <button style="background:none;color:#c00" onclick="deleteReminder(${r.id})" title="Törlés">🗑️</button>
     `;
     list.appendChild(div);
   });
