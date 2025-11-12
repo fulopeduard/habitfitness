@@ -759,7 +759,7 @@
     #compactGoalsContainer {
       display: grid;
       /* JAVÍTÁS: Átállás Grid-re */
-      grid-template-columns: 1fr 1fr 1fr 1fr auto;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
       /* Alapértelmezett: 4 adat oszlop + 1 gomb oszlop */
       background: white;
       border-radius: 18px;
@@ -868,6 +868,9 @@
     #compactWeightBar {
       /* Súly is lila lesz */
       background: #8e24aa;
+	#compactFatBar {
+      background: #f57f17; 
+    }
     }
 
     /* ÚJ: Reszponzív töréspont telefonra */
@@ -882,7 +885,6 @@
       }
 
       #compactBtnWrapper {
-        grid-column: 1 / -1;
         /* A gombok átnyúlnak mindkét oszlopon */
         justify-content: center;
         /* Középre igazítja a gombokat a soron belül */
@@ -1169,6 +1171,15 @@
           </div>
           <span class="value value-bottom" id="compactProteinBottom">Még...</span>
         </div>
+		
+		<div class="compact-goal-item">
+          <span class="label">Zsír 🥑</span>
+          <span class="value value-top" id="compactFatTop">--/-- g</span>
+          <div class="compact-progress-bar-container">
+            <div class="compact-progress-bar" id="compactFatBar"></div>
+          </div>
+          <span class="value value-bottom" id="compactFatBottom">Még...</span>
+        </div>
 
         <div id="compactBtnWrapper">
           <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
@@ -1340,6 +1351,8 @@
         <input id="goalCalInput" type="number" placeholder="pl. 2200">
         <label>Napi protein cél (gramm)</label>
         <input id="goalProteinInput" type="number" placeholder="pl. 120">
+		<label>Napi zsír cél (gramm)</label>
+        <input id="goalFatInput" type="number" placeholder="pl. 60">
 
         <div style="text-align:center;margin-top:15px;">
           <button onclick="saveGoalSettings()">💾 Mentés</button>
@@ -1450,6 +1463,8 @@
           <input id="editMealKcal" type="number" placeholder="pl. 150">
           <label for="editMealProtein">Fehérje (g)</label>
           <input id="editMealProtein" type="number" placeholder="pl. 12">
+		  <label for="editMealFat">Zsír (g)</label>
+          <input id="editMealFat" type="number" placeholder="pl. 8">
         </div>
 
         <div style="text-align:center;margin-top:15px;">
@@ -1491,6 +1506,8 @@
 
         <label id="mealProteinLabel" for="mealProteinInput">Fehérje (g/darab)</label>
         <input id="mealProteinInput" type="number" placeholder="pl. 6">
+		<label id="mealFatLabel" for="mealFatInput">Zsír (g/darab)</label>
+        <input id="mealFatInput" type="number" placeholder="pl. 4">
         <label for="mealNoteInput">Jegyzet (opcionális)</label>
         <textarea id="mealNoteInput" rows="4" placeholder="Recept, elkészítési javaslat, link..."></textarea>
         <div style="text-align:center;margin-top:15px;">
@@ -1531,6 +1548,9 @@
 
         <label>Protein hozzáadása (gramm)</label>
         <input id="quickProteinInput" type="number" placeholder="pl. 30">
+		
+		<label>Zsír hozzáadása (gramm)</label>
+        <input id="quickFatInput" type="number" placeholder="pl. 15">
 
         <div style="text-align:center;margin-top:15px;">
           <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
@@ -1688,6 +1708,7 @@ function openModal(id) {
       document.getElementById("quickWaterInput").value = "";
       document.getElementById("quickCalInput").value = "";
       document.getElementById("quickProteinInput").value = "";
+	  document.getElementById("quickFatInput").value = "";
 
       // Betölti a jelenlegi súlyt, ha van -> EZ A RÉSZ EL LETT TÁVOLÍTVA
       // if (dailyProgress.lastWeight > 0) {
@@ -1701,6 +1722,7 @@ function openModal(id) {
       const water = parseFloat(document.getElementById("quickWaterInput").value);
       const calories = parseFloat(document.getElementById("quickCalInput").value);
       const protein = parseFloat(document.getElementById("quickProteinInput").value);
+	  const fat = parseFloat(document.getElementById("quickFatInput").value);
 
       // Súly rögzítése
       if (weight && weight > 0) {
@@ -1749,6 +1771,17 @@ function openModal(id) {
         };
         transactions.push(transaction);
         await logActivity(`🥩 Protein hozzáadva: ${protein}g`);
+      }
+	  // Zsír hozzáadása
+      if (fat && fat > 0) {
+        const transaction = {
+          id: Date.now(),
+          type: 'fat',
+          value: fat,
+          date: new Date()
+        };
+        transactions.push(transaction);
+        await logActivity(`🥑 Zsír hozzáadva: ${fat}g`);
       }
 
       closeModal('quickAddModal');
@@ -1826,6 +1859,7 @@ function openModal(id) {
       const gwat = parseFloat(goalWaterSetting); // Cél víz
       const gcal = parseFloat(goalCaloriesSetting); // Cél kalória
       const gprot = parseFloat(goalProteinSetting); // Cél protein
+	  const gfat = parseFloat(goalFatSetting); // Cél zsír
 
       // Napi haladás
       const dp = dailyProgress;
@@ -1842,18 +1876,21 @@ function openModal(id) {
       const compactWaterTop = document.getElementById("compactWaterTop");
       const compactCalTop = document.getElementById("compactCalTop");
       const compactProteinTop = document.getElementById("compactProteinTop");
+	  const compactFatTop = document.getElementById("compactFatTop");
 
       // Alsó "Még X" elemek
       const compactWeightBottom = document.getElementById("compactWeightBottom");
       const compactWaterBottom = document.getElementById("compactWaterBottom");
       const compactCalBottom = document.getElementById("compactCalBottom");
       const compactProteinBottom = document.getElementById("compactProteinBottom");
+	  const compactFatBottom = document.getElementById("compactFatBottom");
 
       // Haladósáv elemek
       const compactWeightBar = document.getElementById("compactWeightBar");
       const compactWaterBar = document.getElementById("compactWaterBar");
       const compactCalBar = document.getElementById("compactCalBar");
       const compactProteinBar = document.getElementById("compactProteinBar");
+	  const compactFatBar = document.getElementById("compactFatBar");
 
       // Ha nem a főoldalon vagyunk, ne fusson le
       if (!compactWeightTop) return;
@@ -1944,6 +1981,21 @@ function openModal(id) {
         compactProteinBottom.textContent = "Nincs proteincél";
         compactProteinBar.style.width = '0%';
       }
+	  // --- Zsír (ÚJ BLOKK) ---
+      if (gfat) {
+        const rem_fat = gfat - dp.fat;
+        let perc_fat = (dp.fat / gfat) * 100;
+        if (perc_fat > 100) perc_fat = 100;
+        if (perc_fat < 0) perc_fat = 0;
+
+        compactFatTop.textContent = `${dp.fat.toFixed(0)} / ${gfat.toFixed(0)} g`;
+        compactFatBottom.textContent = rem_fat > 0 ? `Még ${rem_fat.toFixed(0)} g` : `Cél teljesítve!`;
+        compactFatBar.style.width = perc_fat + '%';
+      } else {
+        compactFatTop.textContent = `${dp.fat.toFixed(0)} g`;
+        compactFatBottom.textContent = "Nincs zsírcél";
+        compactFatBar.style.width = '0%';
+      }
     }
     // =======================================================
     // ===== ALL APP LOGIC (NOW FIREBASE ENABLED) =====
@@ -1970,6 +2022,7 @@ function openModal(id) {
     let goalWaterSetting = "";
     let goalCaloriesSetting = "";
     let goalProteinSetting = ""; // ÚJ
+	let goalFatSetting = ""; // ÚJ ZSÍR
 
     // Other global vars
     let chart;
@@ -1978,6 +2031,7 @@ function openModal(id) {
       water: 0,
       calories: 0,
       protein: 0,
+	  fat: 0,
       lastWeight: 0,
       date: ""
     }; // 'protein' HOZZÁADVA
@@ -2105,6 +2159,7 @@ function openModal(id) {
           goalWaterSetting = data.goalWater || "";
           goalCaloriesSetting = data.goalCalories || "";
           goalProteinSetting = data.goalProtein || "";
+		  goalFatSetting = data.goalFat || "";
 
           // ===== EDZÉS ADAT MIGRÁCIÓ (ÚJ) =====
           if (workouts.length > 0 && typeof workouts[0] === 'string') {
@@ -2148,7 +2203,8 @@ function openModal(id) {
         goalWeight: goalWeightSetting,
         goalWater: goalWaterSetting,
         goalCalories: goalCaloriesSetting,
-        goalProtein: goalProteinSetting
+        goalProtein: goalProteinSetting,
+		goalFat: goalFatSetting,
       };
 
       try {
@@ -2260,6 +2316,7 @@ function openModal(id) {
         water: 0,
         calories: 0,
         protein: 0,
+		fat: 0,
         lastWeight: 0,
         date: today
       };
@@ -2293,13 +2350,14 @@ function openModal(id) {
           if (entryDate.toISOString().slice(0, 10) === today) {
             if (t.type === 'water') {
               dailyProgress.water += t.value;
-            } else if (t.type === 'calories') {
-              dailyProgress.calories += t.value;
             } else if (t.type === 'protein') { // ÚJ
               dailyProgress.protein += t.value;
+            } else if (t.type === 'fat') { // ÚJ ZSÍR
+              dailyProgress.fat += t.value;
             } else if (t.type === 'meal') { // ÚJ
               dailyProgress.calories += t.totalKcal;
               dailyProgress.protein += t.totalProtein;
+              dailyProgress.fat += t.totalFat || 0; // || 0 a régi adatok miatt
             }
           }
         } catch (e) {
@@ -2651,16 +2709,18 @@ async function saveGoalSettings() { // Make async
   const gwat = parseFloat(document.getElementById("goalWaterInput").value) || null;
   const gcal = parseFloat(document.getElementById("goalCalInput").value) || null;
   const gprot = parseFloat(document.getElementById("goalProteinInput").value) || null; // ÚJ
+  const gfat = parseFloat(document.getElementById("goalFatInput").value) || null; // ÚJ ZSÍR
 
   // Save to global variables
   goalWeightSetting = gw ? gw.toString() : "";
   goalWaterSetting = gwat ? gwat.toString() : "";
   goalCaloriesSetting = gcal ? gcal.toString() : "";
   goalProteinSetting = gprot ? gprot.toString() : ""; // ÚJ
+  goalFatSetting = gfat ? gfat.toString() : ""; // ÚJ ZSÍR
 
   updateAllSummaries(); // Ez frissíti a nagy kártyát
   // logActivity will call saveDataToFirestore
-  await logActivity(`🎯 Célok beállítva: ${gw || "-"}kg, ${gwat || "-"}L, ${gcal || "-"}kcal, ${gprot || "-"}g protein`);
+  await logActivity(`🎯 Célok beállítva: ${gw || "-"}kg, ${gwat || "-"}L, ${gcal || "-"}kcal, ${gprot || "-"}g protein, ${gfat || "-"}g zsír`);
   closeModal('goalSetupModal');
 
   // ITT A JAVÍTÁS:
@@ -3601,13 +3661,16 @@ function updateMealModalLabels() {
   const type = document.getElementById("mealTypeSelect").value;
   const kcalLabel = document.getElementById("mealKcalLabel");
   const proteinLabel = document.getElementById("mealProteinLabel");
+  const fatLabel = document.getElementById("mealFatLabel");
 
   if (type === 'unit') {
     kcalLabel.textContent = "Kalória (kcal/darab)";
     proteinLabel.textContent = "Fehérje (g/darab)";
+	fatLabel.textContent = "Zsír (g/darab)";
   } else { // weight
     kcalLabel.textContent = "Kalória (kcal/100g)";
     proteinLabel.textContent = "Fehérje (g/100g)";
+	fatLabel.textContent = "Zsír (g/100g)";
   }
 }
 
@@ -3618,12 +3681,14 @@ async function saveMeal() {
   const type = document.getElementById("mealTypeSelect").value;
   const kcal = parseFloat(document.getElementById("mealKcalInput").value);
   const protein = parseFloat(document.getElementById("mealProteinInput").value);
+  const fat = parseFloat(document.getElementById("mealFatInput").value);
   // MÓDOSÍTÁS: A szöveget egyenesen a formázó funkcióba küldjük
   const noteArray = parseTextToStructuredArray(document.getElementById("mealNoteInput").value);
 
   if (!name) return alert("Az ételnek nevet kell adni!");
   if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
   if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
+  if (isNaN(fat) || fat < 0) return alert("Érvénytelen zsír érték!");
 
   const meal = {
     name,
@@ -3631,6 +3696,7 @@ async function saveMeal() {
     type,
     kcal,
     protein,
+	fat,
     note: noteArray // MÓDOSÍTÁS: A tömböt mentjük
   };
 
@@ -3641,6 +3707,8 @@ async function saveMeal() {
   document.getElementById("mealTypeSelect").value = "unit";
   document.getElementById("mealKcalInput").value = "";
   document.getElementById("mealProteinInput").value = "";
+  document.getElementById("mealFatInput").value = "";
+  document.getElementById("mealFatInput").value = "";
   document.getElementById("mealNoteInput").value = ""; // <-- ÚJ SOR
 
   closeModal('mealModal');
@@ -3839,6 +3907,7 @@ function editMeal(i) {
   document.getElementById("editMealType").value = meal.type;
   document.getElementById("editMealKcal").value = meal.kcal;
   document.getElementById("editMealProtein").value = meal.protein;
+  document.getElementById("editMealFat").value = meal.fat || 0;
 
   openModal('editModal');
 }
@@ -3889,15 +3958,18 @@ async function confirmConsume() {
 
   let totalKcal = 0;
   let totalProtein = 0;
+  let totalFat = 0;
   let unitLabel = "";
 
   if (meal.type === 'unit') {
     totalKcal = meal.kcal * amount;
     totalProtein = meal.protein * amount;
+	totalFat = (meal.fat || 0) * amount;
     unitLabel = "db";
   } else { // weight
     totalKcal = (meal.kcal / 100) * amount;
     totalProtein = (meal.protein / 100) * amount;
+	totalFat = ((meal.fat || 0) / 100) * amount;
     unitLabel = "g";
   }
 
@@ -3910,6 +3982,7 @@ async function confirmConsume() {
     unit: unitLabel,
     totalKcal: totalKcal,
     totalProtein: totalProtein,
+	totalFat: totalFat,
     date: new Date()
   };
   transactions.push(transaction);
@@ -3917,10 +3990,11 @@ async function confirmConsume() {
   // Azonnali frissítés
   dailyProgress.calories += totalKcal;
   dailyProgress.protein += totalProtein;
+  dailyProgress.fat += totalFat;
 
   updateAllSummaries();
   updateHistory();
-  await logActivity(`🍽️ Fogyasztva: ${amount} ${unitLabel} ${meal.name} (+${totalKcal.toFixed(0)} kcal, +${totalProtein.toFixed(0)}g prot.)`);
+  await logActivity(`🍽️ Fogyasztva: ${amount} ${unitLabel} ${meal.name} (+${totalKcal.toFixed(0)} kcal, +${totalProtein.toFixed(0)}g prot., +${totalFat.toFixed(0)}g zsír)`);
 
   closeModal('consumeModal');
 }
@@ -4072,12 +4146,14 @@ async function confirmEdit() { // Make async
     const type = document.getElementById("editMealType").value;
     const kcal = parseFloat(document.getElementById("editMealKcal").value);
     const protein = parseFloat(document.getElementById("editMealProtein").value);
+	const fat = parseFloat(document.getElementById("editMealFat").value);
     // MÓDOSÍTÁS: A szöveget egyenesen a formázó funkcióba küldjük
     const noteArray = parseTextToStructuredArray(document.getElementById("editInputText").value);
 
     if (!name) return alert("Az ételnek nevet kell adni!");
     if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
     if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
+	if (isNaN(fat) || fat < 0) return alert("Érvénytelen zsír érték!");
 
     meals[editTarget.index] = {
       name,
@@ -4085,6 +4161,7 @@ async function confirmEdit() { // Make async
       type,
       kcal,
       protein,
+	  fat,
       note: noteArray // MÓDOSÍTÁS: A tömböt mentjük
     };
     renderMeals();
@@ -4368,8 +4445,10 @@ function updateHistory() {
       text = `🔥 Kalória: <b>${t.value} kcal</b>`;
     } else if (t.type === 'protein') { // ÚJ
       text = `🥩 Protein: <b>${t.value} g</b>`;
+    } else if (t.type === 'fat') { // ÚJ ZSÍR
+      text = `🥑 Zsír: <b>${t.value} g</b>`;
     } else if (t.type === 'meal') { // ÚJ
-      text = `🍽️ Étkezés: <b>${t.name}</b> (${t.amount} ${t.unit}) - <b>${t.totalKcal.toFixed(0)} kcal</b>, <b>${t.totalProtein.toFixed(0)}g</b> protein`;
+      text = `🍽️ Étkezés: <b>${t.name}</b> (${t.amount} ${t.unit}) - <b>${t.totalKcal.toFixed(0)} kcal</b>, <b>${t.totalProtein.toFixed(0)}g</b> protein, <b>${(t.totalFat || 0).toFixed(0)}g</b> zsír`;
     }
 
     let displayDate = "...";
@@ -4410,7 +4489,8 @@ function exportData() {
     goalWeight: goalWeightSetting,
     goalWater: goalWaterSetting,
     goalCalories: goalCaloriesSetting,
-    goalProtein: goalProteinSetting
+    goalProtein: goalProteinSetting,
+	goalFat: goalFatSetting,
   };
   const blob = new Blob([JSON.stringify(allData, null, 2)], {
     type: "application/json"
@@ -4444,6 +4524,7 @@ async function importData(event) { // Make async
       goalWaterSetting = data.goalWater || "";
       goalCaloriesSetting = data.goalCalories || "";
       goalProteinSetting = data.goalProtein || "";
+	  goalFatSetting = data.goalFat || "";
 
       await saveDataToFirestore();
 
@@ -4473,6 +4554,7 @@ async function resetAll() { // Make async
     goalWaterSetting = "";
     goalCaloriesSetting = "";
     goalProteinSetting = "";
+	goalFatSetting = "";
 
     renderAll();
     await logActivity("⚠️ Teljes rendszer reset");
