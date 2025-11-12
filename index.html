@@ -1065,14 +1065,14 @@
     }
 
     /* Felülírjuk az .item-name stílusát CSAK az ételeknél,
-      hogy ne oszlopban, hanem sorban rendezze a tartalmát (a nevet) */
+       hogy ne oszlopban, hanem sorban rendezze a tartalmát (a nevet) */
     .food-item .item-name {
       flex-direction: row;
       align-items: center;
     }
 
     /* A progress bar konténernek adunk egy kis belső teret (padding),
-      hogy szépen igazodjon a felette lévő tartalomhoz */
+       hogy szépen igazodjon a felette lévő tartalomhoz */
     .food-item .meal-progress-container {
       padding: 10px 15px;
       border-top: 1px solid #dcedc8;
@@ -1547,7 +1547,7 @@
 
   <script>
     // Your web app's Firebase configuration
-    const firebaseConfig = {
+	const firebaseConfig = {
       apiKey: "AIzaSyCZJLWZFJFEFWQqZYmAcZjgqoc88FDfPwQ",
       authDomain: "habit-tracker-32c11.firebaseapp.com",
       databaseURL: "https://habit-tracker-32c11-default-rtdb.europe-west1.firebasedatabase.app",
@@ -1660,13 +1660,13 @@ function openModal(id) {
         // ÚJ: Ismétlődő mezők elrejtése
         document.getElementById("editRecurringFields").style.display = "none";
 		// ÚJ: Ismétlődő mezők elrejtése
-        document.getElementById("editRecurringFields").style.display = "none";
+        document.getElementById("editRecurringFields").style.display = "none";
         
         // ===== INNEN ILLESZD BE A 4 SORT =====
-        // Típusok visszaállítása az emlékeztető szerkesztés után
-        document.getElementById("editInput2").type = "number";
-        document.getElementById("editInput3").type = "text";
-        document.getElementById("editIsRecurringInput").onchange = function() { document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none' };
+        // Típusok visszaállítása az emlékeztető szerkesztés után
+        document.getElementById("editInput2").type = "number";
+        document.getElementById("editInput3").type = "text";
+        document.getElementById("editIsRecurringInput").onchange = function() { document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none' };
       }
     }
 
@@ -1691,7 +1691,7 @@ function openModal(id) {
 
       // Betölti a jelenlegi súlyt, ha van -> EZ A RÉSZ EL LETT TÁVOLÍTVA
       // if (dailyProgress.lastWeight > 0) {
-      //   document.getElementById("quickWeightInput").value = dailyProgress.lastWeight;
+      //  document.getElementById("quickWeightInput").value = dailyProgress.lastWeight;
       // }
 
       openModal('quickAddModal');
@@ -1773,8 +1773,8 @@ function openModal(id) {
       const now = new Date();
 
       const highlightsToShow = reminders.filter(r => 
-        r.highlight &&                 // 1. Kérve van a kiemelés
-        !r.triggered &&                // 2. Még nem járt le az emlékeztető
+        r.highlight &&             // 1. Kérve van a kiemelés
+        !r.triggered &&            // 2. Még nem járt le az emlékeztető
         new Date(r.highlightDate) <= now // 3. Elérkezett a kiemelés kezdő dátuma
       );
 
@@ -1983,26 +1983,26 @@ function openModal(id) {
     }; // 'protein' HOZZÁADVA
     let reminderCheckInterval = null; // ÚJ EMLÉKEZTETŐ IDŐZÍTŐ
 	// Segédfüggvény: ISO stringet (amit tárolunk) alakít "datetime-local" formátumra
-    function toLocalISOString(isoString) {
-      if (!isoString) return "";
-      const date = new Date(isoString);
-      const y = date.getFullYear();
-      const m = (date.getMonth() + 1).toString().padStart(2, '0');
-      const d = date.getDate().toString().padStart(2, '0');
-      const h = date.getHours().toString().padStart(2, '0');
-      const min = date.getMinutes().toString().padStart(2, '0');
-      return `${y}-${m}-${d}T${h}:${min}`;
-    }
+    function toLocalISOString(isoString) {
+      if (!isoString) return "";
+      const date = new Date(isoString);
+      const y = date.getFullYear();
+      const m = (date.getMonth() + 1).toString().padStart(2, '0');
+      const d = date.getDate().toString().padStart(2, '0');
+      const h = date.getHours().toString().padStart(2, '0');
+      const min = date.getMinutes().toString().padStart(2, '0');
+      return `${y}-${m}-${d}T${h}:${min}`;
+    }
 
-    // Segédfüggvény: ISO stringet (amit tárolunk) alakít "date" (YYYY-MM-DD) formátumra
-    function toDateInputString(isoString) {
-      if (!isoString) return "";
-      const date = new Date(isoString);
-      const y = date.getFullYear();
-      const m = (date.getMonth() + 1).toString().padStart(2, '0');
-      const d = date.getDate().toString().padStart(2, '0');
-      return `${y}-${m}-${d}`;
-    }
+    // Segédfüggvény: ISO stringet (amit tárolunk) alakít "date" (YYYY-MM-DD) formátumra
+    function toDateInputString(isoString) {
+      if (!isoString) return "";
+      const date = new Date(isoString);
+      const y = date.getFullYear();
+      const m = (date.getMonth() + 1).toString().padStart(2, '0');
+      const d = date.getDate().toString().padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
 
 
     // =======================================================
@@ -2441,77 +2441,77 @@ function openModal(id) {
       await saveDataToFirestore();
     }
 	function editReminder(id) {
-      const index = reminders.findIndex(r => r.id === id);
-      if (index === -1) return;
-      const reminder = reminders[index];
+      const index = reminders.findIndex(r => r.id === id);
+      if (index === -1) return;
+      const reminder = reminders[index];
 
-      editTarget = {
-        type: 'reminder',
-        index: index
-      };
+      editTarget = {
+        type: 'reminder',
+        index: index
+      };
 
-      document.getElementById("editTitle").textContent = "🔔 Emlékeztető szerkesztése";
+      document.getElementById("editTitle").textContent = "🔔 Emlékeztető szerkesztése";
 
-      // 1. Szöveg
-      document.getElementById("editLabel1").textContent = "Emlékeztető szövege";
-      document.getElementById("editInput1").value = reminder.text;
-      document.getElementById("editInput1").style.display = "block";
-      document.getElementById("editLabel1").style.display = "block";
+      // 1. Szöveg
+      document.getElementById("editLabel1").textContent = "Emlékeztető szövege";
+      document.getElementById("editInput1").value = reminder.text;
+      document.getElementById("editInput1").style.display = "block";
+      document.getElementById("editLabel1").style.display = "block";
 
-      // 2. Időpont (Típus átállítása 'datetime-local'-ra)
-      document.getElementById("editLabel2").textContent = "Időpont";
-      const timeInput = document.getElementById("editInput2");
-      timeInput.type = "datetime-local"; // Típus módosítása
-      timeInput.value = toLocalISOString(reminder.time);
-      timeInput.style.display = "block";
-      document.getElementById("editLabel2").style.display = "block";
+      // 2. Időpont (Típus átállítása 'datetime-local'-ra)
+      document.getElementById("editLabel2").textContent = "Időpont";
+      const timeInput = document.getElementById("editInput2");
+      timeInput.type = "datetime-local"; // Típus módosítása
+      timeInput.value = toLocalISOString(reminder.time);
+      timeInput.style.display = "block";
+      document.getElementById("editLabel2").style.display = "block";
 
-      // 3. Kiemelés Checkbox (az 'editRecurringFields' újrahasznosításával)
-      const recurringFields = document.getElementById("editRecurringFields");
-      recurringFields.style.display = "block";
-      recurringFields.querySelector('label[for="editIsRecurringInput"]').textContent = "Kiemelés a főoldalon?";
-      const highlightCheck = document.getElementById("editIsRecurringInput");
-      highlightCheck.checked = reminder.highlight;
+      // 3. Kiemelés Checkbox (az 'editRecurringFields' újrahasznosításával)
+      const recurringFields = document.getElementById("editRecurringFields");
+      recurringFields.style.display = "block";
+      recurringFields.querySelector('label[for="editIsRecurringInput"]').textContent = "Kiemelés a főoldalon?";
+      const highlightCheck = document.getElementById("editIsRecurringInput");
+      highlightCheck.checked = reminder.highlight;
 
-      // Elrejtjük az ismétlődés legördülőt, mert az nem kell
-      const recurrenceOptions = document.getElementById("editRecurrenceOptions");
-      recurrenceOptions.style.display = "none";
+      // Elrejtjük az ismétlődés legördülőt, mert az nem kell
+      const recurrenceOptions = document.getElementById("editRecurrenceOptions");
+      recurrenceOptions.style.display = "none";
 
-      // 4. Kiemelés Dátuma (az 'editInput3' újrahasznosításával)
-      document.getElementById("editLabel3").textContent = "Kiemelés kezdete";
-      const dateInput = document.getElementById("editInput3");
-      dateInput.type = "date"; // Típus módosítása
+      // 4. Kiemelés Dátuma (az 'editInput3' újrahasznosításával)
+      document.getElementById("editLabel3").textContent = "Kiemelés kezdete";
+      const dateInput = document.getElementById("editInput3");
+      dateInput.type = "date"; // Típus módosítása
       dateInput.value = toDateInputString(reminder.highlightDate || new Date());
-      // JAVÍTVA: Ha van mentett dátum, azt, ha nincs, a mait tölti be
+      // JAVÍTVA: Ha van mentett dátum, azt, ha nincs, a mait tölti be
 
-      // 5. Checkbox eseménykezelő felülírása
-      highlightCheck.onchange = function() {
-        // Elrejtjük az ismétlődés opciót (ami itt nem kell)
-        document.getElementById("editRecurrenceOptions").style.display = "none";
-        // Mutatjuk/elrejtjük a dátumválasztót
-        const showDate = this.checked;
-        document.getElementById("editLabel3").style.display = showDate ? "block" : "none";
-        document.getElementById("editInput3").style.display = showDate ? "block" : "none";
-      };
+      // 5. Checkbox eseménykezelő felülírása
+      highlightCheck.onchange = function() {
+        // Elrejtjük az ismétlődés opciót (ami itt nem kell)
+        document.getElementById("editRecurrenceOptions").style.display = "none";
+        // Mutatjuk/elrejtjük a dátumválasztót
+        const showDate = this.checked;
+        document.getElementById("editLabel3").style.display = showDate ? "block" : "none";
+        document.getElementById("editInput3").style.display = showDate ? "block" : "none";
+      };
 
-      // Dátum mező alapértelmezett láthatósága
-      if (reminder.highlight) {
-        document.getElementById("editLabel3").style.display = "block";
-        dateInput.style.display = "block";
-      } else {
-        document.getElementById("editLabel3").style.display = "none";
-        dateInput.style.display = "none";
-      }
+      // Dátum mező alapértelmezett láthatósága
+      if (reminder.highlight) {
+        document.getElementById("editLabel3").style.display = "block";
+        dateInput.style.display = "block";
+      } else {
+        document.getElementById("editLabel3").style.display = "none";
+        dateInput.style.display = "none";
+      }
 
-      // 6. Felesleges mezők elrejtése
-      document.getElementById("editLabelSubGoals").style.display = "none";
-      document.getElementById("editInputSubGoals").style.display = "none";
-      document.getElementById("editLabelText").style.display = "none";
-      document.getElementById("editInputText").style.display = "none";
-      document.getElementById("editMealFields").style.display = "none";
+      // 6. Felesleges mezők elrejtése
+      document.getElementById("editLabelSubGoals").style.display = "none";
+      document.getElementById("editInputSubGoals").style.display = "none";
+      document.getElementById("editLabelText").style.display = "none";
+      document.getElementById("editInputText").style.display = "none";
+      document.getElementById("editMealFields").style.display = "none";
 
-      openModal('editModal');
-    }
+      openModal('editModal');
+    }
     function editWorkout(index) {
       editTarget = {
         type: 'workout',
@@ -2533,7 +2533,7 @@ function openModal(id) {
 
       document.getElementById("editLabelText").textContent = "Jegyzet";
       document.getElementById("editLabelText").style.display = "block";
-      document.getElementById("editInputText").value = workouts[index].note || "";
+      document.getElementById("editInputText").value = parseStructuredArrayToText(workouts[index].note);
       document.getElementById("editInputText").style.display = "block";
 
       openModal('editModal');
@@ -2721,14 +2721,17 @@ function openAddNoteModal() {
 async function saveNote() {
   const title = document.getElementById("noteTitleInput").value.trim();
   const category = document.getElementById("noteCategoryInput").value.trim();
-  const text = document.getElementById("noteTextInput").value.trim();
+  // MÓDOSÍTÁS: A szöveget egyenesen a formázó funkcióba küldjük
+  const textArray = parseTextToStructuredArray(document.getElementById("noteTextInput").value);
 
-  if (!title || !text) return alert("Kérlek adj meg egy címet és szöveget is!");
+  if (!title) return alert("Kérlek adj meg egy címet!");
+  // MÓDOSÍTÁS: Azt nézzük, hogy a tömb üres-e
+  if (textArray.length === 0) return alert("Kérlek adj meg szöveget is!");
 
   const note = {
     title,
     category: category || null, // Menti a kategóriát, vagy null-t ha üres
-    text,
+    text: textArray, // MÓDOSÍTÁS: A tömböt mentjük
     date: new Date()
   };
   notes.unshift(note); // Az elejére szúrja be
@@ -2834,17 +2837,25 @@ async function deleteNote(i) { // Make async
 function openNoteModal(i) {
   const note = notes[i];
   document.getElementById("noteViewTitle").textContent = note.title;
-  document.getElementById("noteViewText").textContent = note.text;
+  document.getElementById("noteViewText").innerHTML = renderStructuredArrayToHTML(note.text);
   openModal('noteViewModal');
 }
 
 // ===== ÚJ FUNKCIÓ AZ ÉTEL JEGYZETHEZ =====
+function openWorkoutNoteModal(index) {
+  const workout = workouts[index];
+  document.getElementById("noteViewTitle").textContent = `Edzésjegyzet: ${workout.date}`;
+  // A 'renderStructuredArrayToHTML' használata a formázáshoz
+  document.getElementById("noteViewText").innerHTML = renderStructuredArrayToHTML(workout.note || "Ehhez az edzéshez nem tartozik jegyzet.");
+  openModal('noteViewModal');
+}
+
+// ===== INNENTŐL ILLESZD BE AZ ÚJ FÜGGVÉNYT =====
 function openMealNoteModal(index) {
-  // A 'meals' tömbből vesszük az indexet, amit a renderMeals adott át
   const meal = meals[index];
-  
   document.getElementById("noteViewTitle").textContent = `Jegyzet: ${meal.name}`;
-  document.getElementById("noteViewText").textContent = meal.note; // A 'note' mezőt jelenítjük meg
+  // Használjuk ugyanazt a renderelőt, mint a Jegyzeteknél
+  document.getElementById("noteViewText").innerHTML = renderStructuredArrayToHTML(meal.note);
   openModal('noteViewModal');
 }
 
@@ -2867,7 +2878,7 @@ function editNote(i) {
   document.getElementById("editLabel3").style.display = "block";
 
   document.getElementById("editLabelText").style.display = "block";
-  document.getElementById("editInputText").value = notes[i].text;
+  document.getElementById("editInputText").value = parseStructuredArrayToText(notes[i].text);
   document.getElementById("editInputText").style.display = "block";
 
   // Elrejtjük a felesleges mezőket
@@ -3397,6 +3408,96 @@ async function toggleRecurrenceInArchive(index) {
   // A logActivity már magában foglalja a saveDataToFirestore() hívást
 }
 // =======================================================
+// ===== ÚJ SZÖVEGFORMÁZÓ SEGÉDFÜGGVÉNYEK =====
+// =======================================================
+
+/**
+ * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
+ * Hasonló a saveGoal-ban lévőhöz, de 'task' helyett 'paragraph'-t használ.
+ */
+function parseTextToStructuredArray(text) {
+    if (!text || text.trim() === "") return [];
+
+    return text.split('\n')
+        .map(text => text.trim())
+        .filter(text => text.length > 0)
+        .map(rawText => {
+            if (rawText.startsWith('#')) {
+                return { type: 'header', text: rawText.substring(1).trim() };
+            } else if (rawText === '---') {
+                return { type: 'separator', text: '---' };
+            } else {
+                return { type: 'paragraph', text: rawText }; // Céloknál 'task', itt 'paragraph'
+            }
+        });
+}
+
+/**
+ * Visszaalakítja a szövegtömböt sima szöveggé a textarea-ba.
+ * Kezeli a régi, sima string adatokat is.
+ */
+function parseStructuredArrayToText(arrayOrString) {
+    if (!arrayOrString) return "";
+    // Régi adatok kezelése (ha még sima string)
+    if (typeof arrayOrString === 'string') return arrayOrString;
+
+    // Új, tömb alapú adatok visszaalakítása
+    return arrayOrString.map(item => {
+        const type = item.type || 'paragraph'; // Alapértelmezett
+        if (type === 'header') {
+            return `# ${item.text}`;
+        } else if (type === 'separator') {
+            return '---';
+        }
+        return item.text; // 'paragraph'
+    }).join('\n');
+}
+
+/**
+ * HTML-t generál a szövegtömbből a 'noteViewModal' számára.
+ * Kezeli a régi, sima string adatokat is.
+ */
+function renderStructuredArrayToHTML(arrayOrString) {
+    if (!arrayOrString || (Array.isArray(arrayOrString) && arrayOrString.length === 0)) {
+         return "<p style='color: #777; font-style: italic;'>Nincs jegyzet...</p>";
+    }
+    
+    // Régi adatok kezelése (ha még sima string)
+    if (typeof arrayOrString === 'string') {
+        // Alap cserék: sortörések (<br>) és linkek (ha vannak)
+        return arrayOrString
+            .replace(/</g, "&lt;").replace(/>/g, "&gt;") // XSS védelem
+            .replace(/\n/g, "<br>")
+            .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+    }
+
+    // Új, tömb alapú adatok renderelése
+    let html = "";
+    arrayOrString.forEach(item => {
+        const type = item.type || 'paragraph';
+        const text = item.text.replace(/</g, "&lt;").replace(/>/g, "&gt;"); // XSS védelem
+
+        switch (type) {
+            case 'header':
+                // Újrahasznosítjuk a célok alcím stílusát
+                html += `<h4 class="subgoal-header">${text}</h4>`;
+                break;
+            case 'separator':
+                // Újrahasznosítjuk a célok elválasztó stílusát
+                html += `<hr class="subgoal-separator">`;
+                break;
+            case 'paragraph':
+            default:
+                 // Linkek felismerése a paragrafusokban
+                const linkedText = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+                html += `<p style="margin-bottom: 8px;">${linkedText}</p>`;
+                break;
+        }
+    });
+    return html;
+}
+// =======================================================
+// =======================================================
 
 
 // =======================================================
@@ -3512,38 +3613,39 @@ function updateMealModalLabels() {
 
 // Új étel mentése
 async function saveMeal() {
-  const name = document.getElementById("mealNameInput").value.trim();
-  const category = document.getElementById("mealCategoryInput").value.trim();
-  const type = document.getElementById("mealTypeSelect").value;
-  const kcal = parseFloat(document.getElementById("mealKcalInput").value);
-  const protein = parseFloat(document.getElementById("mealProteinInput").value);
-  const note = document.getElementById("mealNoteInput").value.trim(); // <-- ÚJ SOR
+  const name = document.getElementById("mealNameInput").value.trim();
+  const category = document.getElementById("mealCategoryInput").value.trim();
+  const type = document.getElementById("mealTypeSelect").value;
+  const kcal = parseFloat(document.getElementById("mealKcalInput").value);
+  const protein = parseFloat(document.getElementById("mealProteinInput").value);
+  // MÓDOSÍTÁS: A szöveget egyenesen a formázó funkcióba küldjük
+  const noteArray = parseTextToStructuredArray(document.getElementById("mealNoteInput").value);
 
-  if (!name) return alert("Az ételnek nevet kell adni!");
-  if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
-  if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
+  if (!name) return alert("Az ételnek nevet kell adni!");
+  if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
+  if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
 
-  const meal = {
-    name,
-    category: category || null,
-    type,
-    kcal,
-    protein,
-    note: note || "" // <-- ÚJ SOR (vagy null, de az "" egyszerűbb)
-  };
+  const meal = {
+    name,
+    category: category || null,
+    type,
+    kcal,
+    protein,
+    note: noteArray // MÓDOSÍTÁS: A tömböt mentjük
+  };
 
-  meals.push(meal);
+  meals.push(meal);
 
-  document.getElementById("mealNameInput").value = "";
-  document.getElementById("mealCategoryInput").value = "";
-  document.getElementById("mealTypeSelect").value = "unit";
-  document.getElementById("mealKcalInput").value = "";
-  document.getElementById("mealProteinInput").value = "";
+  document.getElementById("mealNameInput").value = "";
+  document.getElementById("mealCategoryInput").value = "";
+  document.getElementById("mealTypeSelect").value = "unit";
+  document.getElementById("mealKcalInput").value = "";
+  document.getElementById("mealProteinInput").value = "";
   document.getElementById("mealNoteInput").value = ""; // <-- ÚJ SOR
 
-  closeModal('mealModal');
-  renderMeals();
-  await logActivity(`🍽️ Új étel mentve: ${name}`);
+  closeModal('mealModal');
+  renderMeals();
+  await logActivity(`🍽️ Új étel mentve: ${name}`);
 }
 // Ételek listájának kirajzolása
 function renderMeals() {
@@ -3636,20 +3738,22 @@ function renderMeals() {
     </div>
     `;
 
-// === MÓDOSÍTÁS KEZDETE ===
-    const hasNote = meal.note && meal.note.trim() !== "";
-    const noteIcon = hasNote ? ' 🗒️' : ''; // Ikon, ha van jegyzet
+    // === VÉGLEGES JAVÍTÁS KEZDETE ===
+    // 1. JAVÍTÁS: Helyesen ellenőrizzük, hogy a 'meal.note' tömb nem üres-e
+    const hasNote = meal.note && Array.isArray(meal.note) && meal.note.length > 0;
+    // 2. JAVÍTÁS: Az ikont szóköz nélkül definiáljuk
+    const noteIcon = hasNote ? '🗒️' : '';
     const noteTitle = hasNote ? 'Kattints a jegyzet megtekintéséhez' : '';
-    const noteOnClick = hasNote ? `onclick="openMealNoteModal(${i})"` : ''; // Csak akkor kattintható, ha van jegyzet
-    const noteStyle = hasNote ? 'cursor: pointer; text-decoration: underline; text-decoration-style: dotted;' : ''; // Stílus, ha van jegyzet
-    // === MÓDOSÍTÁS VÉGE ===
+    const noteOnClick = hasNote ? `onclick="openMealNoteModal(${i})"` : '';
+    const noteStyle = hasNote ? 'cursor: pointer; text-decoration: underline; text-decoration-style: dotted;' : '';
+    // === JAVÍTÁS VÉGE ===
 
-    div.innerHTML = `
-    <div class="food-item-row1">
-        <div class="item-name">
-                        <div class="item-name-main" ${noteOnClick} style="${noteStyle}" title="${noteTitle}">${meal.name}${noteIcon}</div>
-        </div>
-        <div class="item-details">
+    div.innerHTML = `
+    <div class="food-item-row1">
+        <div class="item-name">
+            <div class="item-name-main" ${noteOnClick} style="${noteStyle}" title="${noteTitle}">${meal.name}${hasNote ? ' ' : ''}${noteIcon}</div>
+        </div>
+        <div class="item-details">
             ${detailsText}
         </div>
         <div class="item-actions">
@@ -3659,7 +3763,7 @@ function renderMeals() {
         </div>
     </div>
     ${progressHTML}
-    `; // === ITT VAN A SÁVOK BEILLESZTÉSE ===
+    `;
     list.appendChild(div);
   };
   // --- Segédfüggvény vége ---
@@ -3692,50 +3796,50 @@ function renderMeals() {
 }
 // Étel szerkesztése (megnyitja a szerkesztő modalt)
 function editMeal(i) {
-  editTarget = {
-    type: 'meal',
-    index: i
-  };
-  const meal = meals[i];
+  editTarget = {
+    type: 'meal',
+    index: i
+  };
+  const meal = meals[i];
 
-  document.getElementById("editTitle").textContent = "🍽️ Étel szerkesztése";
+  document.getElementById("editTitle").textContent = "🍽️ Étel szerkesztése";
 
-  // Alap mezők (átnevezve)
-  document.getElementById("editLabel1").textContent = "Étel neve";
-  document.getElementById("editInput1").value = meal.name;
-  document.getElementById("editInput1").style.display = "block";
-  document.getElementById("editLabel1").style.display = "block";
+  // Alap mezők (átnevezve)
+  document.getElementById("editLabel1").textContent = "Étel neve";
+  document.getElementById("editInput1").value = meal.name;
+  document.getElementById("editInput1").style.display = "block";
+  document.getElementById("editLabel1").style.display = "block";
 
-  // Elrejtjük a felesleges 'points' mezőt
-  document.getElementById("editLabel2").style.display = "none";
-  document.getElementById("editInput2").style.display = "none";
+  // Elrejtjük a felesleges 'points' mezőt
+  document.getElementById("editLabel2").style.display = "none";
+  document.getElementById("editInput2").style.display = "none";
 
-  // Használjuk a 'v3' mezőt a kategóriának
-  document.getElementById("editLabel3").textContent = "Kategória";
-  document.getElementById("editInput3").value = meal.category || "";
-  document.getElementById("editInput3").style.display = "block";
-  document.getElementById("editLabel3").style.display = "block";
+  // Használjuk a 'v3' mezőt a kategóriának
+  document.getElementById("editLabel3").textContent = "Kategória";
+  document.getElementById("editInput3").value = meal.category || "";
+  document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editLabel3").style.display = "block";
 
-  // Elrejtjük a többit (kivéve a jegyzetet)
-  document.getElementById("editLabelSubGoals").style.display = "none";
-  document.getElementById("editInputSubGoals").style.display = "none";
-  document.getElementById("editRecurringFields").style.display = "none";
+  // Elrejtjük a többit (kivéve a jegyzetet)
+  document.getElementById("editLabelSubGoals").style.display = "none";
+  document.getElementById("editInputSubGoals").style.display = "none";
+  document.getElementById("editRecurringFields").style.display = "none";
 
-  // ===== MÓDOSÍTÁS ITT =====
-  // Megjelenítjük a Jegyzet mezőt (ezt használja a notes és workout is)
-  document.getElementById("editLabelText").textContent = "Jegyzet (opcionális)";
-  document.getElementById("editLabelText").style.display = "block";
-  document.getElementById("editInputText").value = meal.note || "";
-  document.getElementById("editInputText").style.display = "block";
-  // ===== MÓDOSÍTÁS VÉGE =====
+  // ===== MÓDOSÍTÁS ITT =====
+  // Megjelenítjük a Jegyzet mezőt (ezt használja a notes és workout is)
+  document.getElementById("editLabelText").textContent = "Jegyzet (opcionális)";
+  document.getElementById("editLabelText").style.display = "block";
+  document.getElementById("editInputText").value = parseStructuredArrayToText(meal.note);
+  document.getElementById("editInputText").style.display = "block";
+  // ===== MÓDOSÍTÁS VÉGE =====
 
-  // Megjelenítjük az étel-specifikus mezőket
-  document.getElementById("editMealFields").style.display = "block";
-  document.getElementById("editMealType").value = meal.type;
-  document.getElementById("editMealKcal").value = meal.kcal;
-  document.getElementById("editMealProtein").value = meal.protein;
+  // Megjelenítjük az étel-specifikus mezőket
+  document.getElementById("editMealFields").style.display = "block";
+  document.getElementById("editMealType").value = meal.type;
+  document.getElementById("editMealKcal").value = meal.kcal;
+  document.getElementById("editMealProtein").value = meal.protein;
 
-  openModal('editModal');
+  openModal('editModal');
 }
 
 // Étel törlése
@@ -3819,8 +3923,6 @@ async function confirmConsume() {
 
   closeModal('consumeModal');
 }
-
-
 // =======================================================
 // ===== KIBŐVÍTETT SZERKESZTÉS FUNKCIÓ (REFACTORED) =====
 // =======================================================
@@ -3946,76 +4048,79 @@ async function confirmEdit() { // Make async
     await logActivity(`✏️ Jutalom szerkesztve: ${v1}`);
   } else if (editTarget.type === 'note') {
     const v3 = document.getElementById("editInput3").value.trim(); // Kategória olvasása
-    const vText = document.getElementById("editInputText").value.trim();
-    if (!v1 || !vText) return alert("A cím és a szöveg nem lehet üres!");
+    // MÓDOSÍTÁS: A szöveget egyenesen a formázó funkcióba küldjük
+    const vTextArray = parseTextToStructuredArray(document.getElementById("editInputText").value);
+    if (!v1) return alert("A cím nem lehet üres!");
+    if (vTextArray.length === 0) return alert("A szöveg nem lehet üres!");
 
     notes[editTarget.index].title = v1;
     notes[editTarget.index].category = v3 || null; // Kategória mentése
-    notes[editTarget.index].text = vText;
+    notes[editTarget.index].text = vTextArray; // MÓDOSÍTÁS: A tömböt mentjük
     notes[editTarget.index].date = new Date(); // Dátum frissítése
     renderNotes(); // Újrarajzolás (hogy a kategória frissüljön)
     await logActivity(`✏️ Jegyzet szerkesztve: ${v1}`);
   } else if (editTarget.type === 'workout') {
-    const vText = document.getElementById("editInputText").value.trim();
-    workouts[editTarget.index].note = vText;
+    const vTextArray = parseTextToStructuredArray(document.getElementById("editInputText").value);
+    workouts[editTarget.index].note = vTextArray; // MÓDOSÍTÁS: A tömböt mentjük
     await logActivity(`✏️ Edzésjegyzet mentve: ${workouts[editTarget.index].date}`);
   }
 // ÚJ: ÉTEL SZERKESZTÉSÉNEK MENTÉSE
-  else if (editTarget.type === 'meal') {
-    const name = v1;
-    const category = document.getElementById("editInput3").value.trim();
-    const type = document.getElementById("editMealType").value;
-    const kcal = parseFloat(document.getElementById("editMealKcal").value);
-    const protein = parseFloat(document.getElementById("editMealProtein").value);
-    const note = document.getElementById("editInputText").value.trim(); // <-- ÚJ SOR
+  else if (editTarget.type === 'meal') {
+    const name = v1;
+    const category = document.getElementById("editInput3").value.trim();
+    const type = document.getElementById("editMealType").value;
+    const kcal = parseFloat(document.getElementById("editMealKcal").value);
+    const protein = parseFloat(document.getElementById("editMealProtein").value);
+    // MÓDOSÍTÁS: A szöveget egyenesen a formázó funkcióba küldjük
+    const noteArray = parseTextToStructuredArray(document.getElementById("editInputText").value);
 
-    if (!name) return alert("Az ételnek nevet kell adni!");
-    if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
-    if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
+    if (!name) return alert("Az ételnek nevet kell adni!");
+    if (isNaN(kcal) || kcal < 0) return alert("Érvénytelen kalória érték!");
+    if (isNaN(protein) || protein < 0) return alert("Érvénytelen fehérje érték!");
 
-    meals[editTarget.index] = {
-      name,
-      category: category || null,
-      type,
-      kcal,
-      protein,
-      note: note || "" // <-- ÚJ SOR
-    };
-    renderMeals();
-    await logActivity(`✏️ Étel szerkesztve: ${name}`);
-  }
+    meals[editTarget.index] = {
+      name,
+      category: category || null,
+      type,
+      kcal,
+      protein,
+      note: noteArray // MÓDOSÍTÁS: A tömböt mentjük
+    };
+    renderMeals();
+    await logActivity(`✏️ Étel szerkesztve: ${name}`);
+  }
   else if (editTarget.type === 'reminder') {
-    const text = document.getElementById("editInput1").value.trim();
-    const time = document.getElementById("editInput2").value; // 'datetime-local' string
-    const highlight = document.getElementById("editIsRecurringInput").checked;
-    const highlightDate = document.getElementById("editInput3").value; // 'date' string
+    const text = document.getElementById("editInput1").value.trim();
+    const time = document.getElementById("editInput2").value; // 'datetime-local' string
+    const highlight = document.getElementById("editIsRecurringInput").checked;
+    const highlightDate = document.getElementById("editInput3").value; // 'date' string
 
-    if (!text || !time) {
-      return alert("A szöveg és az időpont nem lehet üres!");
-    }
+    if (!text || !time) {
+      return alert("A szöveg és az időpont nem lehet üres!");
+    }
 
-    const reminderTime = new Date(time);
+    const reminderTime = new Date(time);
 
-    if (highlight && !highlightDate) {
-      return alert("Ha kiemelést kérsz, meg kell adnod a kiemelés kezdő dátumát!");
-    }
+    if (highlight && !highlightDate) {
+      return alert("Ha kiemelést kérsz, meg kell adnod a kiemelés kezdő dátumát!");
+    }
 
-    if (highlight && new Date(highlightDate) > reminderTime) {
-      return alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
-    }
+    if (highlight && new Date(highlightDate) > reminderTime) {
+      return alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
+    }
 
-    // Objektum frissítése a tömbben
-    const reminder = reminders[editTarget.index];
-    reminder.text = text;
-    reminder.time = reminderTime.toISOString();
-    reminder.highlight = highlight;
-    reminder.highlightDate = highlight ? new Date(highlightDate).toISOString() : null;
-    
-    // Visszaállítjuk 'triggered' állapotra, hogy újra elsülhessen
-    reminder.triggered = false; 
+    // Objektum frissítése a tömbben
+    const reminder = reminders[editTarget.index];
+    reminder.text = text;
+    reminder.time = reminderTime.toISOString();
+    reminder.highlight = highlight;
+    reminder.highlightDate = highlight ? new Date(highlightDate).toISOString() : null;
+    
+    // Visszaállítjuk 'triggered' állapotra, hogy újra elsülhessen
+    reminder.triggered = false; 
 
-    renderAll(); // Újrarajzol mindent (emlékeztető lista, főoldali kiemelés)
-    await logActivity(`✏️ Emlékeztető szerkesztve: ${text}`);
+    renderAll(); // Újrarajzol mindent (emlékeztető lista, főoldali kiemelés)
+    await logActivity(`✏️ Emlékeztető szerkesztve: ${text}`);
    }
   closeModal('editModal');
   // Visszaállítjuk az editModal mezőit alaphelyzetbe
@@ -4535,7 +4640,7 @@ function renderReminders() {
         <span>🔔 <b>${r.text}</b></span>
         <small>${displayTime}</small>
         <button style="background:none;color:#00796b" onclick="editReminder(${r.id})" title="Szerkesztés">✏️</button>
-        <button style="background:none;color:#c00" onclick="deleteReminder(${r.id})" title="Törlés">🗑️</button>
+        <button style="background:none;color:#c00" onclick="deleteReminder(${r.id})" title="Törlés">🗑️</button>
     `;
     list.appendChild(div);
   });
