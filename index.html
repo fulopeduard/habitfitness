@@ -1215,7 +1215,7 @@
           <div class="card">
             <div class="card-header">
               <h2>✅ Célok</h2>
-              <button class="archive-header-btn" onclick="openArchiveModal()">📥 Archívum</button>
+              <button class="archive-header-btn" onclick="openArchiveModal()">📥 Archívált / Időzített</button>
             </div>
             <div id="goalList"></div>
             <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
@@ -1397,7 +1397,10 @@
 
         <label>Alcélok (opcionális, minden sor egy alcél)</label>
         <textarea id="goalSubGoalsInput" rows="5" placeholder="&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására"></textarea>
-
+        <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+          <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
+          <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
+        </div>
         <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <label for="goalIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
@@ -1469,7 +1472,10 @@
             <input type="checkbox" id="editIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
           </div>
         </div>
-
+        <div id="editStartDateField" style="display: none; margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+          <label for="editStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
+          <input type="date" id="editStartDateInput" style="margin-bottom: 0;">
+        </div>
         <div id="editRecurringFields" style="display: none; margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <label for="editIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
@@ -1512,7 +1518,7 @@
 
     <div class="modal" id="archiveModal">
       <div class="modal-content" style="max-width: 600px;">
-        <h3>📥 Archivált Célok</h3>
+        <h3>📥 Archivált vagy időzített célok</h3>
         <div id="archivedGoalList" style="max-height: 400px; overflow-y: auto;">
         </div>
         <div style="text-align:center;margin-top:15px;">
@@ -1679,6 +1685,7 @@ function openModal(id) {
         document.getElementById("goalRecurrenceOptions").style.display = "none";
         document.getElementById("goalRecurrenceSelect").value = "daily";
 		document.getElementById("goalIsPriorityInput").checked = false; // ÚJ
+        document.getElementById("goalStartDateInput").value = ""; // EZ AZ ÚJ SOR
       }
     }
     // ÚJ: Az étel modal megnyitása (alaphelyzetbe állítás)
@@ -1715,7 +1722,12 @@ function openModal(id) {
         document.getElementById("editLabelSubGoals").style.display = "none";
         document.getElementById("editInputSubGoals").style.display = "none";
         // ÚJ: Ismétlődő mezők elrejtése
+        // ÚJ: Ismétlődő mezők elrejtése
         document.getElementById("editRecurringFields").style.display = "none";
+        // IDŐZÍTÉS MEZŐ ELREJTÉSE (KEZDETE)
+        document.getElementById("editStartDateField").style.display = "none";
+        document.getElementById("editStartDateInput").value = "";
+        // IDŐZÍTÉS MEZŐ ELREJTÉSE (VÉGE)
 		document.getElementById("editPriorityField").style.display = "none"; // ÚJ
 		// ÚJ: Ismétlődő mezők elrejtése
         document.getElementById("editRecurringFields").style.display = "none";
@@ -2268,6 +2280,9 @@ function openModal(id) {
 
         await loadDataFromFirestore();
         await checkRecurringGoals(); // ÚJ: Ismétlődő célok ellenőrzése
+		await checkRecurringGoals(); // Ez ellenőrzi a *teljesített* ismétlődőket
+        await checkPendingGoals(); // EZ AZ ÚJ SOR (ellenőrzi a várakozókat)
+        calculateDailyProgress();
         calculateDailyProgress();
         loadMotivation();
         renderAll();
@@ -2715,6 +2730,7 @@ async function checkRecurringGoals() {
         // 1. Cél állapotának visszaállítása
         goal.done = false;
         goal.lastCompleted = null;
+		goal.startDate = null; // EZ AZ ÚJ SOR
 
         // 2. Alcélok állapotának visszaállítása
         if (goal.subGoals && goal.subGoals.length > 0) {
@@ -2742,7 +2758,44 @@ async function checkRecurringGoals() {
     await saveDataToFirestore();
   }
 }
+// EZ EGY TELJESEN ÚJ FÜGGVÉNY
+/**
+ * Végigmegy az archivált célokon, és aktiválja azokat,
+ * amelyeknek a kezdő dátuma eljött.
+ */
+async function checkPendingGoals() {
+  let goalsWereActivated = false;
+  const todayISO = toDateInputString(new Date().toISOString());
 
+  // Visszafelé iterálunk, mert módosítjuk a tömböt (splice)
+  for (let i = archivedGoals.length - 1; i >= 0; i--) {
+    const goal = archivedGoals[i];
+
+    // A cél akkor aktiválódik, ha:
+    // 1. Van megadott 'startDate'-e
+    // 2. A 'startDate' ma van VAGY a múltban van
+    // 3. NINCS 'done: true' állapota (azaz nem egy már teljesített ismétlődő cél)
+    if (goal.startDate && goal.startDate <= todayISO && !goal.done) {
+      
+      console.log(`Időzített cél aktiválása: ${goal.name}`);
+
+      // 1. Áthelyezzük az archívumból az aktív célok listájára
+      const goalToActivate = archivedGoals.splice(i, 1)[0];
+      goals.push(goalToActivate);
+
+      goalsWereActivated = true;
+    }
+  }
+
+  if (goalsWereActivated) {
+    console.log("Időzített célok frissítve, mentés és renderelés...");
+    renderGoals();
+    if (document.getElementById('archiveModal').style.display === 'flex') {
+      renderArchivedGoals();
+    }
+    await saveDataToFirestore();
+  }
+}
 // =======================================================
 async function saveGoalSettings() { // Make async
   const gw = parseFloat(document.getElementById("goalWeightInput").value) || null;
@@ -3040,6 +3093,7 @@ async function saveGoal() { // Make async
   const isRecurring = document.getElementById("goalIsRecurringInput").checked;
   const recurrence = document.getElementById("goalRecurrenceSelect").value;
   const isPriority = document.getElementById("goalIsPriorityInput").checked; // ÚJ
+  const startDate = document.getElementById("goalStartDateInput").value; // EZ AZ ÚJ SOR
 
   const newGoal = {
     name,
@@ -3047,7 +3101,8 @@ async function saveGoal() { // Make async
     done: false,
     category: category,
     subGoals: subGoals,
-	isPriority: isPriority
+	isPriority: isPriority,
+    startDate: startDate || null // EZ AZ ÚJ SOR
   };
 
   if (isRecurring) {
@@ -3056,17 +3111,35 @@ async function saveGoal() { // Make async
     newGoal.lastCompleted = null; // Kezdetben nincs teljesítve
   }
 
-  goals.push(newGoal);
+  // ÚJ, MÓDOSÍTOTT RÉSZ
+  const todayISO = toDateInputString(new Date().toISOString());
+  let logMessage = "";
+
+  // Ellenőrizzük, hogy a cél jövőbeli-e
+  if (newGoal.startDate && newGoal.startDate > todayISO) {
+    // Jövőbeli cél: Az archívumba tesszük
+    archivedGoals.unshift(newGoal); // unshift, hogy elöl legyen az archívumban
+    logMessage = `📥 Cél időzítve az archívumba: ${name}`;
+  } else {
+    // Azonnali cél: A normál listába tesszük
+    goals.push(newGoal);
+    logMessage = `🎯 Cél hozzáadva: ${name} (${points} pont)`;
+  }
 
   document.getElementById("goalNameInput").value = "";
   document.getElementById("goalPointsInput").value = "";
   document.getElementById("goalCategoryInput").value = "";
-  document.getElementById("goalSubGoalsInput").value = ""; // Textarea ürítése
+  document.getElementById("goalSubGoalsInput").value = ""; 
   document.getElementById("goalIsPriorityInput").checked = false;
+  document.getElementById("goalStartDateInput").value = ""; 
 
   closeModal('goalModal');
-  renderGoals();
-  await logActivity(`🎯 Cél hozzáadva: ${name} (${points} pont)`);
+  renderGoals(); // A renderGoals frissíti a fő listát
+  // Ha az archívum nyitva van, azt is frissíthetjük (opcionális, de jó gyakorlat)
+  if (document.getElementById('archiveModal').style.display === 'flex') {
+    renderArchivedGoals();
+  }
+  await logActivity(logMessage);
 }
 // =======================================================
 // ===== JAVÍTOTT CÉLKEZELŐ FÜGGVÉNYEK KEZDETE =====
@@ -3260,6 +3333,17 @@ function editGoal(i) {
   const isPriority = goals[i].isPriority || false;
   document.getElementById("editPriorityField").style.display = "block";
   document.getElementById("editIsPriorityInput").checked = isPriority;
+  // IDŐZÍTÉS MEZŐ BETÖLTÉSE (KEZDETE)
+  const startDateField = document.getElementById("editStartDateField");
+  const startDateInput = document.getElementById("editStartDateInput");
+  startDateField.style.display = "block";
+  // Csak akkor töltjük be, ha van mentett dátum
+  if (goals[i].startDate) {
+    startDateInput.value = toDateInputString(goals[i].startDate);
+  } else {
+    startDateInput.value = "";
+  }
+  // IDŐZÍTÉS MEZŐ BETÖLTÉSE (VÉGE)
 
   // Más mezők elrejtése
   document.getElementById("editLabelText").style.display = "none";
@@ -3281,22 +3365,38 @@ async function deleteGoal(i) { // Make async
   renderGoals();
   await logActivity(`🗑️ Cél törölve: ${goalToDelete ? goalToDelete.name : 'ismeretlen cél'}`);
 }
-
-
 function renderGoals() {
   const list = document.getElementById("goalList");
   list.innerHTML = "";
+
+  // === MÓDOSÍTÁS KEZDETE: Dátum alapú szűrés ===
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Dátum normalizálása éjfélre a tiszta összehasonlításért
+
+  const visibleGoals = goals
+    .map((goal, i) => ({ ...goal,
+      originalIndex: i
+    }))
+    .filter(g => {
+      if (g.startDate) {
+        // Az input type="date" YYYY-MM-DD formátumú stringet ad
+        const startDateISO = g.startDate; // YYYY-MM-DD
+        const todayISO = toDateInputString(today.toISOString()); // <--- EZ A JAVÍTÁS
+        
+        // Csak akkor jelenítjük meg, ha a start dátum ma van, vagy korábban volt
+        return startDateISO <= todayISO;
+      }
+      return true; // Ha nincs startDate, mindig látszik
+    });
+  // === MÓDOSÍTÁS VÉGE ===
 
   // ===== ÚJ SZÉTVÁLOGATÁSI LOGIKA =====
   const priorityGoals = [];
   const categorized = {};
   const uncategorized = [];
 
-  goals.forEach((goal, i) => {
-    const item = { ...goal,
-      originalIndex: i
-    };
-
+  // MÓDOSÍTÁS: A 'goals' helyett a 'visibleGoals' tömböt használjuk
+  visibleGoals.forEach((item) => {
     if (item.isPriority) {
       priorityGoals.push(item);
     } else if (item.category) {
@@ -3310,7 +3410,7 @@ function renderGoals() {
   });
   // ===== LOGIKA VÉGE =====
 
-  const renderItem = (g, i) => {
+  const renderItem = (g, i) => { // 'i' itt már az originalIndex lesz
     const div = document.createElement("div");
     
     // ===== ÚJ OSZTÁLY HOZZÁADÁSA =====
@@ -3365,7 +3465,7 @@ function renderGoals() {
         ${g.points} pont
       </div>
       <div class="item-actions">
-      <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>
+      <button class="archive-btn" title="Archivált/Időzített" onclick="archiveGoal(${i})">📥</button>
         <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
         ${!hasTasks ? ( 
@@ -3392,7 +3492,7 @@ function renderGoals() {
     list.appendChild(title);
     
     priorityGoals.forEach(item => {
-      renderItem(item, item.originalIndex);
+      renderItem(item, item.originalIndex); // MÓDOSÍTVA: az 'originalIndex'-et adjuk át
     });
   }
 
@@ -3405,7 +3505,7 @@ function renderGoals() {
     list.appendChild(title);
 
     categorized[categoryName].forEach(item => {
-      renderItem(item, item.originalIndex);
+      renderItem(item, item.originalIndex); // MÓDOSÍTVA: az 'originalIndex'-et adjuk át
     });
   });
 
@@ -3419,12 +3519,11 @@ function renderGoals() {
       list.appendChild(title);
     }
     uncategorized.forEach(item => {
-      renderItem(item, item.originalIndex);
+      renderItem(item, item.originalIndex); // MÓDOSÍTVA: az 'originalIndex'-et adjuk át
     });
   }
   // ===== SORREND VÉGE =====
 }
-
 // =======================================================
 // ===== ARCHÍVUM FUNKCIÓK =====
 // =======================================================
@@ -3453,9 +3552,16 @@ function renderArchivedGoals() {
   }
 
   archivedGoals.forEach((goal, index) => {
+    // ÚJ, MÓDOSÍTOTT RÉSZ
     const div = document.createElement("div");
-    // Ha ismétlődő, de még nem járt le (azaz 'done'), akkor is áthúzzuk
-    div.className = "goal-item completed";
+    
+    // Ellenőrizzük, hogy a cél várakozó (pending) vagy már teljesített (done)
+    const todayISO = toDateInputString(new Date().toISOString());
+    const isPending = goal.startDate && goal.startDate > todayISO && !goal.done;
+
+    // Csak akkor húzzuk át, ha 'done' (teljesített), VAGY ha nem várakozó (tehát manuálisan archivált)
+    // JAVÍTÁS: Döntsd el, mi legyen a manuálisan archiválttal. Maradjunk annál, hogy csak a 'done' van áthúzva.
+    div.className = goal.done ? "goal-item completed" : "goal-item";
 
     // Gomb az ismétlődés kikapcsolásához (lila színnel)
     let recurringBtn = "";
@@ -3463,9 +3569,21 @@ function renderArchivedGoals() {
       recurringBtn = `<button style="color: #8e24aa;" title="Ismétlődés kikapcsolása" onclick="toggleRecurrenceInArchive(${index})">🔄</button>`;
     }
 
+    // Név és Várakozási dátum összeállítása
+    let goalNameHTML = `<div class="item-name-main">${goal.name} ${goal.isRecurring ? '🔄' : ''}</div>`;
+    if (isPending) {
+      // Megpróbáljuk szépen formázni a YYYY-MM-DD dátumot
+      let displayDate = goal.startDate;
+      try {
+         displayDate = new Date(goal.startDate.split('-')[0], goal.startDate.split('-')[1] - 1, goal.startDate.split('-')[2]).toLocaleDateString('hu-HU');
+      } catch(e) {}
+
+      goalNameHTML += `<small style="font-weight:bold; color:#004d40;">(Indul: ${displayDate})</small>`;
+    }
+
     div.innerHTML = `
       <div class="item-name">
-         <div class="item-name-main">${goal.name} ${goal.isRecurring ? '🔄' : ''}</div>
+         ${goalNameHTML}
       </div>
       <div class="item-points">
         ${goal.points} pont
@@ -3484,6 +3602,7 @@ async function reactivateGoal(index) {
 
   if (goalToReactivate) {
     goalToReactivate.done = false;
+	goalToReactivate.startDate = null; // EZ AZ ÚJ SOR
 
     // Alcélok "kipipálatlanítása"
     if (goalToReactivate.subGoals && goalToReactivate.subGoals.length > 0) {
@@ -4101,6 +4220,7 @@ async function confirmEdit() { // Make async
     goals[editTarget.index].name = v1;
     goals[editTarget.index].points = v2;
     goals[editTarget.index].category = v3;
+	goals[editTarget.index].startDate = document.getElementById("editStartDateInput").value || null; // EZ AZ ÚJ SOR
 
     // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS KEZDETE (JAVÍTOTT LOGIKÁVAL) =====
     const newSubGoalsText = document.getElementById("editInputSubGoals").value;
@@ -4189,6 +4309,22 @@ async function confirmEdit() { // Make async
       if (goal.isRecurring) goal.lastCompleted = null;
       totalPoints -= goal.points;
       animatePoints(totalPoints);
+    }
+	// ILLESZD BE EZT A BLOKKOT a confirmEdit 'goal' ágába, a renderGoals() hívás elé:
+
+    // Ellenőrzés: Át kell-e helyezni a célt az archívumba időzítés miatt?
+    const editedGoal = goals[editTarget.index];
+    const todayISO = toDateInputString(new Date().toISOString());
+
+    if (editedGoal && editedGoal.startDate && editedGoal.startDate > todayISO) {
+      console.log(`Cél áthelyezése az archívumba (időzítés): ${editedGoal.name}`);
+      const goalToArchive = goals.splice(editTarget.index, 1)[0];
+      archivedGoals.unshift(goalToArchive);
+      
+      // Mivel áthelyeztük, az archívum nézetet is frissíteni kell, ha nyitva van
+      if (document.getElementById('archiveModal').style.display === 'flex') {
+        renderArchivedGoals();
+      }
     }
 
     renderGoals();
