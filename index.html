@@ -565,8 +565,8 @@
     }
 	
 	#editModal {
-      z-index: 2000 !important;
-    }
+      z-index: 2000 !important;
+    }
 
     .modal-content {
       background: white;
@@ -1401,25 +1401,25 @@
         <label>Alcélok (opcionális, minden sor egy alcél)</label>
         <textarea id="goalSubGoalsInput" rows="5" placeholder="&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására"></textarea>
         <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
-          <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
-        </div>
+          <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
+          <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
+        </div>
 
-                <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="goalIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
-            <input type="checkbox" id="goalIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
-          </div>
-        </div>
+                <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <label for="goalIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
+            <input type="checkbox" id="goalIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
+          </div>
+        </div>
 
-                <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
-            <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
-          </div>
+                <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+          
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+            <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
+            <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+          </div>
 
-                    <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
+                    <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
 				
 				<div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
 					<label style="margin: 0;">Minden</label>
@@ -1498,7 +1498,7 @@
         <label id="editLabelText" style="display:none;">Szöveg</label>
         <textarea id="editInputText" style="display:none;"></textarea>
 		
-        <div id="editPriorityField" style="display: none; margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+        <div id="editPriorityField" style="display: none; margin-top: 10px; padding: 5px; background: #f1f8e9; border-radius: 8px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <label for="editIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
             <input type="checkbox" id="editIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
@@ -3801,23 +3801,23 @@ function renderArchivedGoals() {
     const div = document.createElement("div");
     
     // Ellenőrizzük, hogy a cél várakozó (pending) vagy már teljesített (done)
-    const todayISO = toDateInputString(new Date().toISOString());
+    const todayISO = toDateInputString(new Date().toISOString());
 
-    // === JAVÍTOTT STÁTUSZ LOGIKA KEZDETE ===
+    // === JAVÍTOTT STÁTUSZ LOGIKA KEZDETE ===
 
-    // 1. Általános "Megjelenés dátuma" (nem ismétlődő, vagy ismétlődő de a fő dátumot használva)
-    const isPendingOnStartDate = goal.startDate && goal.startDate > todayISO && !goal.done;
-    
-    // 2. Kifejezetten "Ismétlődés kezdete" dátumra vár
-    const isPendingOnRecurrence = goal.isRecurring && !goal.done && goal.recurrence && goal.recurrence.recurrenceStartDate && goal.recurrence.recurrenceStartDate > todayISO;
-    
-    // 3. Már teljesített, és a következő ismétlődésre vár
-    const isCompletedRecurring = goal.isRecurring && goal.done && goal.lastCompleted && goal.recurrence && typeof goal.recurrence === 'object';
-    
-    // === LOGIKA VÉGE ===
+    // 1. Általános "Megjelenés dátuma" (nem ismétlődő, vagy ismétlődő de a fő dátumot használva)
+    const isPendingOnStartDate = goal.startDate && goal.startDate > todayISO && !goal.done;
+    
+    // 2. Kifejezetten "Ismétlődés kezdete" dátumra vár
+    const isPendingOnRecurrence = goal.isRecurring && !goal.done && goal.recurrence && goal.recurrence.recurrenceStartDate && goal.recurrence.recurrenceStartDate > todayISO;
+    
+    // 3. Már teljesített, és a következő ismétlődésre vár
+    const isCompletedRecurring = goal.isRecurring && goal.done && goal.lastCompleted && goal.recurrence && typeof goal.recurrence === 'object';
+    
+    // === LOGIKA VÉGE ===
 
-    // Csak akkor húzzuk át, ha 'done' (teljesített)
-    div.className = goal.done ? "goal-item completed" : "goal-item";
+    // Csak akkor húzzuk át, ha 'done' (teljesített)
+    div.className = goal.done ? "goal-item completed" : "goal-item";
 
     // Gomb az ismétlődés kikapcsolásához (lila színnel)
     let recurringBtn = "";
@@ -3827,44 +3827,44 @@ function renderArchivedGoals() {
 
     // Név és Várakozási dátum / Újraaktiválás dátumának összeállítása
         // Név és Várakozási dátum / Újraaktiválás dátumának összeállítása
-        let goalNameHTML = `<div class="item-name-main">${goal.name} ${goal.isRecurring ? '🔄' : ''}</div>`;
-        let statusTextHTML = ""; // Külön változó a státuszszövegnek
+        let goalNameHTML = `<div class="item-name-main">${goal.name} ${goal.isRecurring ? '🔄' : ''}</div>`;
+        let statusTextHTML = ""; // Külön változó a státuszszövegnek
 
-        if (isPendingOnStartDate) {
-          // JÖVŐBEN INDULÓ (ÁLTALÁNOS DÁTUM)
-          let displayDate = goal.startDate;
-          try {
-            displayDate = new Date(goal.startDate.split('-')[0], goal.startDate.split('-')[1] - 1, goal.startDate.split('-')[2]).toLocaleDateString('hu-HU');
-          } catch(e) {}
-          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Indul: ${displayDate})</small>`;
-        
-        } else if (isPendingOnRecurrence) { 
-          // JÖVŐBEN INDULÓ (ISMÉTLŐDÉS DÁTUMA) - EZ AZ ÚJ BLOKK
-          let displayDate = goal.recurrence.recurrenceStartDate;
-           try {
-            displayDate = new Date(displayDate.split('-')[0], displayDate.split('-')[1] - 1, displayDate.split('-')[2]).toLocaleDateString('hu-HU');
-          } catch(e) {}
-          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Ismétlődés indul: ${displayDate})</small>`;
+        if (isPendingOnStartDate) {
+          // JÖVŐBEN INDULÓ (ÁLTALÁNOS DÁTUM)
+          let displayDate = goal.startDate;
+          try {
+            displayDate = new Date(goal.startDate.split('-')[0], goal.startDate.split('-')[1] - 1, goal.startDate.split('-')[2]).toLocaleDateString('hu-HU');
+          } catch(e) {}
+          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Indul: ${displayDate})</small>`;
+        
+        } else if (isPendingOnRecurrence) { 
+          // JÖVŐBEN INDULÓ (ISMÉTLŐDÉS DÁTUMA) - EZ AZ ÚJ BLOKK
+          let displayDate = goal.recurrence.recurrenceStartDate;
+           try {
+            displayDate = new Date(displayDate.split('-')[0], displayDate.split('-')[1] - 1, displayDate.split('-')[2]).toLocaleDateString('hu-HU');
+          } catch(e) {}
+          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Ismétlődés indul: ${displayDate})</small>`;
 
-        } else if (isCompletedRecurring) {
-          // TELJESÍTETT, ÚJRAAKTIVÁLÁSRA VÁRÓ CÉL
-          const recurrence = goal.recurrence;
-          const nextDate = getNextDueDate(goal.lastCompleted, recurrence);
-          const displayDate = nextDate.toLocaleDateString('hu-HU');
-          
-          let remainingText = "";
-          if (recurrence.endCondition === 'count') {
-            const remaining = (recurrence.endCount || 0) - (recurrence.currentCount || 0);
-            remainingText = `(még ${remaining} alkalom)`;
-          } else if (recurrence.endCondition === 'date') {
-            const endDate = new Date(recurrence.endDate).toLocaleDateString('hu-HU');
-            remainingText = `(${endDate}-ig)`;
-          } else {
-            remainingText = "(nincs korlát)";
-        }
-          
-          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Aktív: ${displayDate} ${remainingText})</small>`;
-        }
+        } else if (isCompletedRecurring) {
+          // TELJESÍTETT, ÚJRAAKTIVÁLÁSRA VÁRÓ CÉL
+          const recurrence = goal.recurrence;
+          const nextDate = getNextDueDate(goal.lastCompleted, recurrence);
+          const displayDate = nextDate.toLocaleDateString('hu-HU');
+          
+          let remainingText = "";
+          if (recurrence.endCondition === 'count') {
+            const remaining = (recurrence.endCount || 0) - (recurrence.currentCount || 0);
+            remainingText = `(még ${remaining} alkalom)`;
+          } else if (recurrence.endCondition === 'date') {
+            const endDate = new Date(recurrence.endDate).toLocaleDateString('hu-HU');
+            remainingText = `(${endDate}-ig)`;
+          } else {
+            remainingText = "(nincs korlát)";
+        }
+          
+          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Aktív: ${displayDate} ${remainingText})</small>`;
+        }
 
     div.innerHTML = `
       <div class="item-name">
@@ -3924,230 +3924,230 @@ async function deleteArchivedGoal(index) {
       renderArchivedGoals();
       addPointsLogEntry(-deletedGoal.points, `🗑️ Archivált cél törölve: ${deletedGoal.name}`);
       await logActivity(`🗑️ Archivált cél törölve: ${deletedGoal.name} (-${deletedGoal.points} pont)`);
-    }
-  }
+    }
+  }
 }
 // =======================================================
 // ===== ÚJ FUNKCIÓ: ARCHIVÁLT CÉL SZERKESZTÉSE =====
 // =======================================================
 function editArchivedGoal(index) {
-  const goal = archivedGoals[index]; // Az archivált tömbből vesszük
+  const goal = archivedGoals[index]; // Az archivált tömbből vesszük
 
-  editTarget = {
-    type: 'archivedGoal', // Új típus, hogy a mentés tudja, mit kell tenni
-    index: index
-  };
-  document.getElementById("editTitle").textContent = "🎯 Archivált cél szerkesztése";
+  editTarget = {
+    type: 'archivedGoal', // Új típus, hogy a mentés tudja, mit kell tenni
+    index: index
+  };
+  document.getElementById("editTitle").textContent = "🎯 Archivált cél szerkesztése";
 
-  // --- Innentől a kód azonos az editGoal funkcióval,
-  // de a 'goal' változót használja 'goals[i]' helyett ---
+  // --- Innentől a kód azonos az editGoal funkcióval,
+  // de a 'goal' változót használja 'goals[i]' helyett ---
 
-  document.getElementById("editLabel1").textContent = "Cél neve";
-  document.getElementById("editInput1").value = goal.name;
-  document.getElementById("editInput1").style.display = "block";
-  document.getElementById("editLabel1").style.display = "block";
+  document.getElementById("editLabel1").textContent = "Cél neve";
+  document.getElementById("editInput1").value = goal.name;
+  document.getElementById("editInput1").style.display = "block";
+  document.getElementById("editLabel1").style.display = "block";
 
-  document.getElementById("editLabel2").textContent = "Pont érték";
-  document.getElementById("editInput2").value = goal.points;
-  document.getElementById("editInput2").style.display = "block";
-  document.getElementById("editLabel2").style.display = "block";
+  document.getElementById("editLabel2").textContent = "Pont érték";
+  document.getElementById("editInput2").value = goal.points;
+  document.getElementById("editInput2").style.display = "block";
+  document.getElementById("editLabel2").style.display = "block";
 
-  document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
-  document.getElementById("editInput3").value = goal.category || "";
-  document.getElementById("editInput3").style.display = "block";
-  document.getElementById("editLabel3").style.display = "block";
+  document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
+  document.getElementById("editInput3").value = goal.category || "";
+  document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editLabel3").style.display = "block";
 
-  const subGoalsText = (goal.subGoals || [])
-    .map(sg => {
-      const sgType = sg.type || 'task';
-      if (sgType === 'header') {
-        return `# ${sg.text}`;
-      } else if (sgType === 'separator') {
-        return '---';
-      }
-      return sg.text;
-    })
-    .join('\n');
+  const subGoalsText = (goal.subGoals || [])
+    .map(sg => {
+      const sgType = sg.type || 'task';
+      if (sgType === 'header') {
+        return `# ${sg.text}`;
+      } else if (sgType === 'separator') {
+        return '---';
+      }
+      return sg.text;
+    })
+    .join('\n');
 
-  document.getElementById("editLabelSubGoals").style.display = "block";
-  document.getElementById("editInputSubGoals").value = subGoalsText;
-  document.getElementById("editInputSubGoals").style.display = "block";
+  document.getElementById("editLabelSubGoals").style.display = "block";
+  document.getElementById("editInputSubGoals").value = subGoalsText;
+  document.getElementById("editInputSubGoals").style.display = "block";
 
-  const isRecurring = goal.isRecurring || false;
-  document.getElementById("editRecurringFields").style.display = "block";
-  document.getElementById("editIsRecurringInput").checked = isRecurring;
-  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
+  const isRecurring = goal.isRecurring || false;
+  document.getElementById("editRecurringFields").style.display = "block";
+  document.getElementById("editIsRecurringInput").checked = isRecurring;
+  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
 
-  const recurrence = goal.recurrence;
+  const recurrence = goal.recurrence;
 
-  document.getElementById("editRecurrenceInterval").value = 1;
-  document.getElementById("editRecurrenceFrequency").value = "daily";
-  document.getElementById("editEndNever").checked = true;
-  document.getElementById("editEndCountInput").value = 5;
-  document.getElementById("editEndDateInput").value = "";
+  document.getElementById("editRecurrenceInterval").value = 1;
+  document.getElementById("editRecurrenceFrequency").value = "daily";
+  document.getElementById("editEndNever").checked = true;
+  document.getElementById("editEndCountInput").value = 5;
+  document.getElementById("editEndDateInput").value = "";
 
-  if (recurrence) {
-    if (typeof recurrence === 'object') {
-      document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
-      document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
-      const endCondition = recurrence.endCondition || 'never';
-      document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
-      if (endCondition === 'count') {
-        document.getElementById("editEndCountInput").value = recurrence.endCount || 5;
-      } else if (endCondition === 'date') {
-        document.getElementById("editEndDateInput").value = recurrence.endDate || "";
-      }
-      
-    } else if (typeof recurrence === 'string') {
-      document.getElementById("editEndNever").checked = true;
-      if (recurrence === 'daily') {
-        document.getElementById("editRecurrenceInterval").value = 1;
-        document.getElementById("editRecurrenceFrequency").value = "daily";
-      } else if (recurrence === 'weekly') {
-        document.getElementById("editRecurrenceInterval").value = 1;
-        document.getElementById("editRecurrenceFrequency").value = "weekly";
-      } else if (recurrence === 'monthly') {
-        document.getElementById("editRecurrenceInterval").value = 1;
-        document.getElementById("editRecurrenceFrequency").value = "monthly";
-      } else if (recurrence.endsWith('days')) {
-        document.getElementById("editRecurrenceInterval").value = parseInt(recurrence) || 2;
-        document.getElementById("editRecurrenceFrequency").value = "daily";
-      }
-    }
-  }
-  
-  const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
-  document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
-  
-  const isPriority = goal.isPriority || false;
-  document.getElementById("editPriorityField").style.display = "block";
-  document.getElementById("editIsPriorityInput").checked = isPriority;
-  
-  const startDateField = document.getElementById("editStartDateField");
-  const startDateInput = document.getElementById("editStartDateInput");
-  startDateField.style.display = "block";
-  if (goal.startDate) {
-    startDateInput.value = toDateInputString(goal.startDate);
-  } else {
-    startDateInput.value = "";
-  }
+  if (recurrence) {
+    if (typeof recurrence === 'object') {
+      document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
+      document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
+      const endCondition = recurrence.endCondition || 'never';
+      document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
+      if (endCondition === 'count') {
+        document.getElementById("editEndCountInput").value = recurrence.endCount || 5;
+      } else if (endCondition === 'date') {
+        document.getElementById("editEndDateInput").value = recurrence.endDate || "";
+      }
+      
+    } else if (typeof recurrence === 'string') {
+      document.getElementById("editEndNever").checked = true;
+      if (recurrence === 'daily') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      } else if (recurrence === 'weekly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "weekly";
+      } else if (recurrence === 'monthly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "monthly";
+      } else if (recurrence.endsWith('days')) {
+        document.getElementById("editRecurrenceInterval").value = parseInt(recurrence) || 2;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      }
+    }
+  }
+  
+  const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
+  document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
+  
+  const isPriority = goal.isPriority || false;
+  document.getElementById("editPriorityField").style.display = "block";
+  document.getElementById("editIsPriorityInput").checked = isPriority;
+  
+  const startDateField = document.getElementById("editStartDateField");
+  const startDateInput = document.getElementById("editStartDateInput");
+  startDateField.style.display = "block";
+  if (goal.startDate) {
+    startDateInput.value = toDateInputString(goal.startDate);
+  } else {
+    startDateInput.value = "";
+  }
 
-  document.getElementById("editLabelText").style.display = "none";
-  document.getElementById("editInputText").style.display = "none";
-  document.getElementById("editMealFields").style.display = "none";
+  document.getElementById("editLabelText").style.display = "none";
+  document.getElementById("editInputText").style.display = "none";
+  document.getElementById("editMealFields").style.display = "none";
 
-  openModal('editModal');
+  openModal('editModal');
 }
 // =======================================================
 // ===== ÚJ FUNKCIÓ: ARCHIVÁLT CÉL SZERKESZTÉSE =====
 // =======================================================
 function editArchivedGoal(index) {
-  const goal = archivedGoals[index]; // Az archivált tömbből vesszük
+  const goal = archivedGoals[index]; // Az archivált tömbből vesszük
 
-  editTarget = {
-    type: 'archivedGoal', // Új típus, hogy a mentés tudja, mit kell tenni
-    index: index
-  };
-  document.getElementById("editTitle").textContent = "🎯 Archivált cél szerkesztése";
+  editTarget = {
+    type: 'archivedGoal', // Új típus, hogy a mentés tudja, mit kell tenni
+    index: index
+  };
+  document.getElementById("editTitle").textContent = "🎯 Archivált cél szerkesztése";
 
-  // --- Innentől a kód azonos az editGoal funkcióval,
-  // de a 'goal' változót használja 'goals[i]' helyett ---
+  // --- Innentől a kód azonos az editGoal funkcióval,
+  // de a 'goal' változót használja 'goals[i]' helyett ---
 
-  document.getElementById("editLabel1").textContent = "Cél neve";
-  document.getElementById("editInput1").value = goal.name;
-  document.getElementById("editInput1").style.display = "block";
-  document.getElementById("editLabel1").style.display = "block";
+  document.getElementById("editLabel1").textContent = "Cél neve";
+  document.getElementById("editInput1").value = goal.name;
+  document.getElementById("editInput1").style.display = "block";
+  document.getElementById("editLabel1").style.display = "block";
 
-  document.getElementById("editLabel2").textContent = "Pont érték";
-  document.getElementById("editInput2").value = goal.points;
-  document.getElementById("editInput2").style.display = "block";
-  document.getElementById("editLabel2").style.display = "block";
+  document.getElementById("editLabel2").textContent = "Pont érték";
+  document.getElementById("editInput2").value = goal.points;
+  document.getElementById("editInput2").style.display = "block";
+  document.getElementById("editLabel2").style.display = "block";
 
-  document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
-  document.getElementById("editInput3").value = goal.category || "";
-  document.getElementById("editInput3").style.display = "block";
-  document.getElementById("editLabel3").style.display = "block";
+  document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
+  document.getElementById("editInput3").value = goal.category || "";
+  document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editLabel3").style.display = "block";
 
-  const subGoalsText = (goal.subGoals || [])
-    .map(sg => {
-      const sgType = sg.type || 'task';
-      if (sgType === 'header') {
-        return `# ${sg.text}`;
-      } else if (sgType === 'separator') {
-        return '---';
-      }
-      return sg.text;
-    })
-    .join('\n');
+  const subGoalsText = (goal.subGoals || [])
+    .map(sg => {
+      const sgType = sg.type || 'task';
+      if (sgType === 'header') {
+        return `# ${sg.text}`;
+      } else if (sgType === 'separator') {
+        return '---';
+      }
+      return sg.text;
+    })
+    .join('\n');
 
-  document.getElementById("editLabelSubGoals").style.display = "block";
-  document.getElementById("editInputSubGoals").value = subGoalsText;
-  document.getElementById("editInputSubGoals").style.display = "block";
+  document.getElementById("editLabelSubGoals").style.display = "block";
+  document.getElementById("editInputSubGoals").value = subGoalsText;
+  document.getElementById("editInputSubGoals").style.display = "block";
 
-  const isRecurring = goal.isRecurring || false;
-  document.getElementById("editRecurringFields").style.display = "block";
-  document.getElementById("editIsRecurringInput").checked = isRecurring;
-  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
+  const isRecurring = goal.isRecurring || false;
+  document.getElementById("editRecurringFields").style.display = "block";
+  document.getElementById("editIsRecurringInput").checked = isRecurring;
+  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
 
-  const recurrence = goal.recurrence;
+  const recurrence = goal.recurrence;
 
-  document.getElementById("editRecurrenceInterval").value = 1;
-  document.getElementById("editRecurrenceFrequency").value = "daily";
-  document.getElementById("editEndNever").checked = true;
-  document.getElementById("editEndCountInput").value = 5;
-  document.getElementById("editEndDateInput").value = "";
+  document.getElementById("editRecurrenceInterval").value = 1;
+  document.getElementById("editRecurrenceFrequency").value = "daily";
+  document.getElementById("editEndNever").checked = true;
+  document.getElementById("editEndCountInput").value = 5;
+  document.getElementById("editEndDateInput").value = "";
 
-  if (recurrence) {
-    if (typeof recurrence === 'object') {
-      document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
-      document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
-      const endCondition = recurrence.endCondition || 'never';
-      document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
-      if (endCondition === 'count') {
-        document.getElementById("editEndCountInput").value = recurrence.endCount || 5;
-      } else if (endCondition === 'date') {
-        document.getElementById("editEndDateInput").value = recurrence.endDate || "";
-      }
-      
-    } else if (typeof recurrence === 'string') {
-      document.getElementById("editEndNever").checked = true;
-      if (recurrence === 'daily') {
-        document.getElementById("editRecurrenceInterval").value = 1;
-        document.getElementById("editRecurrenceFrequency").value = "daily";
-      } else if (recurrence === 'weekly') {
-        document.getElementById("editRecurrenceInterval").value = 1;
-        document.getElementById("editRecurrenceFrequency").value = "weekly";
-      } else if (recurrence === 'monthly') {
-        document.getElementById("editRecurrenceInterval").value = 1;
-        document.getElementById("editRecurrenceFrequency").value = "monthly";
-      } else if (recurrence.endsWith('days')) {
-        document.getElementById("editRecurrenceInterval").value = parseInt(recurrence) || 2;
-        document.getElementById("editRecurrenceFrequency").value = "daily";
-      }
-    }
-  }
-  
-  const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
-  document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
-  
-  const isPriority = goal.isPriority || false;
-  document.getElementById("editPriorityField").style.display = "block";
-  document.getElementById("editIsPriorityInput").checked = isPriority;
-  
-  const startDateField = document.getElementById("editStartDateField");
-  const startDateInput = document.getElementById("editStartDateInput");
-  startDateField.style.display = "block";
-  if (goal.startDate) {
-    startDateInput.value = toDateInputString(goal.startDate);
-  } else {
-    startDateInput.value = "";
-  }
+  if (recurrence) {
+    if (typeof recurrence === 'object') {
+      document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
+      document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
+      const endCondition = recurrence.endCondition || 'never';
+      document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
+      if (endCondition === 'count') {
+        document.getElementById("editEndCountInput").value = recurrence.endCount || 5;
+      } else if (endCondition === 'date') {
+        document.getElementById("editEndDateInput").value = recurrence.endDate || "";
+      }
+      
+    } else if (typeof recurrence === 'string') {
+      document.getElementById("editEndNever").checked = true;
+      if (recurrence === 'daily') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      } else if (recurrence === 'weekly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "weekly";
+      } else if (recurrence === 'monthly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "monthly";
+      } else if (recurrence.endsWith('days')) {
+        document.getElementById("editRecurrenceInterval").value = parseInt(recurrence) || 2;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      }
+    }
+  }
+  
+  const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
+  document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
+  
+  const isPriority = goal.isPriority || false;
+  document.getElementById("editPriorityField").style.display = "block";
+  document.getElementById("editIsPriorityInput").checked = isPriority;
+  
+  const startDateField = document.getElementById("editStartDateField");
+  const startDateInput = document.getElementById("editStartDateInput");
+  startDateField.style.display = "block";
+  if (goal.startDate) {
+    startDateInput.value = toDateInputString(goal.startDate);
+  } else {
+    startDateInput.value = "";
+  }
 
-  document.getElementById("editLabelText").style.display = "none";
-  document.getElementById("editInputText").style.display = "none";
-  document.getElementById("editMealFields").style.display = "none";
+  document.getElementById("editLabelText").style.display = "none";
+  document.getElementById("editInputText").style.display = "none";
+  document.getElementById("editMealFields").style.display = "none";
 
-  openModal('editModal');
+  openModal('editModal');
 }
 // ===== ÚJ FUNKCIÓ: Ismétlődés kikapcsolása az archívumban =====
 async function toggleRecurrenceInArchive(index) {
@@ -4873,7 +4873,7 @@ async function confirmEdit() { // Make async
   } else if (editTarget.type === 'reward') {	
     const v2 = parseInt(document.getElementById("editInput2").value); // Ár
 	renderGoals();
-    await logActivity(`✏️ Cél szerkesztve: ${v1}`);
+    await logActivity(`✏️ Cél szerkesztve: ${v1}`);
 
   // === EZT ILLESZD BE IDE: ===
   } else if (editTarget.type === 'archivedGoal') {
@@ -4944,8 +4944,8 @@ async function confirmEdit() { // Make async
 
     renderArchivedGoals();
     await logActivity(`✏️ Archivált cél szerkesztve: ${v1}`);
-  } else if (editTarget.type === 'reward') {
-    const v2 = parseInt(document.getElementById("editInput2").value); // Ár
+  } else if (editTarget.type === 'reward') {
+    const v2 = parseInt(document.getElementById("editInput2").value); // Ár
     if (!v1) return alert("A jutalomnak nevet kell adni!");
     if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pont ár! A 0 vagy nagyobb érték megengedett.");
 
