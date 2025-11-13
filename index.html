@@ -1083,18 +1083,6 @@
         padding: 10px 5px;
         /* Kisebb padding, hogy elférjen */
       }
-	  .modal {
-        /* Mobilon a tetejére igazítjuk, hogy görgethető legyen */
-        align-items: flex-start;
-        padding-top: 20px;
-        overflow-y: auto; /* A teljes háttér is görgethető, ha kell */
-      }
-
-      .modal-content {
-        /* A fehér doboz kap egy belső görgősávot, ha túl magas */
-        max-height: 90vh; /* Max a képernyő 90%-a */
-        overflow-y: auto;
-      }
     }
 
     @media (max-width: 420px) {
@@ -1110,23 +1098,25 @@
         /* Egyenletesebb padding */
         gap: 0;
       }
-	  .modal {
-        /* Mobilon a tetejére igazítjuk, hogy görgethető legyen */
-        align-items: flex-start;
-        padding-top: 20px;
-        overflow-y: auto; /* A teljes háttér is görgethető, ha kell */
-      }
-
-      .modal-content {
-        /* A fehér doboz kap egy belső görgősávot, ha túl magas */
-        max-height: 90vh; /* Max a képernyő 90%-a */
-        overflow-y: auto;
-      }
       .tab-icon {
         font-size: 1.3em;
         /* Ikon picit nagyobb, mert egyedül van */
       }
     }
+	@media (max-width: 845px) {
+		.modal {
+			/* A háttér igazítása a tetejére, hogy görgethető legyen */
+			align-items: flex-start;
+			padding-top: 20px;
+			overflow-y: auto; /* A sötét háttér görgetése */
+		}
+
+		.modal-content {
+			/* A fehér doboz kap egy maximális magasságot és belső görgősávot */
+			max-height: 90vh; /* Max a képernyő magasságának 90%-a */
+			overflow-y: auto; /* Csak a fehér doboz görgessen, ha a tartalma túl nagy */
+		}
+	}
   </style>
 </head>
 
