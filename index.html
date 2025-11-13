@@ -563,6 +563,10 @@
       align-items: center;
       z-index: 1000;
     }
+	
+	#editModal {
+      z-index: 2000 !important;
+    }
 
     .modal-content {
       background: white;
@@ -1476,7 +1480,7 @@
       </div>
     </div>
 
-    <div class="modal" id="editModal">
+    <div class="modal" id="editModal" style="z-index: 2000;">
       <div class="modal-content">
         <h3 id="editTitle">✏️ Szerkesztés</h3>
 
@@ -3872,6 +3876,7 @@ function renderArchivedGoals() {
       </div>
       <div class="item-actions">
         ${recurringBtn} <button class="reactivate-btn" title="Visszaállítás" onclick="reactivateGoal(${index})">♻️</button>
+		<button style="color:#00796b" title="Szerkesztés" onclick="editArchivedGoal(${index})">✏️</button>
         <button class="delete-btn" title="Végleges törlés" onclick="deleteArchivedGoal(${index})">🗑️</button>
       </div>
     `;
@@ -3919,10 +3924,231 @@ async function deleteArchivedGoal(index) {
       renderArchivedGoals();
       addPointsLogEntry(-deletedGoal.points, `🗑️ Archivált cél törölve: ${deletedGoal.name}`);
       await logActivity(`🗑️ Archivált cél törölve: ${deletedGoal.name} (-${deletedGoal.points} pont)`);
-    }
-  }
+    }
+  }
 }
+// =======================================================
+// ===== ÚJ FUNKCIÓ: ARCHIVÁLT CÉL SZERKESZTÉSE =====
+// =======================================================
+function editArchivedGoal(index) {
+  const goal = archivedGoals[index]; // Az archivált tömbből vesszük
 
+  editTarget = {
+    type: 'archivedGoal', // Új típus, hogy a mentés tudja, mit kell tenni
+    index: index
+  };
+  document.getElementById("editTitle").textContent = "🎯 Archivált cél szerkesztése";
+
+  // --- Innentől a kód azonos az editGoal funkcióval,
+  // de a 'goal' változót használja 'goals[i]' helyett ---
+
+  document.getElementById("editLabel1").textContent = "Cél neve";
+  document.getElementById("editInput1").value = goal.name;
+  document.getElementById("editInput1").style.display = "block";
+  document.getElementById("editLabel1").style.display = "block";
+
+  document.getElementById("editLabel2").textContent = "Pont érték";
+  document.getElementById("editInput2").value = goal.points;
+  document.getElementById("editInput2").style.display = "block";
+  document.getElementById("editLabel2").style.display = "block";
+
+  document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
+  document.getElementById("editInput3").value = goal.category || "";
+  document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editLabel3").style.display = "block";
+
+  const subGoalsText = (goal.subGoals || [])
+    .map(sg => {
+      const sgType = sg.type || 'task';
+      if (sgType === 'header') {
+        return `# ${sg.text}`;
+      } else if (sgType === 'separator') {
+        return '---';
+      }
+      return sg.text;
+    })
+    .join('\n');
+
+  document.getElementById("editLabelSubGoals").style.display = "block";
+  document.getElementById("editInputSubGoals").value = subGoalsText;
+  document.getElementById("editInputSubGoals").style.display = "block";
+
+  const isRecurring = goal.isRecurring || false;
+  document.getElementById("editRecurringFields").style.display = "block";
+  document.getElementById("editIsRecurringInput").checked = isRecurring;
+  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
+
+  const recurrence = goal.recurrence;
+
+  document.getElementById("editRecurrenceInterval").value = 1;
+  document.getElementById("editRecurrenceFrequency").value = "daily";
+  document.getElementById("editEndNever").checked = true;
+  document.getElementById("editEndCountInput").value = 5;
+  document.getElementById("editEndDateInput").value = "";
+
+  if (recurrence) {
+    if (typeof recurrence === 'object') {
+      document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
+      document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
+      const endCondition = recurrence.endCondition || 'never';
+      document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
+      if (endCondition === 'count') {
+        document.getElementById("editEndCountInput").value = recurrence.endCount || 5;
+      } else if (endCondition === 'date') {
+        document.getElementById("editEndDateInput").value = recurrence.endDate || "";
+      }
+      
+    } else if (typeof recurrence === 'string') {
+      document.getElementById("editEndNever").checked = true;
+      if (recurrence === 'daily') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      } else if (recurrence === 'weekly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "weekly";
+      } else if (recurrence === 'monthly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "monthly";
+      } else if (recurrence.endsWith('days')) {
+        document.getElementById("editRecurrenceInterval").value = parseInt(recurrence) || 2;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      }
+    }
+  }
+  
+  const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
+  document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
+  
+  const isPriority = goal.isPriority || false;
+  document.getElementById("editPriorityField").style.display = "block";
+  document.getElementById("editIsPriorityInput").checked = isPriority;
+  
+  const startDateField = document.getElementById("editStartDateField");
+  const startDateInput = document.getElementById("editStartDateInput");
+  startDateField.style.display = "block";
+  if (goal.startDate) {
+    startDateInput.value = toDateInputString(goal.startDate);
+  } else {
+    startDateInput.value = "";
+  }
+
+  document.getElementById("editLabelText").style.display = "none";
+  document.getElementById("editInputText").style.display = "none";
+  document.getElementById("editMealFields").style.display = "none";
+
+  openModal('editModal');
+}
+// =======================================================
+// ===== ÚJ FUNKCIÓ: ARCHIVÁLT CÉL SZERKESZTÉSE =====
+// =======================================================
+function editArchivedGoal(index) {
+  const goal = archivedGoals[index]; // Az archivált tömbből vesszük
+
+  editTarget = {
+    type: 'archivedGoal', // Új típus, hogy a mentés tudja, mit kell tenni
+    index: index
+  };
+  document.getElementById("editTitle").textContent = "🎯 Archivált cél szerkesztése";
+
+  // --- Innentől a kód azonos az editGoal funkcióval,
+  // de a 'goal' változót használja 'goals[i]' helyett ---
+
+  document.getElementById("editLabel1").textContent = "Cél neve";
+  document.getElementById("editInput1").value = goal.name;
+  document.getElementById("editInput1").style.display = "block";
+  document.getElementById("editLabel1").style.display = "block";
+
+  document.getElementById("editLabel2").textContent = "Pont érték";
+  document.getElementById("editInput2").value = goal.points;
+  document.getElementById("editInput2").style.display = "block";
+  document.getElementById("editLabel2").style.display = "block";
+
+  document.getElementById("editLabel3").textContent = "Kategória (opcionális)";
+  document.getElementById("editInput3").value = goal.category || "";
+  document.getElementById("editInput3").style.display = "block";
+  document.getElementById("editLabel3").style.display = "block";
+
+  const subGoalsText = (goal.subGoals || [])
+    .map(sg => {
+      const sgType = sg.type || 'task';
+      if (sgType === 'header') {
+        return `# ${sg.text}`;
+      } else if (sgType === 'separator') {
+        return '---';
+      }
+      return sg.text;
+    })
+    .join('\n');
+
+  document.getElementById("editLabelSubGoals").style.display = "block";
+  document.getElementById("editInputSubGoals").value = subGoalsText;
+  document.getElementById("editInputSubGoals").style.display = "block";
+
+  const isRecurring = goal.isRecurring || false;
+  document.getElementById("editRecurringFields").style.display = "block";
+  document.getElementById("editIsRecurringInput").checked = isRecurring;
+  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
+
+  const recurrence = goal.recurrence;
+
+  document.getElementById("editRecurrenceInterval").value = 1;
+  document.getElementById("editRecurrenceFrequency").value = "daily";
+  document.getElementById("editEndNever").checked = true;
+  document.getElementById("editEndCountInput").value = 5;
+  document.getElementById("editEndDateInput").value = "";
+
+  if (recurrence) {
+    if (typeof recurrence === 'object') {
+      document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
+      document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
+      const endCondition = recurrence.endCondition || 'never';
+      document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
+      if (endCondition === 'count') {
+        document.getElementById("editEndCountInput").value = recurrence.endCount || 5;
+      } else if (endCondition === 'date') {
+        document.getElementById("editEndDateInput").value = recurrence.endDate || "";
+      }
+      
+    } else if (typeof recurrence === 'string') {
+      document.getElementById("editEndNever").checked = true;
+      if (recurrence === 'daily') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      } else if (recurrence === 'weekly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "weekly";
+      } else if (recurrence === 'monthly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "monthly";
+      } else if (recurrence.endsWith('days')) {
+        document.getElementById("editRecurrenceInterval").value = parseInt(recurrence) || 2;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      }
+    }
+  }
+  
+  const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
+  document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
+  
+  const isPriority = goal.isPriority || false;
+  document.getElementById("editPriorityField").style.display = "block";
+  document.getElementById("editIsPriorityInput").checked = isPriority;
+  
+  const startDateField = document.getElementById("editStartDateField");
+  const startDateInput = document.getElementById("editStartDateInput");
+  startDateField.style.display = "block";
+  if (goal.startDate) {
+    startDateInput.value = toDateInputString(goal.startDate);
+  } else {
+    startDateInput.value = "";
+  }
+
+  document.getElementById("editLabelText").style.display = "none";
+  document.getElementById("editInputText").style.display = "none";
+  document.getElementById("editMealFields").style.display = "none";
+
+  openModal('editModal');
+}
 // ===== ÚJ FUNKCIÓ: Ismétlődés kikapcsolása az archívumban =====
 async function toggleRecurrenceInArchive(index) {
   if (index < 0 || index >= archivedGoals.length) return;
@@ -4644,9 +4870,82 @@ async function confirmEdit() { // Make async
 
     renderGoals();
     await logActivity(`✏️ Cél szerkesztve: ${v1}`);
-  } else if (editTarget.type === 'reward') {
+  } else if (editTarget.type === 'reward') {	
     const v2 = parseInt(document.getElementById("editInput2").value); // Ár
+	renderGoals();
+    await logActivity(`✏️ Cél szerkesztve: ${v1}`);
 
+  // === EZT ILLESZD BE IDE: ===
+  } else if (editTarget.type === 'archivedGoal') {
+    const v2 = parseInt(document.getElementById("editInput2").value); // Pont
+    const v3 = document.getElementById("editInput3").value.trim(); // Kategória
+
+    if (!v1) return alert("A célnak nevet kell adni!");
+    if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pontszám!");
+
+    const goalToEdit = archivedGoals[editTarget.index];
+
+    if (goalToEdit.done) {
+      let diff = v2 - goalToEdit.points;
+      if (diff !== 0) {
+        totalPoints += diff;
+        addPointsLogEntry(diff, `✏️ (Archív) Pontérték módosítva: ${goalToEdit.name}`);
+        animatePoints(totalPoints);
+      }
+    }
+    goalToEdit.name = v1;
+    goalToEdit.points = v2;
+    goalToEdit.category = v3;
+    goalToEdit.startDate = document.getElementById("editStartDateInput").value || null;
+    goalToEdit.isPriority = document.getElementById("editIsPriorityInput").checked;
+
+    // Alcélok mentése
+    const newSubGoalsText = document.getElementById("editInputSubGoals").value;
+    const availableOldSubGoals = [...(goalToEdit.subGoals || [])];
+    let newSubGoals = [];
+    if (newSubGoalsText.trim() !== "") {
+      newSubGoals = newSubGoalsText.split('\n').map(text => text.trim()).filter(t => t.length > 0).map(rawText => {
+         let newItem;
+         if (rawText.startsWith('#')) newItem = { type: 'header', text: rawText.substring(1).trim() };
+         else if (rawText === '---') newItem = { type: 'separator', text: '---' };
+         else newItem = { type: 'task', text: rawText, done: false };
+         
+         const existingIndex = availableOldSubGoals.findIndex(sg => (sg.type || 'task') === (newItem.type || 'task') && sg.text === newItem.text);
+         if (existingIndex > -1) return availableOldSubGoals.splice(existingIndex, 1)[0];
+         else return newItem;
+      });
+    }
+    goalToEdit.subGoals = newSubGoals;
+
+    // Ismétlődés mentése
+    const isRecurring = document.getElementById("editIsRecurringInput").checked;
+    if (isRecurring) {
+      goalToEdit.isRecurring = true;
+      const frequency = document.getElementById("editRecurrenceFrequency").value;
+      const interval = parseInt(document.getElementById("editRecurrenceInterval").value) || 1;
+      const endCondition = document.querySelector('input[name="editEndCondition"]:checked').value;
+      const endCount = parseInt(document.getElementById("editEndCountInput").value) || 5;
+      const endDate = document.getElementById("editEndDateInput").value || null;
+      const recurrenceStartDate = document.getElementById("editRecurrenceStartDateInput").value || null;
+      
+      const currentCount = (goalToEdit.recurrence && typeof goalToEdit.recurrence === 'object') ? (goalToEdit.recurrence.currentCount || 0) : 0;
+      
+      goalToEdit.recurrence = {
+        frequency, interval, recurrenceStartDate, endCondition,
+        endDate: (endCondition === 'date' && endDate) ? endDate : null,
+        endCount: (endCondition === 'count') ? endCount : null,
+        currentCount
+      };
+    } else {
+      delete goalToEdit.isRecurring;
+      delete goalToEdit.recurrence;
+      delete goalToEdit.lastCompleted;
+    }
+
+    renderArchivedGoals();
+    await logActivity(`✏️ Archivált cél szerkesztve: ${v1}`);
+  } else if (editTarget.type === 'reward') {
+    const v2 = parseInt(document.getElementById("editInput2").value); // Ár
     if (!v1) return alert("A jutalomnak nevet kell adni!");
     if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pont ár! A 0 vagy nagyobb érték megengedett.");
 
