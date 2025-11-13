@@ -171,67 +171,6 @@
       white-space: nowrap;
       /* Megakadályozza, hogy a szöveg törjön */
     }
-
-    /* ================================================== */
-    /* ===== RESPONSIVE FŐMENÜ (TAB) STÍLUSOK ===== */
-    /* ================================================== */
-    @media (max-width: 845px) {
-      #tabs {
-        gap: 6px;
-        /* Kisebb rés a gombok között mobilon */
-      }
-
-      .tab-btn {
-        /* 33.3% - (rés / 3) -> Ez kényszeríti a 3 gombot egy sorba */
-        flex-basis: 31%;
-        padding: 10px 5px;
-        /* Kisebb padding, hogy elférjen */
-      }
-	  .modal {
-        /* Mobilon a tetejére igazítjuk, hogy görgethető legyen */
-        align-items: flex-start;
-        padding-top: 20px;
-        overflow-y: auto; /* A teljes háttér is görgethető, ha kell */
-      }
-
-      .modal-content {
-        /* A fehér doboz kap egy belső görgősávot, ha túl magas */
-        max-height: 90vh; /* Max a képernyő 90%-a */
-        overflow-y: auto;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .tab-text {
-        display: none;
-        /* Kérésednek megfelelően a szöveg elrejtése */
-      }
-
-      .tab-btn {
-        flex-basis: 30%;
-        /* Maradhat a 3/sor elrendezés */
-        padding: 10px;
-        /* Egyenletesebb padding */
-        gap: 0;
-      }
-	  .modal {
-        /* Mobilon a tetejére igazítjuk, hogy görgethető legyen */
-        align-items: flex-start;
-        padding-top: 20px;
-        overflow-y: auto; /* A teljes háttér is görgethető, ha kell */
-      }
-
-      .modal-content {
-        /* A fehér doboz kap egy belső görgősávot, ha túl magas */
-        max-height: 90vh; /* Max a képernyő 90%-a */
-        overflow-y: auto;
-      }
-      .tab-icon {
-        font-size: 1.3em;
-        /* Ikon picit nagyobb, mert egyedül van */
-      }
-    }
-
     /* ================================================== */
     /* ================================================== */
     /* ===== CÉL/JUTALOM ELRENDEZÉS ===== */
@@ -1132,6 +1071,62 @@
     /* ================================================== */
     /* ================================================== */
     /* ================================================== */
+	@media (max-width: 845px) {
+      #tabs {
+        gap: 6px;
+        /* Kisebb rés a gombok között mobilon */
+      }
+
+      .tab-btn {
+        /* 33.3% - (rés / 3) -> Ez kényszeríti a 3 gombot egy sorba */
+        flex-basis: 31%;
+        padding: 10px 5px;
+        /* Kisebb padding, hogy elférjen */
+      }
+	  .modal {
+        /* Mobilon a tetejére igazítjuk, hogy görgethető legyen */
+        align-items: flex-start;
+        padding-top: 20px;
+        overflow-y: auto; /* A teljes háttér is görgethető, ha kell */
+      }
+
+      .modal-content {
+        /* A fehér doboz kap egy belső görgősávot, ha túl magas */
+        max-height: 90vh; /* Max a képernyő 90%-a */
+        overflow-y: auto;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .tab-text {
+        display: none;
+        /* Kérésednek megfelelően a szöveg elrejtése */
+      }
+
+      .tab-btn {
+        flex-basis: 30%;
+        /* Maradhat a 3/sor elrendezés */
+        padding: 10px;
+        /* Egyenletesebb padding */
+        gap: 0;
+      }
+	  .modal {
+        /* Mobilon a tetejére igazítjuk, hogy görgethető legyen */
+        align-items: flex-start;
+        padding-top: 20px;
+        overflow-y: auto; /* A teljes háttér is görgethető, ha kell */
+      }
+
+      .modal-content {
+        /* A fehér doboz kap egy belső görgősávot, ha túl magas */
+        max-height: 90vh; /* Max a képernyő 90%-a */
+        overflow-y: auto;
+      }
+      .tab-icon {
+        font-size: 1.3em;
+        /* Ikon picit nagyobb, mert egyedül van */
+      }
+    }
   </style>
 </head>
 
