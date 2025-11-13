@@ -1412,19 +1412,41 @@
             <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
             <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
           </div>
-          <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
-            <label for="goalRecurrenceSelect">Ismétlődés gyakorisága</label>
-            <select id="goalRecurrenceSelect">
-              <option value="daily">Naponta</option>
-              <option value="2days">2 naponta</option>
-              <option value="3days">3 naponta</option>
-              <option value="4days">4 naponta</option>
-              <option value="5days">5 naponta</option>
-              <option value="6days">6 naponta</option>
-              <option value="weekly">Hetente</option>
-              <option value="monthly">Havonta</option>
-            </select>
-          </div>
+			<div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
+				
+				<div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+					<label style="margin: 0;">Minden</label>
+					<input type="number" id="goalRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
+					<select id="goalRecurrenceFrequency" style="flex: 1; margin: 0;">
+						<option value="daily">Nap</option>
+						<option value="weekly">Hét</option>
+						<option value="monthly">Hónap</option>
+						<option value="yearly">Év</option>
+					</select>
+				</div>
+
+				<label>Befejezés</label>
+				
+				<div style="padding-left: 15px;">
+					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+						<input type="radio" name="goalEndCondition" id="goalEndNever" value="never" checked style="width: auto; margin: 0;">
+						<label for="goalEndNever" style="margin: 0; width: 100%;">Soha</label>
+					</div>
+					
+					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+						<input type="radio" name="goalEndCondition" id="goalEndCount" value="count" style="width: auto; margin: 0;">
+						<label for="goalEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
+						<input type="number" id="goalEndCountInput" value="5" style="width: 60px; margin: 0;">
+						<span style="flex-shrink: 0;">előfordulás</span>
+					</div>
+
+					<div style="display: flex; align-items: center; gap: 10px;">
+						<input type="radio" name="goalEndCondition" id="goalEndDate" value="date" style="width: auto; margin: 0;">
+						<label for="goalEndDate" style="margin: 0;">Ekkor:</label>
+						<input type="date" id="goalEndDateInput" style="width: 100%; margin: 0;">
+					</div>
+				</div>
+			</div>
         </div>
         <div style="text-align:center;margin-top:15px;">
           <button onclick="saveGoal()">✅ Mentés</button>
@@ -1475,25 +1497,41 @@
           <label for="editStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
           <input type="date" id="editStartDateInput" style="margin-bottom: 0;">
         </div>
-        <div id="editRecurringFields" style="display: none; margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="editIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
-            <input type="checkbox" id="editIsRecurringInput" onchange="document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
-          </div>
-          <div id="editRecurrenceOptions" style="display: none; margin-top: 10px;">
-            <label for="editRecurrenceSelect">Ismétlődés gyakorisága</label>
-            <select id="editRecurrenceSelect">
-              <option value="daily">Naponta</option>
-              <option value="2days">2 naponta</option>
-              <option value="3days">3 naponta</option>
-              <option value="4days">4 naponta</option>
-              <option value="5days">5 naponta</option>
-              <option value="6days">6 naponta</option>
-              <option value="weekly">Hetente</option>
-              <option value="monthly">Havonta</option>
-            </select>
-          </div>
-        </div>
+        <div id="editRecurrenceOptions" style="display: none; margin-top: 10px;">
+				
+				<div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+					<label style="margin: 0;">Minden</label>
+					<input type="number" id="editRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
+					<select id="editRecurrenceFrequency" style="flex: 1; margin: 0;">
+						<option value="daily">Nap</option>
+						<option value="weekly">Hét</option>
+						<option value="monthly">Hónap</option>
+						<option value="yearly">Év</option>
+					</select>
+				</div>
+
+				<label>Befejezés</label>
+				
+				<div style="padding-left: 15px;">
+					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+						<input type="radio" name="editEndCondition" id="editEndNever" value="never" checked style="width: auto; margin: 0;">
+						<label for="editEndNever" style="margin: 0; width: 100%;">Soha</label>
+					</div>
+					
+					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+						<input type="radio" name="editEndCondition" id="editEndCount" value="count" style="width: auto; margin: 0;">
+						<label for="editEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
+						<input type="number" id="editEndCountInput" value="5" style="width: 60px; margin: 0;">
+						<span style="flex-shrink: 0;">előfordulás</span>
+					</div>
+
+					<div style="display: flex; align-items: center; gap: 10px;">
+						<input type="radio" name="editEndCondition" id="editEndDate" value="date" style="width: auto; margin: 0;">
+						<label for="editEndDate" style="margin: 0;">Ekkor:</label>
+						<input type="date" id="editEndDateInput" style="width: 100%; margin: 0;">
+					</div>
+				</div>
+			</div>
         <div id="editMealFields" style="display: none;">
           <label for="editMealType">Típus</label>
           <select id="editMealType">
@@ -2663,99 +2701,148 @@ function openModal(id) {
  * Ellenőrzi, hogy egy adott dátum (utolsó teljesítés) és
  * gyakoriság alapján vissza kell-e állítani egy célt a mai napon.
  */
-function isResetDue(lastCompletedISO, recurrence) {
-  if (!lastCompletedISO) return false;
+// =======================================================
+// ===== ÚJ, KOMPLEX ISMÉTLŐDÉSI LOGIKA =====
+// =======================================================
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Ma éjfél
+/**
+ * Kiszámítja a következő esedékességi dátumot a megadott szabályok alapján.
+ * @param {string} lastCompletedISO - Az utolsó teljesítés ISO dátuma.
+ * @param {object} recurrence - A { frequency, interval } objektum.
+ * @returns {Date} A következő esedékességi dátum (éjfélre állítva).
+ */
+function getNextDueDate(lastCompletedISO, recurrence) {
+    const lastDate = new Date(lastCompletedISO);
+    lastDate.setHours(0, 0, 0, 0); // Normalizálás
 
-  const lastDate = new Date(lastCompletedISO);
-  lastDate.setHours(0, 0, 0, 0); // Utolsó teljesítés éjfél
-
-  // Ha ma lett teljesítve, nem állítjuk vissza
-  if (today.getTime() === lastDate.getTime()) {
-    return false;
-  }
-
-  // Időkülönbség napokban
-  const diffTime = today.getTime() - lastDate.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays <= 0) return false;
-
-  switch (recurrence) {
-    case 'daily':
-      return diffDays >= 1;
-    case '2days':
-      return diffDays >= 2;
-    case '3days':
-      return diffDays >= 3;
-    case '4days':
-      return diffDays >= 4;
-    case '5days':
-      return diffDays >= 5;
-    case '6days':
-      return diffDays >= 6;
-    case 'weekly':
-      return diffDays >= 7;
-    case 'monthly':
-      // Hónapfordulót ellenőrzünk
-      const nextMonthDate = new Date(lastDate);
-      nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
-      // Ha a mai dátum nagyobb vagy egyenlő, mint az utolsó
-      // teljesítés + 1 hónap, akkor visszaállítjuk.
-      return today.getTime() >= nextMonthDate.getTime();
-    default:
-      return false;
-  }
+    const interval = recurrence.interval || 1;
+    const frequency = recurrence.frequency || 'daily';
+    
+    switch (frequency) {
+        case 'daily':
+            lastDate.setDate(lastDate.getDate() + interval);
+            break;
+        case 'weekly':
+            lastDate.setDate(lastDate.getDate() + (interval * 7));
+            break;
+        case 'monthly':
+            lastDate.setMonth(lastDate.getMonth() + interval);
+            break;
+        case 'yearly':
+            lastDate.setFullYear(lastDate.getFullYear() + interval);
+            break;
+        default:
+             lastDate.setDate(lastDate.getDate() + 1); // Alapértelmezett: naponta
+            break;
+    }
+    return lastDate;
 }
 
 /**
- * Végigmegy az összes aktív (nem archivált) célon,
- * és visszaállítja azokat, amelyek ismétlődőek és lejártak.
+ * Végigmegy az archivált célokon, ellenőrzi az ismétlődési és
+ * lejárati feltételeket, és szükség esetén újraaktiválja a célokat.
+ * Kezeli a régi (string) és az új (objektum) ismétlődési adatokat is.
  */
 async function checkRecurringGoals() {
-  let goalsWereReset = false;
+  let goalsWereReset = false;
+  let goalsWereExpired = false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Ma éjfél
 
-  // Visszafelé kell iterálnunk, mert ki fogunk venni elemeket a tömbből!
-  for (let i = archivedGoals.length - 1; i >= 0; i--) {
-    const goal = archivedGoals[i];
+  // Visszafelé iterálunk, mert módosíthatjuk a tömböt (splice)
+  for (let i = archivedGoals.length - 1; i >= 0; i--) {
+    const goal = archivedGoals[i];
 
-    // Csak azokat nézzük, amik ismétlődőek, teljesítve vannak, és van rögzített idejük
-    if (goal.isRecurring && goal.done && goal.lastCompleted) {
-      if (isResetDue(goal.lastCompleted, goal.recurrence)) {
-        console.log(`Ismétlődő cél reaktiválása: ${goal.name}`);
-
-        // 1. Cél állapotának visszaállítása
-        goal.done = false;
-        goal.lastCompleted = null;
-		goal.startDate = null; // EZ AZ ÚJ SOR
-
-        // 2. Alcélok állapotának visszaállítása
-        if (goal.subGoals && goal.subGoals.length > 0) {
-          goal.subGoals.forEach(sg => {
-            sg.done = false;
-          });
+    // Csak azokat nézzük, amik:
+    // 1. Ismétlődőek
+    // 2. Teljesítve lettek (done: true)
+    // 3. Van rögzített utolsó teljesítési idejük
+    if (goal.isRecurring && goal.done && goal.lastCompleted) {
+      
+      let recurrenceData = goal.recurrence;
+      
+      // --- Visszafelé kompatibilitás: Régi string adatok átalakítása ---
+      if (typeof recurrenceData === 'string') {
+        const oldRecurrence = recurrenceData;
+        recurrenceData = {
+            frequency: 'daily',
+            interval: 1,
+            endCondition: 'never',
+            currentCount: 0
+        };
+        if (oldRecurrence === 'weekly') {
+            recurrenceData.frequency = 'weekly';
+        } else if (oldRecurrence === 'monthly') {
+            recurrenceData.frequency = 'monthly';
+        } else if (oldRecurrence.endsWith('days')) {
+            recurrenceData.interval = parseInt(oldRecurrence) || 1;
         }
-
-        // 3. Áthelyezés az archívumból a fő célok listájára
-        const goalToReactivate = archivedGoals.splice(i, 1)[0];
-        goals.push(goalToReactivate);
-
-        goalsWereReset = true;
+        // Frissítjük a cél objektumot az új struktúrával
+        goal.recurrence = recurrenceData;
       }
-    }
-  }
+      // --- Kompatibilitás vége ---
 
-  if (goalsWereReset) {
-    console.log("Ismétlődő célok frissítve, mentés és renderelés...");
-    // Mindkét listát újra kell rajzolni
-    renderGoals();
-    if (document.getElementById('archiveModal').style.display === 'flex') {
-      renderArchivedGoals();
-    }
-    await saveDataToFirestore();
-  }
+      if (!recurrenceData) continue; // Ha nincs érvényes adat, hagyjuk
+
+      let goalExpired = false;
+      const todayISO = toDateInputString(today.toISOString());
+
+      // 1. LEJÁRATI FELTÉTELEK ELLENŐRZÉSE
+      if (recurrenceData.endCondition === 'count') {
+          if (recurrenceData.currentCount >= recurrenceData.endCount) {
+              goalExpired = true;
+          }
+      } else if (recurrenceData.endCondition === 'date') {
+          if (recurrenceData.endDate && todayISO > recurrenceData.endDate) {
+               goalExpired = true;
+          }
+      }
+
+      if (goalExpired) {
+          // A cél végleg lejárt. Kikapcsoljuk az ismétlődést.
+          console.log(`Ismétlődő cél végleg lejárt: ${goal.name}`);
+          goal.isRecurring = false;
+          goalsWereExpired = true;
+          continue; // Hagyjuk az archívumban, de már nem ismétlődik
+      }
+
+      // 2. ÚJRAAKTIVÁLÁS ELLENŐRZÉSE
+      const nextDueDate = getNextDueDate(goal.lastCompleted, recurrenceData);
+      
+      if (today.getTime() >= nextDueDate.getTime()) {
+        console.log(`Ismétlődő cél reaktiválása: ${goal.name}`);
+
+        // 1. Cél állapotának visszaállítása
+        goal.done = false;
+        goal.lastCompleted = null;
+		goal.startDate = null; 
+
+        // 2. Alcélok állapotának visszaállítása
+        if (goal.subGoals && goal.subGoals.length > 0) {
+          goal.subGoals.forEach(sg => {
+            if (sg.type === 'task') { // Csak a pipálhatókat
+              sg.done = false;
+            }
+          });
+        }
+
+        // 3. Áthelyezés az archívumból a fő célok listájára
+        const goalToReactivate = archivedGoals.splice(i, 1)[0];
+        goals.push(goalToReactivate);
+
+        goalsWereReset = true;
+      }
+    }
+  }
+
+  if (goalsWereReset || goalsWereExpired) {
+    console.log("Ismétlődő célok frissítve, mentés és renderelés...");
+    renderGoals();
+    if (document.getElementById('archiveModal').style.display === 'flex') {
+      renderArchivedGoals();
+    }
+    await saveDataToFirestore();
+  }
 }
 // EZ EGY TELJESEN ÚJ FÜGGVÉNY
 /**
@@ -3090,7 +3177,6 @@ async function saveGoal() { // Make async
 
   // ÚJ: Ismétlődés beolvasása
   const isRecurring = document.getElementById("goalIsRecurringInput").checked;
-  const recurrence = document.getElementById("goalRecurrenceSelect").value;
   const isPriority = document.getElementById("goalIsPriorityInput").checked; // ÚJ
   const startDate = document.getElementById("goalStartDateInput").value; // EZ AZ ÚJ SOR
 
@@ -3104,11 +3190,32 @@ async function saveGoal() { // Make async
     startDate: startDate || null // EZ AZ ÚJ SOR
   };
 
-  if (isRecurring) {
-    newGoal.isRecurring = true;
-    newGoal.recurrence = recurrence;
-    newGoal.lastCompleted = null; // Kezdetben nincs teljesítve
-  }
+if (isRecurring) {
+    newGoal.isRecurring = true;
+    
+    // 1. Beolvassuk az intervallumot és a frekvenciát
+    const frequency = document.getElementById("goalRecurrenceFrequency").value;
+    const interval = parseInt(document.getElementById("goalRecurrenceInterval").value) || 1;
+    
+    // 2. Beolvassuk a befejezési feltételt
+    const endCondition = document.querySelector('input[name="goalEndCondition"]:checked').value;
+    const endCount = parseInt(document.getElementById("goalEndCountInput").value) || 5;
+    const endDate = document.getElementById("goalEndDateInput").value || null;
+
+    // 3. Összeállítjuk az új recurrence objektumot
+    newGoal.recurrence = {
+      frequency: frequency, // 'daily', 'weekly', 'monthly', 'yearly'
+      interval: interval,   // pl. 2 (azaz minden 2. nap/hét/hónap/év)
+      
+      endCondition: endCondition, // 'never', 'count', 'date'
+      endDate: (endCondition === 'date' && endDate) ? endDate : null,
+      endCount: (endCondition === 'count') ? endCount : null,
+      
+      currentCount: 0 // A számláló nulláról indul
+    };
+    
+    newGoal.lastCompleted = null; // Kezdetben nincs teljesítve
+  }
 
   // ÚJ, MÓDOSÍTOTT RÉSZ
   const todayISO = toDateInputString(new Date().toISOString());
@@ -3165,9 +3272,26 @@ async function toggleGoal(i) { // Make async
 
     if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
-      goal.lastCompleted = new Date().toISOString();
-      addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
-      await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
+      goal.lastCompleted = new Date().toISOString();
+
+      let logMessage = `✅ Ismétlődő cél archiválva: ${goal.name}`;
+      const recurrence = goal.recurrence;
+
+      if (recurrence && typeof recurrence === 'object') {
+        // Növeljük a belső számlálót
+        recurrence.currentCount = (recurrence.currentCount || 0) + 1;
+
+        // Ellenőrizzük, hogy ezzel lejárt-e
+        if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
+          goal.isRecurring = false; // Lejárt, ne aktiválja újra
+          logMessage = `✅ Ismétlődő cél VÉGLEGESEN teljesítve: ${goal.name}`;
+          console.log(`Ismétlődés (darabszám) véget ért: ${goal.name}`);
+        }
+        // Dátum alapú lejárattal itt nem kell foglalkozni, azt a checkRecurringGoals kezeli
+      }
+      
+      addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
+      await logActivity(`${logMessage} (+${goal.points} pont)`);
 
       // Áthelyezés az archívumba
       const goalToArchive = goals.splice(i, 1)[0];
@@ -3239,9 +3363,25 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
 
     if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
-      goal.lastCompleted = new Date().toISOString();
-      addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
-      await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
+      goal.lastCompleted = new Date().toISOString();
+
+      let logMessage = `✅ Ismétlődő cél archiválva: ${goal.name}`;
+      const recurrence = goal.recurrence;
+
+      if (recurrence && typeof recurrence === 'object') {
+        // Növeljük a belső számlálót
+        recurrence.currentCount = (recurrence.currentCount || 0) + 1;
+
+        // Ellenőrizzük, hogy ezzel lejárt-e
+        if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
+          goal.isRecurring = false; // Lejárt, ne aktiválja újra
+          logMessage = `✅ Ismétlődő cél VÉGLEGESEN teljesítve: ${goal.name}`;
+          console.log(`Ismétlődés (darabszám) véget ért: ${goal.name}`);
+        }
+      }
+      
+      addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
+      await logActivity(`${logMessage} (+${goal.points} pont)`);
 
       // Áthelyezés az archívumba
       const goalToArchive = goals.splice(goalIndex, 1)[0];
@@ -3324,11 +3464,59 @@ function editGoal(i) {
   document.getElementById("editInputSubGoals").style.display = "block";
 
   // ÚJ: Ismétlődés mezők betöltése
-  const isRecurring = goals[i].isRecurring || false;
-  document.getElementById("editRecurringFields").style.display = "block";
-  document.getElementById("editIsRecurringInput").checked = isRecurring;
-  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
-  document.getElementById("editRecurrenceSelect").value = goals[i].recurrence || "daily";
+  // ===== ÚJ, BŐVÍTETT ISMÉTLŐDÉS BETÖLTÉSE =====
+  const isRecurring = goals[i].isRecurring || false;
+  document.getElementById("editRecurringFields").style.display = "block";
+  document.getElementById("editIsRecurringInput").checked = isRecurring;
+  document.getElementById("editRecurrenceOptions").style.display = isRecurring ? "block" : "none";
+
+  const recurrence = goals[i].recurrence;
+
+  // Alaphelyzetbe állítás (ha nincs mentett adat)
+  document.getElementById("editRecurrenceInterval").value = 1;
+  document.getElementById("editRecurrenceFrequency").value = "daily";
+  document.getElementById("editEndNever").checked = true;
+  document.getElementById("editEndCountInput").value = 5;
+  document.getElementById("editEndDateInput").value = "";
+
+  if (recurrence) {
+    if (typeof recurrence === 'object') {
+      // --- ÚJ, OBJEKTUM ALAPÚ ADAT BETÖLTÉSE ---
+      document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
+      document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
+      
+      // Befejezési feltétel beállítása
+      const endCondition = recurrence.endCondition || 'never';
+      document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
+
+      if (endCondition === 'count') {
+        document.getElementById("editEndCountInput").value = recurrence.endCount || 5;
+      } else if (endCondition === 'date') {
+        document.getElementById("editEndDateInput").value = recurrence.endDate || "";
+      }
+      
+    } else if (typeof recurrence === 'string') {
+      // --- RÉGI, STRING ALAPÚ ADAT KEZELÉSE (VISSZAALAKÍTÁS) ---
+      // Ez a rész kezeli a régi mentéseket, pl. "weekly" vagy "2days"
+      document.getElementById("editEndNever").checked = true; // A régiek sosem értek véget
+      
+      if (recurrence === 'daily') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      } else if (recurrence === 'weekly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "weekly";
+      } else if (recurrence === 'monthly') {
+        document.getElementById("editRecurrenceInterval").value = 1;
+        document.getElementById("editRecurrenceFrequency").value = "monthly";
+      } else if (recurrence.endsWith('days')) {
+        // pl. "2days"
+        document.getElementById("editRecurrenceInterval").value = parseInt(recurrence) || 2;
+        document.getElementById("editRecurrenceFrequency").value = "daily";
+      }
+    }
+  }
+  // ===== ISMÉTLŐDÉS BETÖLTÉS VÉGE =====
   const isPriority = goals[i].isPriority || false;
   document.getElementById("editPriorityField").style.display = "block";
   document.getElementById("editIsPriorityInput").checked = isPriority;
@@ -4278,17 +4466,44 @@ async function confirmEdit() { // Make async
     const isPriority = document.getElementById("editIsPriorityInput").checked;
     goals[editTarget.index].isPriority = isPriority;
     
-    // ÚJ: Ismétlődés frissítése
-    const isRecurring = document.getElementById("editIsRecurringInput").checked;
-    if (isRecurring) {
-      goals[editTarget.index].isRecurring = true;
-      goals[editTarget.index].recurrence = document.getElementById("editRecurrenceSelect").value;
-    } else {
-      delete goals[editTarget.index].isRecurring;
-      delete goals[editTarget.index].recurrence;
-      delete goals[editTarget.index].lastCompleted;
-      const isPriority = document.getElementById("editIsPriorityInput").checked;
-    }
+    // ===== ÚJ, BŐVÍTETT ISMÉTLŐDÉS MENTÉSE =====
+    const isRecurring = document.getElementById("editIsRecurringInput").checked;
+    if (isRecurring) {
+      goals[editTarget.index].isRecurring = true;
+      
+      // 1. Beolvassuk az intervallumot és a frekvenciát
+      const frequency = document.getElementById("editRecurrenceFrequency").value;
+      const interval = parseInt(document.getElementById("editRecurrenceInterval").value) || 1;
+      
+      // 2. Beolvassuk a befejezési feltételt
+      const endCondition = document.querySelector('input[name="editEndCondition"]:checked').value;
+      const endCount = parseInt(document.getElementById("editEndCountInput").value) || 5;
+      const endDate = document.getElementById("editEndDateInput").value || null;
+
+      // 3. Összeállítjuk az új recurrence objektumot
+      // Megtartjuk a 'currentCount'-ot, ha már létezett, különben 0-ról indul
+      const currentCount = (goals[editTarget.index].recurrence && typeof goals[editTarget.index].recurrence === 'object') 
+        ? (goals[editTarget.index].recurrence.currentCount || 0) 
+        : 0;
+      
+      goals[editTarget.index].recurrence = {
+        frequency: frequency,
+        interval: interval,
+        endCondition: endCondition,
+        endDate: (endCondition === 'date' && endDate) ? endDate : null,
+        endCount: (endCondition === 'count') ? endCount : null,
+        currentCount: currentCount
+      };
+      
+      // lastCompleted-et nem bántjuk, az a teljesítéskor frissül
+      
+    } else {
+      // Ha a felhasználó KIKAPCSOLTA az ismétlődést
+      delete goals[editTarget.index].isRecurring;
+      delete goals[editTarget.index].recurrence;
+      delete goals[editTarget.index].lastCompleted;
+    }
+    // ===== ISMÉTLŐDÉS MENTÉSÉNEK VÉGE =====
 
     // ÚJ: Állapot újraszámolása szerkesztés után
     const goal = goals[editTarget.index];
