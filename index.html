@@ -560,8 +560,10 @@
       background: rgba(0, 0, 0, 0.4);
       display: none;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       z-index: 1000;
+	  padding-top: 20px;
+	  overflow-y: auto;
     }
 	
 	#editModal {
@@ -574,6 +576,8 @@
       padding: 20px;
       width: 90%;
       max-width: 400px;
+	  max-height: 90vh;
+	  overflow-y: auto;
     }
 
     .modal-content h3 {
