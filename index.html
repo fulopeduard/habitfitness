@@ -3756,21 +3756,42 @@ function renderArchivedGoals() {
       recurringBtn = `<button style="color: #8e24aa;" title="Ismétlődés kikapcsolása" onclick="toggleRecurrenceInArchive(${index})">🔄</button>`;
     }
 
-    // Név és Várakozási dátum összeállítása
-    let goalNameHTML = `<div class="item-name-main">${goal.name} ${goal.isRecurring ? '🔄' : ''}</div>`;
-    if (isPending) {
-      // Megpróbáljuk szépen formázni a YYYY-MM-DD dátumot
-      let displayDate = goal.startDate;
-      try {
-         displayDate = new Date(goal.startDate.split('-')[0], goal.startDate.split('-')[1] - 1, goal.startDate.split('-')[2]).toLocaleDateString('hu-HU');
-      } catch(e) {}
+    // Név és Várakozási dátum / Újraaktiválás dátumának összeállítása
+        let goalNameHTML = `<div class="item-name-main">${goal.name} ${goal.isRecurring ? '🔄' : ''}</div>`;
+        let statusTextHTML = ""; // Külön változó a státuszszövegnek
 
-      goalNameHTML += `<small style="font-weight:bold; color:#004d40;">(Indul: ${displayDate})</small>`;
-    }
+        if (isPending) {
+          // JÖVŐBEN INDULÓ (IDŐZÍTETT) CÉL
+          let displayDate = goal.startDate;
+          try {
+            displayDate = new Date(goal.startDate.split('-')[0], goal.startDate.split('-')[1] - 1, goal.startDate.split('-')[2]).toLocaleDateString('hu-HU');
+          } catch(e) {}
+          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Indul: ${displayDate})</small>`;
+        
+        } else if (goal.isRecurring && goal.done && goal.lastCompleted && goal.recurrence && typeof goal.recurrence === 'object') {
+          // TELJESÍTETT, ÚJRAAKTIVÁLÁSRA VÁRÓ CÉL
+          const recurrence = goal.recurrence;
+          const nextDate = getNextDueDate(goal.lastCompleted, recurrence);
+          const displayDate = nextDate.toLocaleDateString('hu-HU');
+          
+          let remainingText = "";
+          if (recurrence.endCondition === 'count') {
+            const remaining = (recurrence.endCount || 0) - (recurrence.currentCount || 0);
+            remainingText = `(még ${remaining} alkalom)`;
+          } else if (recurrence.endCondition === 'date') {
+            const endDate = new Date(recurrence.endDate).toLocaleDateString('hu-HU');
+            remainingText = `(${endDate}-ig)`;
+          } else {
+            remainingText = "(nincs korlát)";
+        }
+          
+          statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Aktív: ${displayDate} ${remainingText})</small>`;
+        }
 
     div.innerHTML = `
       <div class="item-name">
          ${goalNameHTML}
+		 ${statusTextHTML}
       </div>
       <div class="item-points">
         ${goal.points} pont
