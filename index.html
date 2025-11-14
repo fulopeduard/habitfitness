@@ -171,10 +171,7 @@
       white-space: nowrap;
       /* Megakadályozza, hogy a szöveg törjön */
     }
-
-    /* ================================================== */
     /* ===== RESPONSIVE FŐMENÜ (TAB) STÍLUSOK ===== */
-    /* ================================================== */
     @media (max-width: 845px) {
       #tabs {
         gap: 6px;
@@ -208,11 +205,7 @@
         /* Ikon picit nagyobb, mert egyedül van */
       }
     }
-
-    /* ================================================== */
-    /* ================================================== */
     /* ===== CÉL/JUTALOM ELRENDEZÉS ===== */
-    /* ================================================== */
     .flex-container {
       display: flex;
       gap: 25px;
@@ -224,9 +217,7 @@
       flex: 1;
       min-width: 300px;
     }
-	/* ================================================== */
     /* ===== ÚJ PRIORITÁS CÉL STÍLUSOK (PIROS) ===== */
-    /* ================================================== */
     .goal-item.priority .item-name {
       background: #ffebee; /* Világos piros */
       color: #c62828; /* Sötét piros szöveg */
@@ -245,11 +236,7 @@
         color: #c62828;
         border-bottom: 1px solid #ffcdd2;
     }
-
-    /* ================================================== */
-    /* ================================================== */
     /* ===== KÁRTYA FEJLÉC (CÍM + GOMB/PONTOK) STÍLUS ===== */
-    /* ================================================== */
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -279,12 +266,7 @@
       background: #004d40;
       /* Sötétebb zöld hover-re */
     }
-
-    /* ================================================== */
-
-    /* ================================================== */
     /* ===== PONTSZÁMLÁLÓ (JUTALMAK FEJLÉC) ===== */
-    /* ================================================== */
     .header-points-display {
       display: flex;
       align-items: center;
@@ -306,7 +288,6 @@
       /* Kiemelt szám */
       line-height: 1;
     }
-
     .header-points-display .points-label {
       color: #00796b;
       /* Téma zöld */
@@ -314,12 +295,7 @@
       font-size: 1.1em;
       line-height: 1;
     }
-
-    /* ================================================== */
-
-    /* ================================================== */
     /* ===== ÚJ GOMB STÍLUS (KÁRTYA ALJÁN) ===== */
-    /* ================================================== */
     .new-item-button {
       width: 100%;
       /* Teljes szélesség */
@@ -330,13 +306,7 @@
       margin-top: 15px;
       /* Távolság a listától */
     }
-
-    /* ================================================== */
-
-
-    /* ================================================== */
     /* ===== CÉL, JUTALOM, ÉTEL SÁV STÍLUS ===== */
-    /* ================================================== */
     .goal-item,
     .reward-item,
     .food-item {
@@ -349,12 +319,10 @@
       align-items: stretch;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-
     .completed {
       text-decoration: line-through;
       opacity: 0.7;
     }
-
     .item-name {
       flex: 1;
       padding: 7px 15px;
@@ -366,7 +334,6 @@
       align-items: flex-start;
       /* MÓDOSÍTVA */
     }
-
     .item-points {
       flex-shrink: 0;
       align-items: center;
@@ -383,7 +350,6 @@
       align-items: center;
       justify-content: center;
     }
-
     /* ÚJ STÍLUS AZ ÉTEL KÁRTYÁHOZ */
     .food-item .item-details {
       flex-shrink: 0;
@@ -397,13 +363,9 @@
       font-size: 0.9em;
       line-height: 1.3;
     }
-
     .food-item .item-details span {
       display: block;
     }
-
-    /* ================================================== */
-
     .item-actions {
       flex-shrink: 0;
       padding: 7px 10px;
@@ -414,7 +376,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .item-actions button {
       background: transparent;
       color: #00796b;
@@ -422,25 +383,20 @@
       cursor: pointer;
       padding: 1px;
     }
-
     /* ÚJ STÍLUSOK AZ ARCHIVÁLÁSHOZ */
     .item-actions button.archive-btn {
       color: #004d40;
       /* Sötétzöld az archiváláshoz */
     }
-
     /* Stílus az archivált elemek gombjaihoz */
     #archivedGoalList .item-actions button.reactivate-btn {
       color: #00796b;
       /* Zöld */
     }
-
     #archivedGoalList .item-actions button.delete-btn {
       color: #c00;
       /* Piros */
     }
-
-
     .category-title {
       margin-bottom: 5px;
       color: #004d40;
@@ -452,10 +408,7 @@
     #goalList .category-title:first-of-type {
       margin-top: 10px;
     }
-
-    /* ================================================== */
     /* ===== ÚJ ALCÉL (SUB-GOAL) STÍLUSOK ===== */
-    /* ================================================== */
     .subgoal-list {
       margin-top: 10px;
       padding-left: 1px;
@@ -464,7 +417,34 @@
       width: 100%;
       /* Kitölti a .item-name szélességét */
     }
+	/* ===== ÚJ ALCÉL PROGRESS BAR STÍLUS ===== */
+    .subgoal-progress-container {
+      width: 100%;
+      height: 2px; /* Kérésnek megfelelően vékony */
+      background: #c8e6c9; /* Halvány háttér, mint a kompakt sávé */
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 2px; /* Kis távolság a címtől */
+      /* A távolságot az alcél listától a .subgoal-list margin-top-ja adja */
+      border: 1px solid #a5d6a7;
+    }
 
+    .subgoal-progress-fill {
+      height: 100%;
+      width: 0%; /* Ezt a style="" inline felülírja */
+      background: #00796b; /* Alap téma-zöld */
+      border-radius: 5px;
+      transition: width 0.9s ease;
+    }
+    
+    /* Ha a cél prioritásos, a sáv is legyen pirosas */
+    .goal-item.priority .subgoal-progress-container {
+        background: #ffcdd2;
+        border-color: #ef9a9a;
+    }
+    .goal-item.priority .subgoal-progress-fill {
+        background: #c62828; /* Sötét piros */
+    }
     .subgoal-header {
       font-size: 1.1em;
       font-weight: bold;
@@ -516,10 +496,6 @@
     .goal-item.completed .subgoal-list {
       text-decoration: none;
     }
-
-    /* ================================================== */
-
-
     .log {
       background: #f8f8f8;
       border-radius: 10px;
@@ -600,10 +576,7 @@
       background-color: white;
       /* Select hátérszín */
     }
-
-    /* ================================================== */
     /* ===== GRAFIKON MODAL STÍLUSOK ===== */
-    /* ================================================== */
     #chartModalContent {
       max-width: 90%;
       width: 800px;
@@ -613,10 +586,6 @@
       width: 100%;
       height: 400px;
     }
-
-    /* ================================================== */
-
-
     /* ====== KÖVETÉS STÍLUSOK ====== */
     .icon-card .content-wrapper {
       margin-top: 15px;
@@ -625,7 +594,6 @@
       flex-direction: column;
       justify-content: flex-end;
     }
-
     .progress-summary {
       font-size: 0.9em;
       font-weight: bold;
@@ -634,13 +602,11 @@
       margin-bottom: 10px;
       height: 1.2em;
     }
-
     .input-group {
       display: flex;
       margin-top: 10px;
       gap: 5px;
     }
-
     .input-group input {
       flex: 1;
       width: 60%;
@@ -648,13 +614,11 @@
       font-size: 0.9em;
       text-align: center;
     }
-
     .input-group button {
       flex-shrink: 0;
       font-size: 0.85em;
       padding: 8px 10px;
     }
-
     .progress-bar-container {
       background: #c8e6c9;
       border-radius: 10px;
@@ -664,7 +628,6 @@
       overflow: hidden;
       border: 1px solid #a5d6a7;
     }
-
     .progress-bar {
       background: #00796b;
       height: 100%;
@@ -672,32 +635,27 @@
       border-radius: 10px;
       transition: width 0.5s ease;
     }
-
     /* ÚJ: A PROTEIN SÁV SZÍNE */
     #proteinProgressBar {
       background: #8e24aa;
       /* Lila */
     }
-
     /* ====== ANIMÁCIÓK ====== */
     .fade-in {
       opacity: 0;
       transform: translateY(10px);
       animation: fadeIn 0.6s ease forwards;
     }
-
     @keyframes fadeIn {
       from {
         opacity: 0;
         transform: translateY(10px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-
     button,
     .tab-btn {
       transition: transform 0.15s ease, background-color 0.3s;
@@ -707,7 +665,6 @@
     .tab-btn:hover {
       transform: scale(1.03);
     }
-
     /* ====== EXPORT / RESET PANEL ====== */
     #controlPanel {
       text-align: center;
@@ -722,11 +679,7 @@
     #controlPanel input[type="file"] {
       display: none;
     }
-
-
-    /* ================================================== */
     /* ===== ÚJ JEGYZET STÍLUSOK ===== */
-    /* ================================================== */
     #noteViewModal .modal-content {
       background: #f1f8e9;
       max-width: 600px;
@@ -782,10 +735,7 @@
       resize: vertical;
       font-family: 'Segoe UI', sans-serif;
     }
-
-    /* ================================================== */
     /* ===== ÚJ KOMPAKT FŐOLDALI CÉLOK STÍLUS ===== */
-    /* ================================================== */
     #compactGoalsContainer {
       display: grid;
       /* JAVÍTÁS: Átállás Grid-re */
@@ -920,10 +870,7 @@
         /* Középre igazítja a gombokat a soron belül */
       }
     }
-
-    /* ================================================== */
     /* ===== ÚJ EDZÉS STÍLUSOK (NAPTÁR TÖRÖLVE) ===== */
-    /* ================================================== */
     .workout-adder {
       display: flex;
       gap: 10px;
@@ -982,10 +929,7 @@
       /* Téma zöld */
       font-size: 1.1em;
     }
-
-    /* ================================================== */
     /* ===== ÚJ ÉTEL PROGRESS BAR STÍLUSOK ===== */
-    /* ================================================== */
     .meal-progress-container {
       margin-top: 0px;
       width: 100%;
@@ -1028,9 +972,7 @@
       background: #8e24aa;
       /* Protein - lila */
     }
-/* ================================================== */
     /* ===== ÚJ KIEMELT EMLÉKEZTETŐ STÍLUS ===== */
-    /* ================================================== */
     #highlightContainer {
       display: flex;
       flex-direction: column;
@@ -1067,11 +1009,7 @@
       font-weight: bold;
       color: #c62828;
     }
-    /* ================================================== */
-    /* ================================================== */
     /* ===== ÉTEL SÁV ELRENDEZÉS MÓDOSÍTÁSA ===== */
-    /* ================================================== */
-
     /* Felülírjuk az alap sáv stílust, hogy ne flex legyen, hanem blokk */
     .food-item {
       display: block;
@@ -1109,10 +1047,6 @@
       border-top: 1px solid #dcedc8;
       /* Finom elválasztó vonal */
     }
-
-    /* ================================================== */
-    /* ================================================== */
-    /* ================================================== */
   </style>
 </head>
 
@@ -1692,9 +1626,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // =======================================================
     // ===== ÚJ FUNKCIÓ: JEGYZET KATEGÓRIA LISTA LÉTREHOZÁSA =====
-    // =======================================================
     function populateNoteCategoryDatalist() {
       const datalist = document.getElementById('noteCategoryDatalist');
       if (!datalist) return;
@@ -1807,10 +1739,7 @@ function openModal(id) {
       document.getElementById("goalProteinInput").value = goalProteinSetting || ""; // HOZZÁADVA
       openModal('goalSetupModal');
     }
-
-    // =======================================================
     // ===== ÚJ GYORS BEJEGYZÉS FUNKCIÓK =====
-    // =======================================================
     function openQuickAddModal() {
       // Kitörli a régi beviteli értékeket
       document.getElementById("quickWeightInput").value = "";
@@ -1903,9 +1832,7 @@ function openModal(id) {
         updateChart();
       }
     }
-// =======================================================
     // ===== ÚJ KIEMELT EMLÉKEZTETŐK RENDERELÉSE =====
-    // =======================================================
     function renderHighlights() {
       const container = document.getElementById("highlightContainer");
       // Csak akkor fuss, ha a főoldali container létezik (tehát a Főoldal fülön vagyunk)
@@ -2106,13 +2033,6 @@ function openModal(id) {
         compactFatBar.style.width = '0%';
       }
     }
-    // =======================================================
-    // ===== ALL APP LOGIC (NOW FIREBASE ENABLED) =====
-    // =======================================================
-    // =======================================================
-    // ===== GLOBÁLIS VÁLTOZÓK (REFACTORED) =====
-    // =======================================================
-    // These are now initialized as empty.
     // They will be filled by loadDataFromFirestore()
     let goals = [];
     let rewards = [];
@@ -2166,11 +2086,7 @@ function openModal(id) {
       const d = date.getDate().toString().padStart(2, '0');
       return `${y}-${m}-${d}`;
     }
-
-
-    // =======================================================
     // ===== ÚJ FUNKCIÓ: KATEGÓRIA LISTA LÉTREHOZÁSA =====
-    // =======================================================
     function populateCategoryDatalist() {
       const datalist = document.getElementById('categoryDatalist');
       if (!datalist) return;
@@ -2197,12 +2113,7 @@ function openModal(id) {
         datalist.appendChild(option);
       });
     }
-    // =======================================================
-
-
-    // =======================================================
     // ===== AUTHENTICATION (NEW FUNCTIONS) =====
-    // =======================================================
     function handleLogin() {
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
@@ -2236,11 +2147,7 @@ function openModal(id) {
     function handleLogout() {
       auth.signOut();
     }
-
-    // =======================================================
     // ===== DATA SYNC (NEW FUNCTIONS) =====
-    // =======================================================
-
     // A function to get all data from Firestore
     async function loadDataFromFirestore() {
       if (!currentUser) return; // Safety check
@@ -2323,11 +2230,7 @@ function openModal(id) {
         console.error("Error saving data:", error);
       }
     }
-
-    // =======================================================
     // ===== APP INITIALIZATION (REFACTORED) =====
-    // =======================================================
-
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         // === USER IS LOGGED IN ===
@@ -2373,11 +2276,7 @@ function openModal(id) {
         goalProteinSetting = "";
       }
     });
-
-
-    // =======================================================
     // ===== PONTSZÁMLÁLÓ ANIMÁCIÓ =====
-    // =======================================================
     function animatePoints(newValue) {
       const displayElement = document.getElementById("totalPointsDisplay");
       if (!displayElement) return;
@@ -2407,20 +2306,12 @@ function openModal(id) {
       }
       window.requestAnimationFrame(step);
     }
-
-
-    // =======================================================
     // ===== GRAFIKON MODAL FUNKCIÓ =====
-    // =======================================================
     function openChartModal() {
       openModal('chartModal');
       setTimeout(updateChart, 100);
     }
-
-    // =======================================================
     // ===== ADATKEZELŐ FÜGGVÉNYEK =====
-    // =======================================================
-
     function calculateDailyProgress() {
       const today = new Date().toISOString().slice(0, 10);
       // 'protein' HOZZÁADVA
@@ -2481,10 +2372,7 @@ function openModal(id) {
         dailyProgress.lastWeight = lastWeightEntry.value;
       }
     }
-
-    // =======================================================
     // ===== MÓDOSÍTOTT TAB KEZELÉS =====
-    // =======================================================
     function showTab(id) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 	  if (id === 'main') {
@@ -2546,9 +2434,7 @@ function openModal(id) {
       }
       // ===== MÓDOSÍTOTT LOGIKA VÉGE =====
     }
-    // =======================================================
     // ===== EDZÉS FUNKCIÓK (REFACTORED) =====
-    // =======================================================
     async function addWorkout() { // Make async
       const dateInput = document.getElementById("workoutDateInput");
       const selectedDate = dateInput.value;
@@ -2716,23 +2602,6 @@ function openModal(id) {
 
       openModal('editModal');
     }
-    // =======================================================
-
-
-    // ===== CÉLBEÁLLÍTÁS (REFACTORED) =====
-    // =======================================================
-	// =======================================================
-// ===== ÚJ FUNKCIÓ: ISMÉTLŐDŐ CÉLOK LOGIKÁJA =====
-// =======================================================
-
-/**
- * Ellenőrzi, hogy egy adott dátum (utolsó teljesítés) és
- * gyakoriság alapján vissza kell-e állítani egy célt a mai napon.
- */
-// =======================================================
-// ===== ÚJ, KOMPLEX ISMÉTLŐDÉSI LOGIKA =====
-// =======================================================
-
 /**
  * Kiszámítja a következő esedékességi dátumot a megadott szabályok alapján.
  * @param {string} lastCompletedISO - Az utolsó teljesítés ISO dátuma.
@@ -2925,7 +2794,7 @@ async function checkPendingGoals() {
     await saveDataToFirestore();
   }
 }
-// =======================================================
+
 async function saveGoalSettings() { // Make async
   const gw = parseFloat(document.getElementById("goalWeightInput").value) || null;
   const gwat = parseFloat(document.getElementById("goalWaterInput").value) || null;
@@ -2959,12 +2828,7 @@ function updateAllSummaries() {
   // Frissítjük a kompakt nézetet
   updateCompactSummaries();
 }
-
-
-// =======================================================
 // ===== ADATBEVITEL ÉS TÖRLÉS (REFACTORED) =====
-// =======================================================
-
 async function deleteTransaction(index) { // Make async
   if (!confirm("Biztosan törlöd ezt a bejegyzést?")) {
     return;
@@ -2981,11 +2845,7 @@ async function deleteTransaction(index) { // Make async
     updateChart();
   }
 }
-
-
-// =======================================================
 // ===== JEGYZETEK FUNKCIÓK (REFACTORED) =====
-// =======================================================
 // ÚJ: Megnyitja a jegyzet hozzáadása modált
 function openAddNoteModal() {
   // Töröljük a modál tartalmát
@@ -3174,12 +3034,7 @@ function editNote(i) {
 
   openModal('editModal');
 }
-// =======================================================
-
-
-// =======================================================
 // ===== CÉLOK (REFACTORED) =====
-// =======================================================
 async function saveGoal() { // Make async
   const name = document.getElementById("goalNameInput").value.trim();
   const points = parseInt(document.getElementById("goalPointsInput").value);
@@ -3301,10 +3156,7 @@ if (isRecurring) {
   }
   await logActivity(logMessage);
 }
-// =======================================================
 // ===== JAVÍTOTT CÉLKEZELŐ FÜGGVÉNYEK KEZDETE =====
-// =======================================================
-
 async function toggleGoal(i) { // Make async
   if (i < 0 || i >= goals.length) {
     console.error("Invalid index for toggleGoal:", i);
@@ -3473,10 +3325,7 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
   // 4. Fő cél lista újra-rajzolása
   renderGoals();
 }
-// =======================================================
 // ===== JAVÍTOTT CÉLKEZELŐ FÜGGVÉNYEK VÉGE =====
-// =======================================================
-
 function editGoal(i) {
   editTarget = {
     type: 'goal',
@@ -3697,6 +3546,26 @@ function renderGoals() {
     }
     // ===== MÓDOSÍTOTT ALCÉL LOGIKA VÉGE =====
 
+    // ===== EZ AZ ÚJ KÓD BLOKK (PROGRESS BAR) =====
+    let progressBarHTML = "";
+    if (hasTasks) {
+      const tasks = g.subGoals.filter(sg => (sg.type || 'task') === 'task');
+      const totalTasks = tasks.length;
+      const completedTasks = tasks.filter(sg => sg.done).length;
+      let progressPercent = 0;
+      
+      if (totalTasks > 0) {
+        progressPercent = (completedTasks / totalTasks) * 100;
+      }
+
+      progressBarHTML = `
+        <div class="subgoal-progress-container">
+          <div class="subgoal-progress-fill" style="width: ${progressPercent}%;"></div>
+        </div>
+      `;
+    }
+    // ===== ÚJ BLOKK VÉGE =====
+
     // ===== ÚJ IKON HOZZÁADÁSA A NÉVHEZ =====
     const priorityIcon = g.isPriority ? '📌 ' : ''; // Tű ikon
     const recurringIcon = g.isRecurring ? ' 🔄' : ''; // Ismétlődő ikon
@@ -3704,7 +3573,7 @@ function renderGoals() {
     div.innerHTML = `
       <div class="item-name">
         <div class="item-name-main">${priorityIcon}${g.name}${recurringIcon}</div>
-        ${subGoalsHTML}
+        ${progressBarHTML}         ${subGoalsHTML}
       </div>
       <div class="item-points">
         ${g.points} pont
@@ -3769,9 +3638,7 @@ function renderGoals() {
   }
   // ===== SORREND VÉGE =====
 }
-// =======================================================
 // ===== ARCHÍVUM FUNKCIÓK =====
-// =======================================================
 function openArchiveModal() {
   renderArchivedGoals();
   openModal('archiveModal');
@@ -3927,9 +3794,7 @@ async function deleteArchivedGoal(index) {
     }
   }
 }
-// =======================================================
 // ===== ÚJ FUNKCIÓ: ARCHIVÁLT CÉL SZERKESZTÉSE =====
-// =======================================================
 function editArchivedGoal(index) {
   const goal = archivedGoals[index]; // Az archivált tömbből vesszük
 
@@ -4038,9 +3903,7 @@ function editArchivedGoal(index) {
 
   openModal('editModal');
 }
-// =======================================================
 // ===== ÚJ FUNKCIÓ: ARCHIVÁLT CÉL SZERKESZTÉSE =====
-// =======================================================
 function editArchivedGoal(index) {
   const goal = archivedGoals[index]; // Az archivált tömbből vesszük
 
@@ -4169,9 +4032,9 @@ async function toggleRecurrenceInArchive(index) {
   await logActivity(`🔄 Ismétlődés kikapcsolva: ${goal.name}`);
   // A logActivity már magában foglalja a saveDataToFirestore() hívást
 }
-// =======================================================
+ 
 // ===== ÚJ SZÖVEGFORMÁZÓ SEGÉDFÜGGVÉNYEK =====
-// =======================================================
+ 
 
 /**
  * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
@@ -4258,13 +4121,8 @@ function renderStructuredArrayToHTML(arrayOrString) {
     });
     return html;
 }
-// =======================================================
-// =======================================================
-
-
-// =======================================================
 // ===== JUTALMAK (REFACTORED) =====
-// =======================================================
+ 
 async function saveReward() { // Make async
   const name = document.getElementById("rewardNameInput").value.trim();
   const cost = parseInt(document.getElementById("rewardCostInput").value);
@@ -4354,11 +4212,7 @@ function renderRewards() {
     list.appendChild(div);
   });
 }
-
-// =======================================================
 // ===== ÚJ ÉTKEZÉS FUNKCIÓK =====
-// =======================================================
-
 // A modal címkéinek frissítése a típusválasztó alapján
 function updateMealModalLabels() {
   const type = document.getElementById("mealTypeSelect").value;
@@ -4452,7 +4306,6 @@ function renderMeals() {
     }
     return;
   }
-
   // ===== KATEGORIZÁLÁS KEZDETE =====
   const categorized = {};
   const uncategorized = [];
@@ -4539,7 +4392,6 @@ function renderMeals() {
     list.appendChild(div);
   };
   // --- Segédfüggvény vége ---
-
   // ===== KATEGÓRIÁK KIRAJZOLÁSA =====
   const categoryNames = Object.keys(categorized).sort();
   categoryNames.forEach(categoryName => {
@@ -4552,7 +4404,6 @@ function renderMeals() {
       renderItem(item, item.originalIndex); // 4. LÉPÉS: Az eredeti indexet adjuk át
     });
   });
-
   // ===== KATEGÓRIA NÉLKÜLIEK KIRAJZOLÁSA =====
   if (uncategorized.length > 0) {
     if (categoryNames.length > 0) {
@@ -4702,9 +4553,7 @@ async function confirmConsume() {
 
   closeModal('consumeModal');
 }
-// =======================================================
 // ===== KIBŐVÍTETT SZERKESZTÉS FUNKCIÓ (REFACTORED) =====
-// =======================================================
 async function confirmEdit() { // Make async
   const v1 = document.getElementById("editInput1").value; // Cím / Név
 
@@ -4780,7 +4629,6 @@ async function confirmEdit() { // Make async
         });
     }
     // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS VÉGE =====
-
     goals[editTarget.index].subGoals = newSubGoals;
     
 	// ÚJ: Prioritás frissítése (EZ A HELYES HELY)
@@ -4852,7 +4700,6 @@ async function confirmEdit() { // Make async
     // Ellenőrzés: Át kell-e helyezni a célt az archívumba időzítés miatt?
     const editedGoal = goals[editTarget.index];
     const todayISO = toDateInputString(new Date().toISOString());
-
     // ===== MÓDOSÍTOTT ARCHIVÁLÁSI LOGIKA =====
     const isPendingOnStartDate = editedGoal.startDate && editedGoal.startDate > todayISO;
     const isPendingOnRecurrenceDate = editedGoal.isRecurring && editedGoal.recurrence.recurrenceStartDate && editedGoal.recurrence.recurrenceStartDate > todayISO;
@@ -5018,7 +4865,6 @@ async function confirmEdit() { // Make async
     if (highlight && new Date(highlightDate) > reminderTime) {
       return alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
     }
-
     // Objektum frissítése a tömbben
     const reminder = reminders[editTarget.index];
     reminder.text = text;
@@ -5049,7 +4895,6 @@ async function confirmEdit() { // Make async
   document.getElementById("editRecurringFields").style.display = "none";
   document.getElementById("editPriorityField").style.display = "none"; // <-- EZT A SORT ADJ HOZZÁ
 }
-
 // ===== NAPLÓ (REFACTORED) =====
 async function logActivity(text) { // Make async
   const time = new Date();
@@ -5107,11 +4952,7 @@ async function clearAllLogs() { // Make async
     await saveDataToFirestore();
   }
 }
-
-// =======================================================
 // ===== ÚJ PONT TÖRTÉNET FUNKCIÓK =====
-// =======================================================
-
 /**
  * Létrehoz egy bejegyzést a pontnaplóban.
  * Ezt a függvényt NEM kell await-elni, és NEM ment magától.
@@ -5152,7 +4993,6 @@ function renderPointsLog() {
         displayTime = new Date(entry.time).toLocaleString();
       }
     }
-
     const amountColor = entry.amount > 0 ? '#00796b' : '#c00'; // Zöld vagy piros
     const amountSign = entry.amount > 0 ? '+' : '';
 
@@ -5197,10 +5037,7 @@ async function deletePointsLogEntry(id) {
     await saveDataToFirestore();
   }
 }
-
-// =======================================================
 // ===== GRAFIKON (REFACTORED) =====
-// =======================================================
 function updateChart() {
   const ctx = document.getElementById("progressChart");
   if (!ctx) return;
@@ -5303,11 +5140,8 @@ function updateHistory() {
     div.appendChild(item);
   });
 }
-
-
-// =======================================================
 // ===== EXPORT / IMPORT / RESET (REFACTORED) =====
-// =======================================================
+ 
 function exportData() {
   const allData = {
     goals,
@@ -5395,7 +5229,6 @@ async function resetAll() { // Make async
     alert("FitGarden újraindítva, minden törölve ✅");
   }
 }
-
 function renderAll() {
   calculateDailyProgress();
   renderHighlights();
@@ -5421,21 +5254,14 @@ function renderAll() {
   // Nincs szükség külön renderReminders() hívásra itt,
   // mert a showTab() már kezeli, amikor odalépünk.
 }
-
-// =======================================================
 // ===== ÚJ EMLÉKEZTETŐ FUNKCIÓK =====
-// =======================================================
-
-/**
- * Ellenőrzi az értesítési engedélyt, és kéri, ha még nincs beállítva.
- */
+// ===== Ellenőrzi az értesítési engedélyt, és kéri, ha még nincs beállítva.
 function checkNotificationPermission() {
   // Ellenőrizzük, hogy a böngésző támogatja-e az értesítéseket
   if (!('Notification' in window)) {
     console.warn("Ez a böngésző nem támogatja az asztali értesítéseket.");
     return;
   }
-
   // Kérjünk engedélyt, ha még nincs 'granted' (engedélyezve) vagy 'denied' (letiltva)
   if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
     Notification.requestPermission().then(permission => {
@@ -5451,13 +5277,7 @@ function checkNotificationPermission() {
     });
   }
 }
-
-/**
- * Hozzáad egy új emlékeztetőt a listához.
- */
-/**
-     * Hozzáad egy új emlékeztetőt a listához.
-     */
+// ===== Hozzáad egy új emlékeztetőt a listához.
     async function addReminder() {
       const textInput = document.getElementById("reminderTextInput");
       const timeInput = document.getElementById("reminderTimeInput");
@@ -5517,9 +5337,7 @@ function checkNotificationPermission() {
       renderAll(); 
       await saveDataToFirestore();
     }
-/**
- * Kirajzolja az aktív emlékeztetők listáját.
- */
+// ===== Kirajzolja az aktív emlékeztetők listáját.
 async function deleteReminder(id) {
       if (!confirm("Biztosan törlöd ezt az emlékeztetőt?")) {
         return;
@@ -5562,10 +5380,7 @@ function renderReminders() {
     list.appendChild(div);
   });
 }
-
-/**
- * Elindítja az időzítőt, ami rendszeresen ellenőrzi az emlékeztetőket.
- */
+// ===== Elindítja az időzítőt, ami rendszeresen ellenőrzi az emlékeztetőket.
 function startReminderEngine() {
   // Ha már fut, ne indítsuk újra
   if (reminderCheckInterval) {
@@ -5578,10 +5393,7 @@ function startReminderEngine() {
   // Indításkor azonnal lefuttatjuk, hogy az esetleg lekésett emlékeztetők megjelenjenek
   checkReminders();
 }
-
-/**
- * Ellenőrzi az emlékeztetőket, és aktiválja azokat, amiknek lejárt az ideje.
- */
+// ===== Ellenőrzi az emlékeztetőket, és aktiválja azokat, amiknek lejárt az ideje.
 function checkReminders() {
   const now = new Date();
   let needsSave = false; // Csak akkor mentünk, ha változás történt
@@ -5602,9 +5414,9 @@ function checkReminders() {
         saveDataToFirestore();
       }
 	}
-/**
- * Megjeleníti a böngésző értesítést.
- */
+
+// ===== Megjeleníti a böngésző értesítést.
+
 function showReminderNotification(reminder) {
   if (Notification.permission === 'granted') {
     // Jelenítsük meg az értesítést
@@ -5617,8 +5429,6 @@ function showReminderNotification(reminder) {
     console.warn(`Emlékeztető elsütve (de nincs engedély): ${reminder.text}`);
   }
 }
-
-// =======================================================
 </script>
 
 </body>
