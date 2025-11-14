@@ -1222,11 +1222,13 @@
           <div class="card">
             <div class="card-header">
               <h2>✅ Célok</h2>
-              <button class="archive-header-btn" onclick="openArchiveModal()">📥 | ⏳</button>
+                            <div style="display: flex; gap: 8px;">
+                <button onclick="openArchiveModal()" class="card-header-add-btn">📥|⏳</button>
+                <button onclick="openModal('goalModal')" class="card-header-add-btn">+ Új cél</button>
+              </div>
             </div>
             <div id="goalList"></div>
-            <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
-          </div>
+           </div>
           <div class="card">
             <div class="card-header">
               <h2>🎁 Jutalmak</h2>
