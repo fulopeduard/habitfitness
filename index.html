@@ -1222,7 +1222,7 @@
           <div class="card">
             <div class="card-header">
               <h2>✅ Célok</h2>
-              <button class="archive-header-btn" onclick="openArchiveModal()">📥 Archívált / Időzített</button>
+              <button class="archive-header-btn" onclick="openArchiveModal()">📥 | ⏳</button>
             </div>
             <div id="goalList"></div>
             <button onclick="openModal('goalModal')" class="new-item-button">+ Új cél</button>
@@ -1575,7 +1575,7 @@
 
     <div class="modal" id="archiveModal">
       <div class="modal-content" style="max-width: 600px;">
-        <h3>📥 Archivált vagy időzített célok</h3>
+        <h3>📥|⏳ Archivált vagy időzített célok</h3>
         <div id="archivedGoalList" style="max-height: 400px; overflow-y: auto;">
         </div>
         <div style="text-align:center;margin-top:15px;">
@@ -3708,7 +3708,7 @@ function renderGoals() {
         ${g.points} pont
       </div>
       <div class="item-actions">
-      <button class="archive-btn" title="Archivált/Időzített" onclick="archiveGoal(${i})">📥</button>
+      <button class="archive-btn" title="" onclick="archiveGoal(${i})">📥</button>
         <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
         ${!hasTasks ? ( 
@@ -3873,7 +3873,7 @@ function renderArchivedGoals() {
         ${goal.points} pont
       </div>
       <div class="item-actions">
-        ${recurringBtn} <button class="reactivate-btn" title="Visszaállítás" onclick="reactivateGoal(${index})">♻️</button>
+        ${recurringBtn} <button class="reactivate-btn" title="Visszaállítás a főoldalra" onclick="reactivateGoal(${index})">🔙️</button>
 		<button style="color:#00796b" title="Szerkesztés" onclick="editArchivedGoal(${index})">✏️</button>
         <button class="delete-btn" title="Végleges törlés" onclick="deleteArchivedGoal(${index})">🗑️</button>
       </div>
@@ -3906,7 +3906,7 @@ async function reactivateGoal(index) {
 
     renderGoals();
     renderArchivedGoals(); // Ezt kell futtatni, mert az archívum lista is változott
-    await logActivity(`♻️ Cél visszaállítva: ${goalToReactivate.name}`);
+    await logActivity(`🔙 Cél visszaállítva: ${goalToReactivate.name}`);
   }
 }
 
