@@ -1063,6 +1063,9 @@
       <button onclick="handleLogin()" style="flex: 1;">Belépés</button>
       <button onclick="handleSignUp()" style="flex: 1; background: #004d40;">Regisztráció</button>
     </div>
+	<p onclick="handlePasswordReset()" style="text-align: center; color: #00796b; cursor: pointer; margin-top: 15px; margin-bottom: 0px; font-size: 0.9em;">
+      Elfelejtett jelszó?
+    </p>
     <p id="loginError" style="color: red; text-align: center; margin-top: 10px;"></p>
   </div>
 
@@ -2128,6 +2131,37 @@ function openModal(id) {
           document.getElementById('loginError').innerText = "Hiba: " + error.message;
         });
     }
+	
+	function handlePasswordReset() {
+    const email = document.getElementById('loginEmail').value;
+    const errorElement = document.getElementById('loginError');
+	errorElement.style.color = "red"; 
+    errorElement.innerText = "Hiba: " + error.message;
+    errorElement.innerText = ""; // Korábbi üzenetek törlése
+
+    if (!email) {
+      errorElement.style.color = "red";
+      errorElement.innerText = "Kérlek, add meg az e-mail címedet a jelszó-visszaállításhoz.";
+      return;
+    }
+
+    // Firebase hívás
+    auth.sendPasswordResetEmail(email)
+      .then(() => {
+        // Sikeres e-mail küldés
+        errorElement.style.color = "#00796b"; // Zöld szín a siker jelzésére
+        errorElement.innerText = "Jelszó-visszaállító e-mail elküldve! Kérlek, ellenőrizd a postafiókodat.";
+      })
+      .catch((error) => {
+        // Hiba történt
+        errorElement.style.color = "red";
+        if (error.code === 'auth/user-not-found') {
+          errorElement.innerText = "Hiba: Nincs ilyen e-mail címmel regisztrált felhasználó.";
+        } else {
+          errorElement.innerText = "Hiba: " + error.message;
+        }
+      });
+  }
 
     function handleSignUp() {
       const email = document.getElementById('loginEmail').value;
