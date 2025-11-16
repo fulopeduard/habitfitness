@@ -2135,12 +2135,10 @@ function openModal(id) {
 	function handlePasswordReset() {
     const email = document.getElementById('loginEmail').value;
     const errorElement = document.getElementById('loginError');
-	errorElement.style.color = "red"; 
-    errorElement.innerText = "Hiba: " + error.message;
     errorElement.innerText = ""; // Korábbi üzenetek törlése
 
     if (!email) {
-      errorElement.style.color = "red";
+      errorElement.style.color = "red"; // Itt állítjuk pirosra
       errorElement.innerText = "Kérlek, add meg az e-mail címedet a jelszó-visszaállításhoz.";
       return;
     }
