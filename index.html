@@ -2444,12 +2444,15 @@ function handleWorkoutFilterChange() {
         await checkRecurringGoals(); // ÚJ: Ismétlődő célok ellenőrzése
 		await checkRecurringGoals(); // Ez ellenőrzi a *teljesített* ismétlődőket
         await checkPendingGoals(); // EZ AZ ÚJ SOR (ellenőrzi a várakozókat)
-        calculateDailyProgress();
-        calculateDailyProgress();
-        loadMotivation();
-        renderAll();
-		loadSavedTheme(); 
-        startReminderEngine();
+        calculateDailyProgress();
+        calculateDailyProgress();
+        loadMotivation();
+        populateWorkoutCategoryFilter();
+        // ==================================
+
+        renderAll();
+		loadSavedTheme(); 
+        startReminderEngine();
 
         startReminderEngine(); // ÚJ EMLÉKEZTETŐ MOTOR INDÍTÁSA
 		} else {
