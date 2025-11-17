@@ -510,6 +510,7 @@
     }
 
     .log-entry {
+	  background: #e8f5e9;
       border-bottom: 1px solid #ddd;
       padding: 6px 0;
       display: flex;
@@ -1076,6 +1077,7 @@
   </div>
 
   <div id="appContainer" style="display: none;">
+    </div>
 
     <div id="motivationBar">Tipp: „A lustaság a gyengék vallása. Törj ki belőle.”</div>
 
@@ -1088,10 +1090,6 @@
         <div class="tab-btn" onclick="showTab('notes')">
           <span class="tab-icon">📝</span>
           <span class="tab-text">Jegyzetek</span>
-        </div>
-        <div class="tab-btn" onclick="showTab('reminders')">
-          <span class="tab-icon">🔔</span>
-          <span class="tab-text">Emlékeztetők</span>
         </div>
         <div class="tab-btn" onclick="showTab('meals')">
           <span class="tab-icon">🍗</span>
@@ -1183,41 +1181,25 @@
             </div>
             <div id="rewardList"></div>
             <button onclick="openModal('rewardModal')" class="new-item-button">+ Új jutalom</button>
+			<div class="card">
+			 <h3 class="category-title"></h2>
+          <div class="card-header">
+            <h2>🔔 Aktív Emlékeztetők</h2>
+            <button onclick="openModal('reminderModal')" class="card-header-add-btn">+ Új emlékeztető</button>
+          </div>
+                    <div id="reminderList" class="log" style="max-height: 400px; overflow-y: auto;">
+            <p>Nincsenek aktív emlékeztetők.</p>
           </div>
         </div>
+          </div>
       </div>
+        </div>
       <div id="notes" class="tab-content">
         <div class="card">
           <div class="card-header">
             <button onclick="openAddNoteModal()" class="card-header-add-btn new-note-btn-left">+ Új jegyzet</button>
           </div>
           <div id="notesList"></div>
-        </div>
-      </div>
-      <div id="reminders" class="tab-content">
-        <div class="card">
-          <h2>🔔 Új emlékeztető</h2>
-          <p>Kapj értesítést a böngésződtől a megadott időpontban. A funkció használatához engedélyezned kell az értesítéseket, ha a böngésző rákérdez.</p>
-
-          <label for="reminderTextInput">Emlékeztető szövege</label>
-          <input type="text" id="reminderTextInput" placeholder="pl. Idd meg a vizet!">
-
-          <label for="reminderTimeInput">Időpont</label>
-		  <label for="reminderTimeInput">Időpont</label>
-          <input type="datetime-local" id="reminderTimeInput">
-
-          <div style="margin-top: 15px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-            <label for="reminderHighlightCheck" style="display:inline; margin-right: 10px; cursor: pointer;">Kiemelés a főoldalon?(ettől a naptól látszik)</label>
-            <input type="checkbox" id="reminderHighlightCheck" style="width: auto; margin: 0; transform: scale(1.3);">
-            <input type="date" id="reminderHighlightDateInput" style="margin-top: 5px;">
-          </div>
-          <button onclick="addReminder()" style="margin-top: 10px;">💾 Emlékeztető Mentése</button>
-        </div>
-        <div class="card">
-          <h2>Aktív emlékeztetők</h2>
-          <div id="reminderList" class="log" style="max-height: 400px; overflow-y: auto;">
-            <p>Nincsenek aktív emlékeztetők.</p>
-          </div>
         </div>
       </div>
       <div id="meals" class="tab-content">
@@ -1422,7 +1404,7 @@
         </div>
       </div>
     </div>
-
+	
     <div class="modal" id="editModal" style="z-index: 2000;">
       <div class="modal-content">
         <h3 id="editTitle">✏️ Szerkesztés</h3>
@@ -1575,7 +1557,7 @@
         </div>
       </div>
     </div>
-
+	
     <div class="modal" id="quickAddModal">
       <div class="modal-content">
         <h3>⚡ Gyors Bejegyzés</h3>
@@ -1599,6 +1581,25 @@
         <div style="text-align:center;margin-top:15px;">
           <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
           <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('quickAddModal')">Mégse</button>
+        </div>
+      </div>
+    </div>
+	<div class="modal" id="reminderModal">
+      <div class="modal-content">
+        <h3>🔔 Új emlékeztető</h3>
+        <p>Kapj értesítést a böngésződtől a megadott időpontban. A funkció használatához engedélyezned kell az értesítéseket, ha a böngésző rákérdez.</p>
+        <label for="reminderTextInput">Emlékeztető szövege</label>
+        <input type="text" id="reminderTextInput" placeholder="pl. Idd meg a vizet!">
+        <label for="reminderTimeInput">Időpont</label>
+        <input type="datetime-local" id="reminderTimeInput">
+        <div style="margin-top: 15px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+          <label for="reminderHighlightCheck" style="display:inline; margin-right: 10px; cursor: pointer;">Kiemelés a főoldalon?(ettől a naptól látszik)</label>
+          <input type="checkbox" id="reminderHighlightCheck" style="width: auto; margin: 0; transform: scale(1.3);">
+          <input type="date" id="reminderHighlightDateInput" style="margin-top: 5px;">
+        </div>
+        <div style="text-align:center;margin-top:15px;">
+          <button onclick="addReminder()">💾 Emlékeztető Mentése</button>
+          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('reminderModal')">Mégse</button>
         </div>
       </div>
     </div>
@@ -1688,8 +1689,18 @@ function openModal(id) {
 		document.getElementById("goalIsPriorityInput").checked = false; // ÚJ
         document.getElementById("goalStartDateInput").value = ""; // EZ AZ ÚJ SOR
       }
+	  // === EZT A BLOKKOT ILLESZD BE IDE ===
+      if (id === 'reminderModal') {
+        checkNotificationPermission(); // Engedélykérés
+        // Dátum mező alapértékre állítása
+        document.getElementById("reminderHighlightDateInput").value = toDateInputString(new Date());
+        // Régi értékek törlése (biztonság kedvéért)
+        document.getElementById("reminderTextInput").value = "";
+        document.getElementById("reminderTimeInput").value = "";
+        document.getElementById("reminderHighlightCheck").checked = false;
+      }
     }
-
+	
     // ÚJ: Az étel modal megnyitása (alaphelyzetbe állítás)
     function openMealModal() {
       // Ez biztosítja, hogy szerkesztés helyett "új" módban nyíljon meg
@@ -2296,7 +2307,7 @@ function openModal(id) {
         loadMotivation();
         renderAll();
 		loadSavedTheme(); 
-        startReminderEngine();
+        startReminderEngine();
 
         startReminderEngine(); // ÚJ EMLÉKEZTETŐ MOTOR INDÍTÁSA
 		} else {
@@ -2454,15 +2465,6 @@ function openModal(id) {
       if (id === 'notes') {
         renderNotes();
       }
-      // ==========================================
-
-      // ÚJ: Emlékeztető fül renderelése és engedélykérés
-      if (id === 'reminders') {
-        checkNotificationPermission(); // Rákérdez az engedélyre
-		document.getElementById("reminderHighlightDateInput").value = toDateInputString(new Date());
-        renderReminders();
-      }
-
       // ÚJ: Haladás fül naplóinak frissítése
       if (id === 'history') {
         renderLogs();
@@ -4912,7 +4914,8 @@ async function confirmEdit() { // Make async
     }
 
     if (highlight && new Date(highlightDate) > reminderTime) {
-      return alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
+      alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
+	  return;
     }
     // Objektum frissítése a tömbben
     const reminder = reminders[editTarget.index];
@@ -5346,7 +5349,11 @@ function checkNotificationPermission() {
         alert("Kérlek adj meg egy szöveget és egy időpontot!");
         return;
       }
+	  // === ÚJ MEZŐK RESETELÉSE ===
+      highlightCheck.checked = false;
+      highlightDateInput.value = toDateInputString(new Date()); // Visszaállítás mai dátumra
 
+      // === RENDERALL HÍVÁSA ===
       const reminderTime = new Date(time);
       if (reminderTime <= new Date()) {
         alert("Az emlékeztető időpontjának a jövőben kell lennie!");
@@ -5374,7 +5381,7 @@ function checkNotificationPermission() {
         highlight: highlight,
         highlightDate: highlight ? new Date(highlightDate).toISOString() : null
       });
-
+      closeModal('reminderModal')
       textInput.value = "";
       timeInput.value = "";
       // === ÚJ MEZŐK RESETELÉSE ===
