@@ -314,7 +314,8 @@
     /* ===== CÉL, JUTALOM, ÉTEL SÁV STÍLUS ===== */
     .goal-item,
     .reward-item,
-    .food-item {
+    .food-item,
+	.workout-item {
       background: transparent;
       border-radius: 10px;
       padding: 0;
@@ -899,42 +900,13 @@
       font-weight: bold;
     }
 
-    .workout-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #e8f5e9;
-      padding: 12px 15px;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .workout-item span {
-      font-weight: bold;
-      font-size: 1.1em;
-      color: #004d40;
-      cursor: pointer;
-      /* HOZZÁADVA */
-      flex: 1;
-      /* HOZZÁADVA */
-      margin-right: 10px;
-      /* HOZZÁADVA */
-    }
-
-    .workout-item button {
+    .workout-item button .item-actions .delete-btn	{
       background: transparent;
       color: #c00;
       /* Vörös a törléshez */
       font-size: 1.2em;
     }
 
-    /* EZT A GOMBOT ADJUK HOZZÁ A SZERKESZTÉSHEZ */
-    .workout-item button.edit-note-btn {
-      color: #00796b;
-      /* Téma zöld */
-      font-size: 1.1em;
-    }
     /* ===== ÚJ ÉTEL PROGRESS BAR STÍLUSOK ===== */
     .meal-progress-container {
       margin-top: 0px;
@@ -1241,19 +1213,16 @@
       </div>
 
       <div id="workouts" class="tab-content">
-        <div class="card">
-          <h2>📅 Edzés rögzítése</h2>
-          <p>Válaszd ki a napot, és rögzítsd az edzést.</p>
-          <div class="workout-adder">
-            <input type="date" id="workoutDateInput">
-            <button onclick="addWorkout()">🏋️‍♂️ Edzés rögzítése</button>
-          </div>
+  <div class="card">
+    <div class="card-header">
+      <h2>🏋️‍♂️ Rögzített edzések</h2>
+      <button onclick="openWorkoutModal()" class="card-header-add-btn">+ Új edzés rögzítése</button>
+    </div>
 
-          <h2 style="margin-top: 25px;">Rögzített edzések</h2>
-          <div id="workoutList">
-          </div>
-        </div>
+    <div id="workoutList">
       </div>
+  </div>
+</div>
 
     </main>
     <div class="modal" id="noteViewModal">
@@ -1585,6 +1554,7 @@
       </div>
     </div>
 	<div class="modal" id="reminderModal">
+	
       <div class="modal-content">
         <h3>🔔 Új emlékeztető</h3>
         <p>Kapj értesítést a böngésződtől a megadott időpontban. A funkció használatához engedélyezned kell az értesítéseket, ha a böngésző rákérdez.</p>
@@ -1603,7 +1573,20 @@
         </div>
       </div>
     </div>
+	<div class="modal" id="workoutModal">
+	  <div class="modal-content">
+		<h3>📅 Új edzés rögzítése</h3>
+		<p style="text-align: center; margin-top: -10px; margin-bottom: 15px;">Válaszd ki a napot.</p>
 
+		<label for="workoutDateInput">Edzés napja</label>
+		<input type="date" id="workoutDateInput"> 
+
+		<div style="text-align:center;margin-top:15px;">
+		  <button onclick="addWorkout()">🏋️‍♂️ Edzés rögzítése</button>
+		  <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('workoutModal')">Mégse</button>
+		</div>
+	  </div>
+	</div>
 
   </div>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -2507,10 +2490,20 @@ function openModal(id) {
       await saveWorkouts();
       logActivity(`🏋️‍♂️ Edzés rögzítve: ${selectedDate}`);
       renderWorkouts();
-
-      dateInput.value = "";
+      closeModal('workoutModal');
     }
 
+	// Bezárja az edzés hozzáadó panelt
+	function openWorkoutModal() {
+  const dateInput = document.getElementById("workoutDateInput");
+  if (dateInput) {
+     // Beállítja a dátumot a mai napra
+     // (A toDateInputString() egy meglévő segédfüggvényed)
+     dateInput.value = toDateInputString(new Date());
+  }
+  // Meghívja az általános modal nyitó függvényt
+  openModal('workoutModal');
+}
     function renderWorkouts() {
       const list = document.getElementById("workoutList");
       if (!list) return;
@@ -2527,11 +2520,13 @@ function openModal(id) {
         const div = document.createElement("div");
         div.className = "workout-item";
         div.innerHTML = `
-          <span onclick="openWorkoutNoteModal(${index})">🏋️‍♂️ ${workout.date}</span>
-          <div>
-            <button class="edit-note-btn" onclick="editWorkout(${index})">✏️</button>
-            <button onclick="deleteWorkout(${index})">🗑️</button>
-          </div>
+        <div class="item-name" onclick="openWorkoutNoteModal(${index})" style="cursor: pointer;" title="Jegyzet megtekintése">
+          <div class="item-name-main">🏋️‍♂️ ${workout.date}</div>
+        </div>
+        <div class="item-actions">
+          <button onclick="editWorkout(${index})" title="Jegyzet szerkesztése">✏️</button>
+          <button class="delete-btn" onclick="deleteWorkout(${index})" title="Törlés">🗑️</button>
+        </div>
         `;
         list.appendChild(div);
       });
