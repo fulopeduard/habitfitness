@@ -12,7 +12,12 @@
       margin: 0;
       padding: 0;
       color: #222;
-	  background: linear-gradient(169deg, #034c3f, #222);
+	  background: linear-gradient(
+	  180deg,
+	  #034c3f 0%,
+	  #222 50%,
+	  #034c3f 100%
+	);
       overflow-x: hidden;
     }
 
@@ -1047,120 +1052,7 @@
       border-top: 1px solid #dcedc8;
       /* Finom elválasztó vonal */
     }
-	/* ===== SÖTÉT TÉMA (DARK MODE) STÍLUSOK ===== */
-body.dark-mode {
-  background: #2d2d2d;
-  color: #eee;
-}
-
-/* Általános kártya és konténer hátterek */
-body.dark-mode .card,
-body.dark-mode #compactGoalsContainer,
-body.dark-mode #loginContainer,
-body.dark-mode .modal-content {
-  background: #444;
-}
-
-/* Világoszöld elemek sötétítése (kártyák, sávok) */
-body.dark-mode .icon-card,
-body.dark-mode .item-name,
-body.dark-mode .item-actions,
-body.dark-mode .note-summary-item,
-body.dark-mode .workout-item,
-body.dark-mode .food-item,
-body.dark-mode .highlight-box {
-  background: #3a4b3a;
-}
-body.dark-mode .goal-item.priority .item-name,
-body.dark-mode .goal-item.priority .item-actions,
-body.dark-mode .highlight-box {
-  background: #5a3a3a; /* Pirosas sötét háttér */
-}
-
-/* Középzöld elemek sötétítése (pontok, tabok) */
-body.dark-mode .item-points,
-body.dark-mode .food-item .item-details {
-  background: #313d31;
-  border-color: #555;
-}
-body.dark-mode .goal-item.priority .item-points {
-  background: #4d3131;
-  border-color: #775555;
-}
-
-/* Beviteli mezők */
-body.dark-mode input,
-body.dark-mode textarea,
-body.dark-mode select {
-  background-color: #555;
-  color: #eee;
-  border-color: #777;
-}
-
-/* Gombok és Tabok */
-body.dark-mode .tab-btn {
-  background: #313d31;
-  color: #ccc;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-body.dark-mode .tab-btn.active {
-  background: #66bb6a; /* Világosabb zöld az aktív fülnek */
-  color: #2d2d2d; /* Sötét szöveg a világos gombon */
-}
-body.dark-mode button:hover {
-  background: #003a32;
-}
-body.dark-mode .tab-btn:hover {
-  background: #4e6d4e;
-}
-body.dark-mode .tab-btn.active:hover {
-  background: #81c784;
-}
-
-/* Címek és Szövegek */
-body.dark-mode h2,
-body.dark-mode .modal-content h3,
-body.dark-mode .compact-goal-item .label,
-body.dark-mode .header-points-display .points-label {
-  color: #66bb6a;
-}
-body.dark-mode .compact-goal-item .value-top {
-  color: #ccc;
-}
-body.dark-mode .header-points-display .points-number {
-  color: #eee;
-}
-
-/* Különleges hátterek */
-body.dark-mode div[style*="#f1f8e9"] { /* Pl. emlékeztető opciók */
-  background-color: #3f443a !important;
-}
-body.dark-mode #noteViewModal .modal-content {
-  background: #3f443a;
-}
-body.dark-mode #noteViewText {
-  background: #555;
-  border-color: #777;
-}
-
-/* Naplók */
-body.dark-mode .log {
-  background: #3a3a3a;
-}
-body.dark-mode .log-entry {
-  border-bottom-color: #555;
-}
-body.dark-mode .log-entry small {
-  color: #aaa;
-}
-
-/* Haladósávok háttere */
-body.dark-mode .progress-bar-container,
-body.dark-mode .compact-progress-bar-container,
-body.dark-mode .subgoal-progress-container {
-  background: #555;
-  border-color: #777;
-}
+	
   </style>
 </head>
 
@@ -1362,7 +1254,6 @@ body.dark-mode .subgoal-progress-container {
           <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
           <input type="file" id="importFile" accept=".json" onchange="importData(event)">
           <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
-		  <button onclick="toggleTheme()" id="themeToggleBtn">🌙 Sötét téma</button>
           <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
         </div>
       </div>
@@ -1798,39 +1689,7 @@ function openModal(id) {
         document.getElementById("goalStartDateInput").value = ""; // EZ AZ ÚJ SOR
       }
     }
-	// ===== TÉMA VÁLTÓ FUNKCIÓK (SÖTÉT MÓD) =====
-function toggleTheme() {
-  // Kiolvassuk a jelenlegi mentett témát
-  const currentTheme = localStorage.getItem('theme') || 'light';
- 
-  if (currentTheme === 'light') {
-    applyTheme('dark');
-  } else {
-    applyTheme('light');
-  }
-}
-function applyTheme(theme) {
-  if (theme === 'dark') {
-    document.body.classList.add('dark-mode');
-    localStorage.setItem('theme', 'dark');
-    const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.innerHTML = '☀️ Világos téma';
-  } else {
-    document.body.classList.remove('dark-mode');
-    localStorage.setItem('theme', 'light');
-    const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.innerHTML = '🌙 Sötét téma';
-  }
-}
 
-function loadSavedTheme() {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) {
-    applyTheme(savedTheme);
-  } else {
-    applyTheme('light'); // Alapértelmezett a világos
-  }
-}
     // ÚJ: Az étel modal megnyitása (alaphelyzetbe állítás)
     function openMealModal() {
       // Ez biztosítja, hogy szerkesztés helyett "új" módban nyíljon meg
