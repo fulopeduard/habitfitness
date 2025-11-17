@@ -1177,7 +1177,15 @@
       <div id="meals" class="tab-content">
 
         <div class="card">
-          <h2>Mentett ételek</h2>
+          <div class="card-header">
+            <div class="card-header">
+            <h2>Mentett ételek</h2>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="openMealExportModal()" class="card-header-add-btn" style="background: #004d40;" title="Összes étel exportálása szövegként">📤 Export</button>
+              <button onclick="openMealImportModal()" class="card-header-add-btn" style="background: #004d40;" title="Ételek importálása szövegből">📥 Import</button>
+            </div>
+          </div>
+          </div>
           <input type="text" id="mealSearchInput" placeholder="🔍 Étel keresése..." oninput="renderMeals()" style="margin-bottom: 0px;">
           <div id="mealList">
           </div>
@@ -1599,8 +1607,45 @@
 		</div>
 	  </div>
 	</div>
+	<div class="modal" id="mealImportModal">
+	  <div class="modal-content" style="max-width: 600px;">
+		<h3>📥 Ételek Tömeges Importálása</h3>
+		<p>Illeszd be a szöveget a megadott séma alapján. Az ételeket "---" (három kötőjel) sorral válaszd el.</p>
+		
+		<label for="mealImportText">Importálandó ételek:</label>
+		<textarea id="mealImportText" rows="10" placeholder="Étel neve: Csirkemell
+Kategória: Húsok
+Jegyzet (opcionális): Serpenyőben, kevés olajon.
+Típus: weight
+Kalória (kcal): 165
+Fehérje (g) 31
+Zsír (g) 3.6
+---
+Étel neve: Főtt Tojás
+Kategória: Egyéb
+Típus: unit
+Kalória (kcal): 78
+Fehérje (g) 6
+Zsír (g) 5
+"></textarea>
 
-  </div>
+		<div style="text-align:center;margin-top:15px;">
+		  <button onclick="processMealImport()">✅ Importálás</button>
+		  <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealImportModal')">Mégse</button>
+		</div>
+	  </div>
+	</div>
+
+	<div class="modal" id="mealExportModal">
+	  <div class="modal-content" style="max-width: 600px;">
+		<h3>📤 Ételek Tömeges Exportálása</h3>
+		<p>Az alábbi szöveg tartalmazza az összes mentett ételedet. Másold ki és mentsd el egy szöveges fájlba.</p>
+		<textarea id="mealExportText" rows="10" readonly style="background: #f4f4f4; color: #333; font-family: monospace;"></textarea>
+		<div style="text-align:center;margin-top:15px;">
+		  <button style="background:#ccc;color:black;" onclick="closeModal('mealExportModal')">Bezárás</button>
+		</div>
+	  </div>
+	</div>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
@@ -1696,7 +1741,211 @@ function openModal(id) {
         document.getElementById("reminderHighlightCheck").checked = false;
       }
     }
-	
+	// ===== ÚJ FUNKCIÓ: ÉTEL IMPORT MODAL MEGNYITÁSA =====
+function openMealImportModal() {
+  // Kitöröljük a régi szöveget
+  document.getElementById("mealImportText").value = "";
+  openModal('mealImportModal');
+}
+
+// ===== ÚJ FUNKCIÓ: ÉTEL IMPORT FELDOLGOZÁSA =====
+async function processMealImport() {
+  const text = document.getElementById("mealImportText").value;
+  if (text.trim() === "") {
+    return alert("A szövegmező üres!");
+  }
+
+  // 1. A teljes szöveg szétvágása "---" mentén
+  const blocks = text.split('---');
+  let successCount = 0;
+  let failedCount = 0;
+
+  // 2. Végigmegyünk minden étel-blokon
+  for (const block of blocks) {
+    if (block.trim() === "") continue; // Üres blokkok (pl. utolsó --- után) átugrása
+
+    try {
+      // 3. Regex (reguláris kifejezés) használata az adatok kinyerésére
+      // Ez a módszer robusztusabb, mint a sorok számozása,
+      // kezeli az extra szóközöket és a 'Jegyzet' (s) flag miatt a többsoros jegyzeteket is.
+      // A '?.' (optional chaining) kezeli, ha egy mező (pl. Kategória) hiányzik.
+      // A ':?' pedig kezeli, ha a Fehérje/Zsír sor végén van kettőspont, vagy nincs.
+      
+      const name = block.match(/Étel neve\s*:(.*)/i)?.[1].trim();
+      const category = block.match(/Kategória\s*:(.*)/i)?.[1].trim();
+      const noteText = block.match(/Jegyzet \(opcionális\)\s*:(.*)/is)?.[1].trim() || "";
+      const type = block.match(/Típus\s*:(.*)/i)?.[1].trim().toLowerCase();
+      const kcal = block.match(/Kalória \(kcal\)\s*:(.*)/i)?.[1].trim();
+      const protein = block.match(/Fehérje \(g\)\s*:?\s*(.*)/i)?.[1].trim();
+      const fat = block.match(/Zsír \(g\)\s*:?\s*(.*)/i)?.[1].trim();
+
+      // 4. Adatellenőrzés
+      if (!name || !type || !kcal || !protein || !fat) {
+        throw new Error("Hiányzó kötelező mező (Név, Típus, Kcal, Fehérje, Zsír).");
+      }
+      
+      const kcalNum = parseFloat(kcal);
+      const proteinNum = parseFloat(protein);
+      const fatNum = parseFloat(fat);
+
+      if (isNaN(kcalNum) || isNaN(proteinNum) || isNaN(fatNum)) {
+        throw new Error("A Kalória, Fehérje vagy Zsír nem érvényes szám.");
+      }
+      if (type !== 'unit' && type !== 'weight') {
+        throw new Error(`Érvénytelen Típus: '${type}'. Csak 'unit' vagy 'weight' lehet.`);
+      }
+
+      // 5. Új étel objektum létrehozása
+      const newMeal = {
+        name: name,
+        category: category || null,
+        type: type,
+        kcal: kcalNum,
+        protein: proteinNum,
+        fat: fatNum,
+        // A jegyzetet átalakítjuk a te struktúrált tömbödbe!
+        note: parseTextToStructuredArray(noteText) 
+      };
+
+      // 6. Hozzáadás a globális 'meals' tömbhöz
+      meals.push(newMeal);
+      successCount++;
+
+    } catch (e) {
+      console.error("Étel import hiba:", e.message, "\nBlokk:", block);
+      failedCount++;
+    }
+  }
+
+  // 7. Visszajelzés és frissítés
+  closeModal('mealImportModal');
+  
+  if (successCount > 0) {
+    renderMeals(); // Lista frissítése
+    await logActivity(`📥 ${successCount} étel sikeresen importálva.`);
+  }
+
+  alert(`Importálás befejezve!\n\nSikeres: ${successCount}\nHibás: ${failedCount}`);
+}
+// ===== ÚJ FUNKCIÓ: ÉTEL IMPORT MODAL MEGNYITÁSA =====
+function openMealImportModal() {
+  document.getElementById("mealImportText").value = "";
+  openModal('mealImportModal');
+}
+
+// ===== ÚJ FUNKCIÓ: ÉTEL IMPORT FELDOLGOZÁSA =====
+async function processMealImport() {
+  const text = document.getElementById("mealImportText").value;
+  if (text.trim() === "") {
+    return alert("A szövegmező üres!");
+  }
+
+  // 1. A teljes szöveg szétvágása "---" mentén
+  const blocks = text.split('---');
+  let successCount = 0;
+  let failedCount = 0;
+
+  // 2. Végigmegyünk minden étel-blokon
+  for (const block of blocks) {
+    if (block.trim() === "") continue; // Üres blokkok átugrása
+
+    try {
+      // 3. Regex (reguláris kifejezés) használata az adatok kinyerésére
+      // Ez kezeli a sémád szerinti (Fehérje/Zsír esetében kettőspont nélküli)
+      // és a kettőspontos formátumot is (a ':?' miatt).
+      const name = block.match(/Étel neve\s*:(.*)/i)?.[1].trim();
+      const category = block.match(/Kategória\s*:(.*)/i)?.[1].trim();
+      const noteText = block.match(/Jegyzet \(opcionális\)\s*:(.*)/is)?.[1].trim() || "";
+      const type = block.match(/Típus\s*:(.*)/i)?.[1].trim().toLowerCase();
+      const kcal = block.match(/Kalória \(kcal\)\s*:(.*)/i)?.[1].trim();
+      const protein = block.match(/Fehérje \(g\)\s*:?\s*(.*)/i)?.[1].trim(); 
+      const fat = block.match(/Zsír \(g\)\s*:?\s*(.*)/i)?.[1].trim();
+
+      // 4. Adatellenőrzés
+      if (!name || !type || !kcal || !protein || !fat) {
+        throw new Error("Hiányzó kötelező mező (Név, Típus, Kcal, Fehérje, Zsír).");
+      }
+      
+      const kcalNum = parseFloat(kcal);
+      const proteinNum = parseFloat(protein);
+      const fatNum = parseFloat(fat);
+
+      if (isNaN(kcalNum) || isNaN(proteinNum) || isNaN(fatNum)) {
+        throw new Error("A Kalória, Fehérje vagy Zsír nem érvényes szám.");
+      }
+      if (type !== 'unit' && type !== 'weight') {
+        throw new Error(`Érvénytelen Típus: '${type}'. Csak 'unit' vagy 'weight' lehet.`);
+      }
+
+      // 5. Új étel objektum létrehozása
+      const newMeal = {
+        name: name,
+        category: category || null,
+        type: type,
+        kcal: kcalNum,
+        protein: proteinNum,
+        fat: fatNum,
+        // A jegyzetet átalakítjuk a te struktúrált tömbödbe!
+        note: parseTextToStructuredArray(noteText) 
+      };
+
+      // 6. Hozzáadás a globális 'meals' tömbhöz
+      meals.push(newMeal);
+      successCount++;
+
+    } catch (e) {
+      console.error("Étel import hiba:", e.message, "\nBlokk:", block);
+      failedCount++;
+    }
+  }
+
+  // 7. Visszajelzés és frissítés
+  closeModal('mealImportModal');
+  
+  if (successCount > 0) {
+    renderMeals(); // Lista frissítése
+    await logActivity(`📥 ${successCount} étel sikeresen importálva.`);
+  }
+
+  alert(`Importálás befejezve!\n\nSikeres: ${successCount}\nHibás: ${failedCount}`);
+}
+
+// ===== ÚJ FUNKCIÓ: ÉTEL EXPORT MEGNYITÁSA ÉS GENERÁLÁSA =====
+function openMealExportModal() {
+  const textarea = document.getElementById("mealExportText");
+  
+  if (!meals || meals.length === 0) {
+    textarea.value = "Nincsenek mentett ételek, amiket exportálni lehetne.";
+    openModal('mealExportModal');
+    return;
+  }
+
+  let exportedTextBlocks = [];
+  
+  // Végigmegyünk az összes ételen
+  meals.forEach(meal => {
+    let block = [];
+    block.push(`Étel neve: ${meal.name}`);
+    block.push(`Kategória: ${meal.category || ''}`);
+    
+    // Visszaalakítjuk a jegyzet-tömböt sima szöveggé
+    const noteText = parseStructuredArrayToText(meal.note); 
+    block.push(`Jegyzet (opcionális): ${noteText}`);
+    
+    block.push(`Típus: ${meal.type}`);
+    block.push(`Kalória (kcal): ${meal.kcal}`);
+    
+    // A sémádnak megfelelően (kettőspont nélkül) írjuk ki
+    block.push(`Fehérje (g) ${meal.protein}`);
+    block.push(`Zsír (g) ${meal.fat}`);
+    
+    exportedTextBlocks.push(block.join('\n'));
+  });
+
+  // Összefűzzük a blokkokat a "---" elválasztóval
+  textarea.value = exportedTextBlocks.join('\n---\n');
+  openModal('mealExportModal');
+}
     // ÚJ: Az étel modal megnyitása (alaphelyzetbe állítás)
     function openMealModal() {
       // Ez biztosítja, hogy szerkesztés helyett "új" módban nyíljon meg
@@ -2660,6 +2909,68 @@ function handleWorkoutFilterChange() {
       renderWorkouts();
       closeModal('workoutModal');
     }
+	// ===== ÚJ SEGÉDFÜGGVÉNY: MAI EDZÉS ELLENŐRZÉSE =====
+/**
+ * Ellenőrzi, hogy a 'workouts' tömbben van-e már bejegyzés a mai napra.
+ * @returns {boolean} Igaz, ha már van rögzített edzés, egyébként hamis.
+ */
+function isWorkoutLoggedToday() {
+  const todayISO = toDateInputString(new Date());
+  // .find() visszaadja az elemet (truthy) ha talál, vagy undefined (falsy) ha nem.
+  return workouts.find(w => w.date === todayISO);
+}
+
+// ===== ÚJ SEGÉDFÜGGVÉNY: EDZÉS RÖGZÍTÉSE MÁRA (MODAL NÉLKÜL) =====
+/**
+ * Programozottan hozzáad egy edzésbejegyzést a mai napra.
+ */
+async function logWorkoutForToday() {
+  const todayISO = toDateInputString(new Date());
+  
+  // Dupla ellenőrzés, hátha időközben hozzáadták
+  if (isWorkoutLoggedToday()) {
+    console.warn("Már van edzés rögzítve a mai napra, a logWorkoutForToday() hívás leállt.");
+    return;
+  }
+
+  // 1. Hozzáadás a tömbhöz
+  workouts.push({
+    date: todayISO,
+    note: "" // Üres jegyzet, amit később szerkeszthet
+  });
+  
+  // 2. Mentés és naplózás
+  await saveWorkouts(); // Ez már a saveDataToFirestore-t hívja
+  await logActivity(`🏋️‍♂️ Edzés rögzítve (cél teljesítéséből): ${todayISO}`);
+  
+  // 3. UI frissítése
+  renderWorkouts();
+}
+
+// ===== ÚJ SEGÉDFÜGGVÉNY: RÁKÉRDEZ AZ EDZÉS RÖGZÍTÉSÉRE =====
+/**
+ * Ellenőrzi a feltételeket (Edzés fül, mai nap) és rákérdez a felhasználónál.
+ */
+function checkAndAskForWorkoutLog() {
+  // 1. Csak az edzés fülön fusson
+  if (!document.getElementById('workouts').classList.contains('active')) {
+    return;
+  }
+
+  // 2. Csak akkor fusson, ha ma még nincs edzés
+  if (isWorkoutLoggedToday()) {
+    return;
+  }
+
+  // 3. Rákérdezés
+  // Késleltetjük a confirm() hívást, hogy a UI (pipa) frissülhessen előtte.
+  setTimeout(() => {
+    if (confirm("Gratulálok a cél teljesítéséhez! 👋\n\nSzeretnéd rögzíteni ezt edzésként a mai napra?")) {
+      // Ha igent mondott, programozottan hozzáadjuk az edzést
+      logWorkoutForToday();
+    }
+  }, 100); // 100ms késleltetés
+}
 
 	// Bezárja az edzés hozzáadó panelt
 	function openWorkoutModal() {
@@ -3432,7 +3743,7 @@ async function toggleGoal(i) { // Make async
       await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
       renderGoals(); // Csak a cél listát rajzoljuk újra (áthúzáshoz)
     }
-
+	checkAndAskForWorkoutLog();
     await saveDataToFirestore();
 
   } else {
@@ -3484,13 +3795,15 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
   const allDone = taskSubGoals.length > 0 && taskSubGoals.every(sg => sg.done);
 
   // 3. Fő cél állapotának és pontoknak frissítése
-  if (allDone && !wasMainGoalDone) {
-    // === ÉPP MOST LETT KÉSZ ===
-    goal.done = true;
-    totalPoints += goal.points;
-    animatePoints(totalPoints);
+  if (allDone && !wasMainGoalDone) {
+    // === ÉPP MOST LETT KÉSZ ===
+    goal.done = true;
+    totalPoints += goal.points;
+    animatePoints(totalPoints);
 
-    if (goal.isRecurring) {
+    checkAndAskForWorkoutLog(); // <--- EZ AZ ÚJ SOR
+
+    if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
       goal.lastCompleted = new Date().toISOString();
 
