@@ -1391,128 +1391,112 @@
         </div>
       </div>
     </div>
+<div class="modal" id="vowModal">
+    <div class="modal-content">
+      <h3>✋ Új Fogadalom</h3>
+      <label>Mit fogadsz meg? (pl. Nincs kávé 12:00 után)</label>
+      <input id="vowNameInput" type="text" placeholder="A fogadalom tárgya...">
+      
+      <label>Időtartam</label>
+      <select id="vowDurationInput" style="margin-bottom: 10px;">
+          <option value="weekly">Erre a hétre</option>
+          <option value="monthly">Erre a hónapra</option>
+      </select>
 
-    <div class="modal" id="goalModal">
-	  <div class="modal" id="vowModal">
-      <div class="modal-content">
-        <h3>✋ Új Fogadalom</h3>
-        <label>Mit fogadsz meg? (pl. Nincs kávé 12:00 után)</label>
-        <input id="vowNameInput" type="text" placeholder="A fogadalom tárgya...">
-        
-        <label>Időtartam</label>
-        <select id="vowDurationInput" style="margin-bottom: 10px;">
-            <option value="weekly">Erre a hétre</option>
-            <option value="monthly">Erre a hónapra</option>
-        </select>
+      <label>Napi jutalom (Pont)</label>
+      <input id="vowPointsInput" type="number" placeholder="pl. 15">
 
-        <label>Napi jutalom (Pont)</label>
-        <input id="vowPointsInput" type="number" placeholder="pl. 15">
-
-        <div style="background: #ffebee; padding: 10px; border-radius: 8px; border: 1px solid #ef9a9a; margin-top: 10px;">
-            <h4 style="margin-top:0; color: #c62828;">⚠️ Következmény (Opcionális)</h4>
-            <label>Büntetés feladat (pl. 100 fekvőtámasz)</label>
-            <input id="vowPenaltyInput" type="text" placeholder="Ha megszeged...">
-            
-            <label>Levonás ha nem teljesíted a büntetést (Pont)</label>
-            <input id="vowPenaltyPointsInput" type="number" placeholder="pl. 50">
-        </div>
-
-        <label style="margin-top: 10px;">Alcélok (opcionális)</label>
-        <textarea id="vowSubGoalsInput" rows="3" placeholder="Minden sor egy alcél..."></textarea>
-
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveVow()">✅ Fogadalom Tétel</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('vowModal')">Mégse</button>
-        </div>
-      </div>
-    </div>
-      <div class="modal-content">
-        <input id="goalNameInput" type="text" placeholder="Cél neve pl. 10.000 lépés">
-        <input id="goalPointsInput" type="number" placeholder="Pont érték pl. 10 (0 is lehet)">
-        <input id="goalCategoryInput" type="text" placeholder="Kategória (válassz vagy írj be újat,opcionális)" list="categoryDatalist">
-        <datalist id="categoryDatalist">
-        </datalist>
-        <textarea id="goalSubGoalsInput" rows="6" placeholder="&#10;Alcélok (opcionális, minden sor egy alcél)&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására"></textarea>
-        <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
-          <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
-        </div>
-
-                <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="goalIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
-            <input type="checkbox" id="goalIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
-          </div>
-        </div>
-
-                <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+      <div style="background: #ffebee; padding: 10px; border-radius: 8px; border: 1px solid #ef9a9a; margin-top: 10px;">
+          <h4 style="margin-top:0; color: #c62828;">⚠️ Következmény (Opcionális)</h4>
+          <label>Büntetés feladat (pl. 100 fekvőtámasz)</label>
+          <input id="vowPenaltyInput" type="text" placeholder="Ha megszeged...">
           
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
-            <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+          <label>Levonás ha nem teljesíted a büntetést (Pont)</label>
+          <input id="vowPenaltyPointsInput" type="number" placeholder="pl. 50">
+      </div>
+
+      <label style="margin-top: 10px;">Alcélok (opcionális)</label>
+      <textarea id="vowSubGoalsInput" rows="3" placeholder="Minden sor egy alcél..."></textarea>
+
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveVow()">✅ Fogadalom Tétel</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('vowModal')">Mégse</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="goalModal">
+    <div class="modal-content">
+      <h3>🎯 Új Cél</h3>
+      <input id="goalNameInput" type="text" placeholder="Cél neve pl. 10.000 lépés">
+      <input id="goalPointsInput" type="number" placeholder="Pont érték pl. 10 (0 is lehet)">
+      <input id="goalCategoryInput" type="text" placeholder="Kategória (válassz vagy írj be újat,opcionális)" list="categoryDatalist">
+      <datalist id="categoryDatalist">
+      </datalist>
+      <textarea id="goalSubGoalsInput" rows="6" placeholder="&#10;Alcélok (opcionális, minden sor egy alcél)&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására"></textarea>
+      <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+        <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
+        <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
+      </div>
+
+      <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <label for="goalIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
+          <input type="checkbox" id="goalIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
+          <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+        </div>
+
+        <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
+          <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+            <label style="margin: 0;">Minden</label>
+            <input type="number" id="goalRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
+            <select id="goalRecurrenceFrequency" style="flex: 1; margin: 0;">
+              <option value="daily">Nap</option>
+              <option value="weekly">Hét</option>
+              <option value="monthly">Hónap</option>
+              <option value="yearly">Év</option>
+            </select>
           </div>
 
-                    <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
-				
-				<div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-					<label style="margin: 0;">Minden</label>
-					<input type="number" id="goalRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
-					<select id="goalRecurrenceFrequency" style="flex: 1; margin: 0;">
-						<option value="daily">Nap</option>
-						<option value="weekly">Hét</option>
-						<option value="monthly">Hónap</option>
-						<option value="yearly">Év</option>
-					</select>
-				</div>
-				
-				<div style="margin-top: 10px; margin-bottom: 15px;">
-					<label for="goalRecurrenceStartDateInput" style="margin-bottom: 5px;">Ismétlődés kezdete (opcionális)</label>
-					<input type="date" id="goalRecurrenceStartDateInput" style="margin: 0; width: 100%;">
-				</div>
-				
-				<label style="margin-top: 10px; margin-bottom: 5px;">Befejezés</label>
-				<div style="padding-left: 15px;">
-					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-						<input type="radio" name="goalEndCondition" id="goalEndNever" value="never" checked style="width: auto; margin: 0;">
-						<label for="goalEndNever" style="margin: 0; width: 100%;">Soha</label>
-					</div>
-					
-					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-						<input type="radio" name="goalEndCondition" id="goalEndCount" value="count" style="width: auto; margin: 0;">
-						<label for="goalEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
-						<input type="number" id="goalEndCountInput" value="5" style="width: 60px; margin: 0;">
-						<span style="flex-shrink: 0;">előfordulás</span>
-					</div>
+          <div style="margin-top: 10px; margin-bottom: 15px;">
+            <label for="goalRecurrenceStartDateInput" style="margin-bottom: 5px;">Ismétlődés kezdete (opcionális)</label>
+            <input type="date" id="goalRecurrenceStartDateInput" style="margin: 0; width: 100%;">
+          </div>
 
-					<div style="display: flex; align-items: center; gap: 10px;">
-						<input type="radio" name="goalEndCondition" id="goalEndDate" value="date" style="width: auto; margin: 0;">
-						<label for="goalEndDate" style="margin: 0;">Ekkor:</label>
-						<input type="date" id="goalEndDateInput" style="width: 100%; margin: 0;">
-					</div>
-				</div>
+          <label style="margin-top: 10px; margin-bottom: 5px;">Befejezés</label>
+          <div style="padding-left: 15px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+              <input type="radio" name="goalEndCondition" id="goalEndNever" value="never" checked style="width: auto; margin: 0;">
+              <label for="goalEndNever" style="margin: 0; width: 100%;">Soha</label>
+            </div>
 
-          </div>         </div>
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveGoal()">✅ Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+              <input type="radio" name="goalEndCondition" id="goalEndCount" value="count" style="width: auto; margin: 0;">
+              <label for="goalEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
+              <input type="number" id="goalEndCountInput" value="5" style="width: 60px; margin: 0;">
+              <span style="flex-shrink: 0;">előfordulás</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="radio" name="goalEndCondition" id="goalEndDate" value="date" style="width: auto; margin: 0;">
+              <label for="goalEndDate" style="margin: 0;">Ekkor:</label>
+              <input type="date" id="goalEndDateInput" style="width: 100%; margin: 0;">
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="modal" id="rewardModal">
-      <div class="modal-content">
-        <h3>🎁 Új jutalom</h3>
-        <label>Jutalom neve</label>
-        <input id="rewardNameInput" type="text" placeholder="pl. Pihenőnap">
-        <label>Pont ára</label>
-        <input id="rewardCostInput" type="number" placeholder="pl. 20">
-        <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveReward()">✅ Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
-        </div>
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveGoal()">✅ Mentés</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
       </div>
     </div>
-	
+  </div>
     <div class="modal" id="editModal" style="z-index: 2000;">
       <div class="modal-content">
         <h3 id="editTitle">✏️ Szerkesztés</h3>
