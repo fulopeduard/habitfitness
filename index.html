@@ -1025,7 +1025,74 @@
       border-top: 1px solid #dcedc8;
       /* Finom elválasztó vonal */
     }
-	
+/* ===== FOGADALMAK STÍLUSAI ===== */
+    .vow-item {
+      background: #e3f2fd; /* Kék árnyalat a fogadalmaknak */
+      border-left: 5px solid #2196f3;
+      border-radius: 10px;
+      padding: 0;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: stretch;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .vow-item.completed-today {
+        background: #bbdefb;
+        opacity: 0.8;
+    }
+
+    .vow-item .item-name {
+        background: transparent; /* Felülírjuk az alap zöld hátteret */
+    }
+    
+    .vow-item .item-actions button.fail-btn {
+        color: #c62828; /* Sötét piros az X gombnak */
+        font-weight: bold;
+    }
+
+    /* ===== BÜNTETÉS CÉL STÍLUSA (Extrém kiemelés) ===== */
+    .goal-item.punishment {
+        background: #212121; /* Majdnem fekete háttér */
+        border: 2px solid #b71c1c; /* Vérvörös keret */
+        color: #ffcdd2;
+    }
+    
+    .goal-item.punishment .item-name {
+        background: #212121;
+        color: #ffcdd2;
+    }
+
+    .goal-item.punishment .item-name-main {
+        color: #ff5252;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .goal-item.punishment .item-points {
+        background: #b71c1c;
+        color: white;
+        border: none;
+    }
+
+    .goal-item.punishment .subgoal-header {
+        color: #ff8a80;
+        border-bottom: 1px solid #b71c1c;
+    }
+    
+    .goal-item.punishment .item-actions {
+        background: #424242;
+    }
+
+    /* Countdown stílus a büntetéshez */
+    .punishment-deadline {
+        display: block;
+        font-size: 0.8em;
+        color: #ff8a80;
+        margin-top: 2px;
+    }
   </style>
 </head>
 
@@ -1075,97 +1142,117 @@
           <span class="tab-text">Edzések</span>
         </div>
       </div>
-      <div id="compactGoalsContainer">
-
-        <div class="compact-goal-item">
-          <span class="label">Súly ⚖️</span>
-          <span class="value value-top" id="compactWeightTop">--/-- kg</span>
-          <div class="compact-progress-bar-container">
-            <div class="compact-progress-bar" id="compactWeightBar"></div>
-          </div>
-          <span class="value value-bottom" id="compactWeightBottom">Még...</span>
-        </div>
-
-        <div class="compact-goal-item">
-          <span class="label">Víz 💧</span>
-          <span class="value value-top" id="compactWaterTop">--/-- L</span>
-          <div class="compact-progress-bar-container">
-            <div class="compact-progress-bar" id="compactWaterBar"></div>
-          </div>
-          <span class="value value-bottom" id="compactWaterBottom">Még...</span>
-        </div>
-
-        <div class="compact-goal-item">
-          <span class="label">Kalória 🔥</span>
-          <span class="value value-top" id="compactCalTop">--/-- kcal</span>
-          <div class="compact-progress-bar-container">
-            <div class="compact-progress-bar" id="compactCalBar"></div>
-          </div>
-          <span class="value value-bottom" id="compactCalBottom">Még...</span>
-        </div>
-
-        <div class="compact-goal-item">
-          <span class="label">Protein 🥩</span>
-          <span class="value value-top" id="compactProteinTop">--/-- g</span>
-          <div class="compact-progress-bar-container">
-            <div class="compact-progress-bar" id="compactProteinBar"></div>
-          </div>
-          <span class="value value-bottom" id="compactProteinBottom">Még...</span>
-        </div>
-		
-		<div class="compact-goal-item">
-          <span class="label">Zsír 🥑</span>
-          <span class="value value-top" id="compactFatTop">--/-- g</span>
-          <div class="compact-progress-bar-container">
-            <div class="compact-progress-bar" id="compactFatBar"></div>
-          </div>
-          <span class="value value-bottom" id="compactFatBottom">Még...</span>
-        </div>
-
-        <div id="compactBtnWrapper">
-          <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
-          <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
-          <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
-        </div>
-      </div>
       <div id="main" class="tab-content active">
-		<div id="highlightContainer"></div>
+        <div id="compactGoalsContainer">
+
+          <div class="compact-goal-item">
+            <span class="label">Súly ⚖️</span>
+            <span class="value value-top" id="compactWeightTop">--/-- kg</span>
+            <div class="compact-progress-bar-container">
+              <div class="compact-progress-bar" id="compactWeightBar"></div>
+            </div>
+            <span class="value value-bottom" id="compactWeightBottom">Még...</span>
+          </div>
+
+          <div class="compact-goal-item">
+            <span class="label">Víz 💧</span>
+            <span class="value value-top" id="compactWaterTop">--/-- L</span>
+            <div class="compact-progress-bar-container">
+              <div class="compact-progress-bar" id="compactWaterBar"></div>
+            </div>
+            <span class="value value-bottom" id="compactWaterBottom">Még...</span>
+          </div>
+
+          <div class="compact-goal-item">
+            <span class="label">Kalória 🔥</span>
+            <span class="value value-top" id="compactCalTop">--/-- kcal</span>
+            <div class="compact-progress-bar-container">
+              <div class="compact-progress-bar" id="compactCalBar"></div>
+            </div>
+            <span class="value value-bottom" id="compactCalBottom">Még...</span>
+          </div>
+
+          <div class="compact-goal-item">
+            <span class="label">Protein 🥩</span>
+            <span class="value value-top" id="compactProteinTop">--/-- g</span>
+            <div class="compact-progress-bar-container">
+              <div class="compact-progress-bar" id="compactProteinBar"></div>
+            </div>
+            <span class="value value-bottom" id="compactProteinBottom">Még...</span>
+          </div>
+
+          <div class="compact-goal-item">
+            <span class="label">Zsír 🥑</span>
+            <span class="value value-top" id="compactFatTop">--/-- g</span>
+            <div class="compact-progress-bar-container">
+              <div class="compact-progress-bar" id="compactFatBar"></div>
+            </div>
+            <span class="value value-bottom" id="compactFatBottom">Még...</span>
+          </div>
+
+          <div id="compactBtnWrapper">
+            <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
+            <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
+            <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
+          </div>
+        </div>
+
+        <div id="highlightContainer"></div>
+
         <div class="flex-container">
-          <div class="card">
+
+          <div class="card" style="flex: 1.5;">
             <div class="card-header">
               <h2>✅ Célok</h2>
-                            <div style="display: flex; gap: 8px;">
+              <div style="display: flex; gap: 8px;">
                 <button onclick="openArchiveModal()" class="card-header-add-btn">📥|⏳</button>
                 <button onclick="openModal('goalModal')" class="card-header-add-btn">+ Új cél</button>
               </div>
             </div>
             <div id="goalList"></div>
-           </div>
-          <div class="card">
-            <div class="card-header">
-              <h2>🎁 Jutalmak</h2>
-              <div class="header-points-display">
-                <span class="points-icon">💎</span>
-                <span id="totalPointsDisplay" class="points-number">0</span>
-                <span class="points-label"> pont</span>
+          </div>
+
+          <div class="card" style="flex: 1; display: flex; flex-direction: column; gap: 15px;">
+
+            <div>
+              <div class="card-header" style="margin-bottom: 5px;">
+                <h2 style="margin:0; font-size: 1.1em;">✋ Fogadalmak</h2>
+                <button onclick="openModal('vowModal')" class="card-header-add-btn" style="font-size: 0.85em;">+ Új</button>
+              </div>
+              <div id="vowList"></div>
+            </div>
+
+            <hr style="border: 0; border-top: 2px #b2dfdb; margin: 5px 0; width: 100%;">
+
+            <div>
+              <div class="card-header" style="margin-bottom: 5px;">
+                <h2 style="margin:0; font-size: 1.1em;">🎁 Jutalmak</h2>
+                <div class="header-points-display">
+                  <span class="points-icon">💎</span>
+                  <span id="totalPointsDisplay" class="points-number">0</span>
+                  <span class="points-label"> p</span>
+                </div>
+              </div>
+              <div id="rewardList"></div>
+              <button onclick="openModal('rewardModal')" class="new-item-button" style="margin-top: 10px; padding: 8px;">+ Új jutalom</button>
+            </div>
+
+            <hr style="border: 0; border-top: 2px #b2dfdb; margin: 5px 0; width: 100%;">
+
+            <div>
+              <div class="card-header" style="margin-bottom: 5px;">
+                <h2 style="margin:0; font-size: 1.1em;">🔔 Emlékeztetők</h2>
+                <button onclick="openModal('reminderModal')" class="card-header-add-btn" style="font-size: 0.85em;">+ Új</button>
+              </div>
+              <div id="reminderList" class="log" style="max-height: 300px; overflow-y: auto; border: none; background: transparent; padding: 0;">
+                <p>Nincsenek aktív emlékeztetők.</p>
               </div>
             </div>
-            <div id="rewardList"></div>
-            <button onclick="openModal('rewardModal')" class="new-item-button">+ Új jutalom</button>
-			<div class="card">
-			 <h3 class="category-title"></h2>
-          <div class="card-header">
-            <h2>🔔 Aktív Emlékeztetők</h2>
-            <button onclick="openModal('reminderModal')" class="card-header-add-btn">+ Új emlékeztető</button>
-          </div>
-                    <div id="reminderList" class="log" style="max-height: 400px; overflow-y: auto;">
-            <p>Nincsenek aktív emlékeztetők.</p>
           </div>
         </div>
-          </div>
       </div>
-        </div>
-      <div id="notes" class="tab-content">
+	
+        </div> <div id="notes" class="tab-content">
         <div class="card">
           <div class="card-header">
             <button onclick="openAddNoteModal()" class="card-header-add-btn new-note-btn-left">+ Új jegyzet</button>
@@ -1177,14 +1264,14 @@
 
         <div class="card">
           <div class="card-header">
-            <div class="card-header">
-            <h2>Mentett ételek</h2>
-            <div style="display: flex; gap: 8px;">
-              <button onclick="openMealExportModal()" class="card-header-add-btn" style="background: #004d40;" title="Összes étel exportálása szövegként">📤 Export</button>
-              <button onclick="openMealImportModal()" class="card-header-add-btn" style="background: #004d40;" title="Ételek importálása szövegből">📥 Import</button>
-            </div>
-          </div>
-          </div>
+            <div class="card-header">
+            <h2>Mentett ételek</h2>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="openMealExportModal()" class="card-header-add-btn" style="background: #004d40;" title="Összes étel exportálása szövegként">📤 Export</button>
+              <button onclick="openMealImportModal()" class="card-header-add-btn" style="background: #004d40;" title="Ételek importálása szövegből">📥 Import</button>
+            </div>
+          </div>
+          </div>
           <input type="text" id="mealSearchInput" placeholder="🔍 Étel keresése..." oninput="renderMeals()" style="margin-bottom: 0px;">
           <div id="mealList">
           </div>
@@ -1224,8 +1311,8 @@
     <div class="card-header">
       <span>Edzések kategoriája:</span>
       <select id="workoutGoalFilter" onchange="handleWorkoutFilterChange()" style="padding: 6px; border-radius: 10px; border: 1px solid #ccc; background-color: white;">
-       <option value="">-- Minden aktív cél --</option>
-      </select>
+       <option value="">-- Minden aktív cél --</option>
+      </select>
     </div>
         <div id="workoutGoalList" style="margin-top: 15px;">
     </div>
@@ -1306,6 +1393,39 @@
     </div>
 
     <div class="modal" id="goalModal">
+	  <div class="modal" id="vowModal">
+      <div class="modal-content">
+        <h3>✋ Új Fogadalom</h3>
+        <label>Mit fogadsz meg? (pl. Nincs kávé 12:00 után)</label>
+        <input id="vowNameInput" type="text" placeholder="A fogadalom tárgya...">
+        
+        <label>Időtartam</label>
+        <select id="vowDurationInput" style="margin-bottom: 10px;">
+            <option value="weekly">Erre a hétre</option>
+            <option value="monthly">Erre a hónapra</option>
+        </select>
+
+        <label>Napi jutalom (Pont)</label>
+        <input id="vowPointsInput" type="number" placeholder="pl. 15">
+
+        <div style="background: #ffebee; padding: 10px; border-radius: 8px; border: 1px solid #ef9a9a; margin-top: 10px;">
+            <h4 style="margin-top:0; color: #c62828;">⚠️ Következmény (Opcionális)</h4>
+            <label>Büntetés feladat (pl. 100 fekvőtámasz)</label>
+            <input id="vowPenaltyInput" type="text" placeholder="Ha megszeged...">
+            
+            <label>Levonás ha nem teljesíted a büntetést (Pont)</label>
+            <input id="vowPenaltyPointsInput" type="number" placeholder="pl. 50">
+        </div>
+
+        <label style="margin-top: 10px;">Alcélok (opcionális)</label>
+        <textarea id="vowSubGoalsInput" rows="3" placeholder="Minden sor egy alcél..."></textarea>
+
+        <div style="text-align:center;margin-top:15px;">
+          <button onclick="saveVow()">✅ Fogadalom Tétel</button>
+          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('vowModal')">Mégse</button>
+        </div>
+      </div>
+    </div>
       <div class="modal-content">
         <input id="goalNameInput" type="text" placeholder="Cél neve pl. 10.000 lépés">
         <input id="goalPointsInput" type="number" placeholder="Pont érték pl. 10 (0 is lehet)">
@@ -1607,7 +1727,7 @@
 	  </div>
 	</div>
 	<div class="modal" id="mealImportModal">
-	  <div class="modal-content" style="max-width: 600px;">
+	  <div class="modal-content" style="max-width: 600px;">
 		<h3>📥 Ételek Tömeges Importálása</h3>
 		<p>Illeszd be a szöveget a megadott séma alapján. Az ételeket "---" (három kötőjel) sorral válaszd el.</p>
 		
@@ -1628,21 +1748,21 @@ Zsír (g) 5
 "></textarea>
 
 		<div style="text-align:center;margin-top:15px;">
-		  <button onclick="processMealImport()">✅ Importálás</button>
-		  <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealImportModal')">Mégse</button>
+		  <button onclick="processMealImport()">✅ Importálás</button>
+		  <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealImportModal')">Mégse</button>
 		</div>
-	  </div>
+	  </div>
 	</div>
 
 	<div class="modal" id="mealExportModal">
-	  <div class="modal-content" style="max-width: 600px;">
+	  <div class="modal-content" style="max-width: 600px;">
 		<h3>📤 Ételek Tömeges Exportálása</h3>
 		<p>Az alábbi szöveg tartalmazza az összes mentett ételedet. Másold ki és mentsd el egy szöveges fájlba.</p>
 		<textarea id="mealExportText" rows="10" readonly style="background: #f4f4f4; color: #333; font-family: monospace;"></textarea>
 		<div style="text-align:center;margin-top:15px;">
-		  <button style="background:#ccc;color:black;" onclick="closeModal('mealExportModal')">Bezárás</button>
+		  <button style="background:#ccc;color:black;" onclick="closeModal('mealExportModal')">Bezárás</button>
 		</div>
-	  </div>
+	  </div>
 	</div>
 	</div>
   <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -1742,116 +1862,116 @@ function openModal(id) {
     }
 	// ===== ÚJ FUNKCIÓ: ÉTEL IMPORT MODAL MEGNYITÁSA =====
 function openMealImportModal() {
-  // Kitöröljük a régi szöveget
-  document.getElementById("mealImportText").value = "";
-  openModal('mealImportModal');
+  // Kitöröljük a régi szöveget
+  document.getElementById("mealImportText").value = "";
+  openModal('mealImportModal');
 }
 
 // ===== ÚJ FUNKCIÓ: ÉTEL IMPORT FELDOLGOZÁSA =====
 async function processMealImport() {
-  const text = document.getElementById("mealImportText").value;
-  if (text.trim() === "") {
-    return alert("A szövegmező üres!");
-  }
+  const text = document.getElementById("mealImportText").value;
+  if (text.trim() === "") {
+    return alert("A szövegmező üres!");
+  }
 
-  // 1. A teljes szöveg szétvágása "---" mentén
-  const blocks = text.split('---');
-  let successCount = 0;
-  let failedCount = 0;
+  // 1. A teljes szöveg szétvágása "---" mentén
+  const blocks = text.split('---');
+  let successCount = 0;
+  let failedCount = 0;
 
-  // 2. Végigmegyünk minden étel-blokon
-  for (const block of blocks) {
-    if (block.trim() === "") continue; // Üres blokkok átugrása
+  // 2. Végigmegyünk minden étel-blokon
+  for (const block of blocks) {
+    if (block.trim() === "") continue; // Üres blokkok átugrása
 
-    try {
-      // 3. Regex (reguláris kifejezés) használata az adatok kinyerésére
-      const name = block.match(/Étel neve\s*:(.*)/i)?.[1].trim();
-      const category = block.match(/Kategória\s*:(.*)/i)?.[1].trim(); // EZ VOLT A HIÁNYZÓ SOR
-      const type = block.match(/Típus\s*:(.*)/i)?.[1].trim().toLowerCase();
-      const kcal = block.match(/Kalória \(kcal\)\s*:(.*)/i)?.[1].trim();
-      const protein = block.match(/Fehérje \(g\)\s*:?\s*(.*)/i)?.[1].trim(); 
-      const fat = block.match(/Zsír \(g\)\s*:?\s*(.*)/i)?.[1].trim();
+    try {
+      // 3. Regex (reguláris kifejezés) használata az adatok kinyerésére
+      const name = block.match(/Étel neve\s*:(.*)/i)?.[1].trim();
+      const category = block.match(/Kategória\s*:(.*)/i)?.[1].trim(); // EZ VOLT A HIÁNYZÓ SOR
+      const type = block.match(/Típus\s*:(.*)/i)?.[1].trim().toLowerCase();
+      const kcal = block.match(/Kalória \(kcal\)\s*:(.*)/i)?.[1].trim();
+      const protein = block.match(/Fehérje \(g\)\s*:?\s*(.*)/i)?.[1].trim(); 
+      const fat = block.match(/Zsír \(g\)\s*:?\s*(.*)/i)?.[1].trim();
 
-      // 4. Adatellenőrzés
-      if (!name || !type || !kcal || !protein || !fat) {
-        throw new Error("Hiányzó kötelező mező (Név, Típus, Kcal, Fehérje, Zsír).");
-      }
-      
-      const kcalNum = parseFloat(kcal);
-      const proteinNum = parseFloat(protein);
-      const fatNum = parseFloat(fat);
+      // 4. Adatellenőrzés
+      if (!name || !type || !kcal || !protein || !fat) {
+        throw new Error("Hiányzó kötelező mező (Név, Típus, Kcal, Fehérje, Zsír).");
+      }
+      
+      const kcalNum = parseFloat(kcal);
+      const proteinNum = parseFloat(protein);
+      const fatNum = parseFloat(fat);
 
-      if (isNaN(kcalNum) || isNaN(proteinNum) || isNaN(fatNum)) {
-        throw new Error("A Kalória, Fehérje vagy Zsír nem érvényes szám.");
-      }
-      if (type !== 'unit' && type !== 'weight') {
-        throw new Error(`Érvénytelen Típus: '${type}'. Csak 'unit' vagy 'weight' lehet.`);
-      }
+      if (isNaN(kcalNum) || isNaN(proteinNum) || isNaN(fatNum)) {
+        throw new Error("A Kalória, Fehérje vagy Zsír nem érvényes szám.");
+      }
+      if (type !== 'unit' && type !== 'weight') {
+        throw new Error(`Érvénytelen Típus: '${type}'. Csak 'unit' vagy 'weight' lehet.`);
+      }
 
-      // 5. Új étel objektum létrehozása
-      const newMeal = {
-        name: name,
-        category: category || null,
-        type: type,
-        kcal: kcalNum,
-        protein: proteinNum,
-        fat: fatNum
-      };
+      // 5. Új étel objektum létrehozása
+      const newMeal = {
+        name: name,
+        category: category || null,
+        type: type,
+        kcal: kcalNum,
+        protein: proteinNum,
+        fat: fatNum
+      };
 
-      // 6. Hozzáadás a globális 'meals' tömbhöz
-      meals.push(newMeal);
-      successCount++;
+      // 6. Hozzáadás a globális 'meals' tömbhöz
+      meals.push(newMeal);
+      successCount++;
 
-    } catch (e) {
-      console.error("Étel import hiba:", e.message, "\nBlokk:", block);
-      failedCount++;
-    }
-  }
+    } catch (e) {
+      console.error("Étel import hiba:", e.message, "\nBlokk:", block);
+      failedCount++;
+    }
+  }
 
-  // 7. Visszajelzés és frissítés
-  closeModal('mealImportModal');
-  
-  if (successCount > 0) {
-    renderMeals(); // Lista frissítése
-    await logActivity(`📥 ${successCount} étel sikeresen importálva.`);
-  }
+  // 7. Visszajelzés és frissítés
+  closeModal('mealImportModal');
+  
+  if (successCount > 0) {
+    renderMeals(); // Lista frissítése
+    await logActivity(`📥 ${successCount} étel sikeresen importálva.`);
+  }
 
-  alert(`Importálás befejezve!\n\nSikeres: ${successCount}\nHibás: ${failedCount}`);
+  alert(`Importálás befejezve!\n\nSikeres: ${successCount}\nHibás: ${failedCount}`);
 }
-  
+  
 // ===== ÚJ FUNKCIÓ: ÉTEL EXPORT MEGNYITÁSA ÉS GENERÁLÁSA =====
 function openMealExportModal() {
-  const textarea = document.getElementById("mealExportText");
-  
-  if (!meals || meals.length === 0) {
-    textarea.value = "Nincsenek mentett ételek, amiket exportálni lehetne.";
-    openModal('mealExportModal');
-    return;
-  }
+  const textarea = document.getElementById("mealExportText");
+  
+  if (!meals || meals.length === 0) {
+    textarea.value = "Nincsenek mentett ételek, amiket exportálni lehetne.";
+    openModal('mealExportModal');
+    return;
+  }
 
-  let exportedTextBlocks = [];
-  
-  // Végigmegyünk az összes ételen
-  meals.forEach(meal => {
-    let block = [];
-    block.push(`Étel neve: ${meal.name}`);
-    block.push(`Kategória: ${meal.category || ''}`);
-    
-    // --- INNEN TÖRÖLTÜK A JEGYZET SOROKAT ---
-    
-    block.push(`Típus: ${meal.type}`);
-    block.push(`Kalória (kcal): ${meal.kcal}`);
-    
-    // --- MÓDOSÍTVA: Hozzáadtuk a kettőspontot a séma szerint ---
-    block.push(`Fehérje (g): ${meal.protein}`);
-    block.push(`Zsír (g): ${meal.fat}`);
-    
-    exportedTextBlocks.push(block.join('\n'));
-  });
+  let exportedTextBlocks = [];
+  
+  // Végigmegyünk az összes ételen
+  meals.forEach(meal => {
+    let block = [];
+    block.push(`Étel neve: ${meal.name}`);
+    block.push(`Kategória: ${meal.category || ''}`);
+    
+    // --- INNEN TÖRÖLTÜK A JEGYZET SOROKAT ---
+    
+    block.push(`Típus: ${meal.type}`);
+    block.push(`Kalória (kcal): ${meal.kcal}`);
+    
+    // --- MÓDOSÍTVA: Hozzáadtuk a kettőspontot a séma szerint ---
+    block.push(`Fehérje (g): ${meal.protein}`);
+    block.push(`Zsír (g): ${meal.fat}`);
+    
+    exportedTextBlocks.push(block.join('\n'));
+  });
 
-  // Összefűzzük a blokkokat a "---" elválasztóval
-  textarea.value = exportedTextBlocks.join('\n---\n');
-  openModal('mealExportModal');
+  // Összefűzzük a blokkokat a "---" elválasztóval
+  textarea.value = exportedTextBlocks.join('\n---\n');
+  openModal('mealExportModal');
 }
     // ÚJ: Az étel modal megnyitása (alaphelyzetbe állítás)
     function openMealModal() {
@@ -2209,6 +2329,7 @@ function openMealExportModal() {
     }
     // They will be filled by loadDataFromFirestore()
     let goals = [];
+	let vows = [];
     let rewards = [];
     let notes = [];
     let logs = [];
@@ -2428,10 +2549,10 @@ function renderWorkoutGoals() {
 }
 // ===== ÚJ KEZELŐFÜGGVÉNY A SZŰRŐ VÁLTOZÁSAKOR =====
 function handleWorkoutFilterChange() {
-  // 1. Frissítjük az Edzés fül listáját (ez szűr *a* kategóriára)
-  renderWorkoutGoals();
-  // 2. Frissítjük a Főoldal fül listáját (ez szűr *ki* a kategóriából)
-  renderGoals();
+  // 1. Frissítjük az Edzés fül listáját (ez szűr *a* kategóriára)
+  renderWorkoutGoals();
+  // 2. Frissítjük a Főoldal fül listáját (ez szűr *ki* a kategóriából)
+  renderGoals();
 }
 	// ===== AUTHENTICATION (NEW FUNCTIONS) =====
     function handleLogin() {
@@ -2516,6 +2637,7 @@ function handleWorkoutFilterChange() {
           // Document exists, load the data into our global variables
           const data = doc.data();
           goals = data.goals || [];
+		  vows = data.vows || [];
           rewards = data.rewards || [];
           notes = data.notes || [];
           logs = Array.isArray(data.logs) ? data.logs : [];
@@ -2562,6 +2684,7 @@ function handleWorkoutFilterChange() {
 
       const dataToSave = {
         goals,
+		vows,
         rewards,
         notes,
         logs,
@@ -2600,15 +2723,15 @@ function handleWorkoutFilterChange() {
         await checkRecurringGoals(); // ÚJ: Ismétlődő célok ellenőrzése
 		await checkRecurringGoals(); // Ez ellenőrzi a *teljesített* ismétlődőket
         await checkPendingGoals(); // EZ AZ ÚJ SOR (ellenőrzi a várakozókat)
-        calculateDailyProgress();
-        calculateDailyProgress();
-        loadMotivation();
-        populateWorkoutCategoryFilter();
-        // ==================================
+        calculateDailyProgress();
+        calculateDailyProgress();
+        loadMotivation();
+        populateWorkoutCategoryFilter();
+        // ==================================
 
-        renderAll();
-		loadSavedTheme(); 
-        startReminderEngine();
+        renderAll();
+		loadSavedTheme(); 
+        startReminderEngine();
 
         startReminderEngine(); // ÚJ EMLÉKEZTETŐ MOTOR INDÍTÁSA
 		} else {
@@ -2736,10 +2859,10 @@ function handleWorkoutFilterChange() {
     // ===== MÓDOSÍTOTT TAB KEZELÉS =====
     function showTab(id) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-	  if (id === 'main') {
-        renderHighlights();
-        renderGoals(); // <-- EZ AZ ÚJ SOR
-      }
+	  if (id === 'main') {
+        renderHighlights();
+        renderGoals(); // <-- EZ AZ ÚJ SOR
+      }
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
 
       if (event && event.target) {
@@ -2756,13 +2879,13 @@ function handleWorkoutFilterChange() {
       document.getElementById(id).classList.add('active');
 
       if (id === 'workouts') {
-        renderWorkouts();
-        // ===== EZ A KÉT ÚJ SOR =====
-        populateWorkoutCategoryFilter();
-        renderWorkoutGoals();
-        renderGoals(); // <-- EZ AZ ÚJ SOR
-        // ============================
-      }
+        renderWorkouts();
+        // ===== EZ A KÉT ÚJ SOR =====
+        populateWorkoutCategoryFilter();
+        renderWorkoutGoals();
+        renderGoals(); // <-- EZ AZ ÚJ SOR
+        // ============================
+      }
       // ÚJ: Étkezés fül renderelése
       if (id === 'meals') {
         renderMeals();
@@ -2818,65 +2941,65 @@ function handleWorkoutFilterChange() {
     }
 	// ===== ÚJ SEGÉDFÜGGVÉNY: MAI EDZÉS ELLENŐRZÉSE =====
 /**
- * Ellenőrzi, hogy a 'workouts' tömbben van-e már bejegyzés a mai napra.
- * @returns {boolean} Igaz, ha már van rögzített edzés, egyébként hamis.
- */
+ * Ellenőrzi, hogy a 'workouts' tömbben van-e már bejegyzés a mai napra.
+ * @returns {boolean} Igaz, ha már van rögzített edzés, egyébként hamis.
+ */
 function isWorkoutLoggedToday() {
-  const todayISO = toDateInputString(new Date());
-  // .find() visszaadja az elemet (truthy) ha talál, vagy undefined (falsy) ha nem.
-  return workouts.find(w => w.date === todayISO);
+  const todayISO = toDateInputString(new Date());
+  // .find() visszaadja az elemet (truthy) ha talál, vagy undefined (falsy) ha nem.
+  return workouts.find(w => w.date === todayISO);
 }
 
 // ===== ÚJ SEGÉDFÜGGVÉNY: EDZÉS RÖGZÍTÉSE MÁRA (MODAL NÉLKÜL) =====
 /**
- * Programozottan hozzáad egy edzésbejegyzést a mai napra.
- */
+ * Programozottan hozzáad egy edzésbejegyzést a mai napra.
+ */
 async function logWorkoutForToday() {
-  const todayISO = toDateInputString(new Date());
-  
-  // Dupla ellenőrzés, hátha időközben hozzáadták
-  if (isWorkoutLoggedToday()) {
-    console.warn("Már van edzés rögzítve a mai napra, a logWorkoutForToday() hívás leállt.");
-    return;
-  }
+  const todayISO = toDateInputString(new Date());
+  
+  // Dupla ellenőrzés, hátha időközben hozzáadták
+  if (isWorkoutLoggedToday()) {
+    console.warn("Már van edzés rögzítve a mai napra, a logWorkoutForToday() hívás leállt.");
+    return;
+  }
 
-  // 1. Hozzáadás a tömbhöz
-  workouts.push({
-    date: todayISO,
-    note: "" // Üres jegyzet, amit később szerkeszthet
-  });
-  
-  // 2. Mentés és naplózás
-  await saveWorkouts(); // Ez már a saveDataToFirestore-t hívja
-  await logActivity(`🏋️‍♂️ Edzés rögzítve (cél teljesítéséből): ${todayISO}`);
-  
-  // 3. UI frissítése
-  renderWorkouts();
+  // 1. Hozzáadás a tömbhöz
+  workouts.push({
+    date: todayISO,
+    note: "" // Üres jegyzet, amit később szerkeszthet
+  });
+  
+  // 2. Mentés és naplózás
+  await saveWorkouts(); // Ez már a saveDataToFirestore-t hívja
+  await logActivity(`🏋️‍♂️ Edzés rögzítve (cél teljesítéséből): ${todayISO}`);
+  
+  // 3. UI frissítése
+  renderWorkouts();
 }
 
 // ===== ÚJ SEGÉDFÜGGVÉNY: RÁKÉRDEZ AZ EDZÉS RÖGZÍTÉSÉRE =====
 /**
- * Ellenőrzi a feltételeket (Edzés fül, mai nap) és rákérdez a felhasználónál.
- */
+ * Ellenőrzi a feltételeket (Edzés fül, mai nap) és rákérdez a felhasználónál.
+ */
 function checkAndAskForWorkoutLog() {
-  // 1. Csak az edzés fülön fusson
-  if (!document.getElementById('workouts').classList.contains('active')) {
-    return;
-  }
+  // 1. Csak az edzés fülön fusson
+  if (!document.getElementById('workouts').classList.contains('active')) {
+    return;
+  }
 
-  // 2. Csak akkor fusson, ha ma még nincs edzés
-  if (isWorkoutLoggedToday()) {
-    return;
-  }
+  // 2. Csak akkor fusson, ha ma még nincs edzés
+  if (isWorkoutLoggedToday()) {
+    return;
+  }
 
-  // 3. Rákérdezés
-  // Késleltetjük a confirm() hívást, hogy a UI (pipa) frissülhessen előtte.
-  setTimeout(() => {
-    if (confirm("Gratulálok a cél teljesítéséhez! 👋\n\nSzeretnéd rögzíteni ezt edzésként a mai napra?")) {
-      // Ha igent mondott, programozottan hozzáadjuk az edzést
-      logWorkoutForToday();
-    }
-  }, 100); // 100ms késleltetés
+  // 3. Rákérdezés
+  // Késleltetjük a confirm() hívást, hogy a UI (pipa) frissülhessen előtte.
+  setTimeout(() => {
+    if (confirm("Gratulálok a cél teljesítéséhez! 👋\n\nSzeretnéd rögzíteni ezt edzésként a mai napra?")) {
+      // Ha igent mondott, programozottan hozzáadjuk az edzést
+      logWorkoutForToday();
+    }
+  }, 100); // 100ms késleltetés
 }
 
 	// Bezárja az edzés hozzáadó panelt
@@ -3702,15 +3825,15 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
   const allDone = taskSubGoals.length > 0 && taskSubGoals.every(sg => sg.done);
 
   // 3. Fő cél állapotának és pontoknak frissítése
-  if (allDone && !wasMainGoalDone) {
-    // === ÉPP MOST LETT KÉSZ ===
-    goal.done = true;
-    totalPoints += goal.points;
-    animatePoints(totalPoints);
+  if (allDone && !wasMainGoalDone) {
+    // === ÉPP MOST LETT KÉSZ ===
+    goal.done = true;
+    totalPoints += goal.points;
+    animatePoints(totalPoints);
 
-    checkAndAskForWorkoutLog(); // <--- EZ AZ ÚJ SOR
+    checkAndAskForWorkoutLog(); // <--- EZ AZ ÚJ SOR
 
-    if (goal.isRecurring) {
+    if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
       goal.lastCompleted = new Date().toISOString();
 
@@ -3902,6 +4025,17 @@ async function deleteGoal(i) { // Make async
   }
   const goalToDelete = goals[i];
 
+  // ELLENŐRZÉS: Ha ez egy büntetés és NINCS kész, akkor levonás!
+  if (goalToDelete.isPunishment && !goalToDelete.done && goalToDelete.penaltyPointsIfDeleted) {
+      if(!confirm(`FIGYELEM! Ez egy büntetés. Ha törlöd teljesítés nélkül, ${goalToDelete.penaltyPointsIfDeleted} pont levonásra kerül! Folytatod?`)) return;
+      
+      totalPoints -= goalToDelete.penaltyPointsIfDeleted;
+      animatePoints(totalPoints);
+      addPointsLogEntry(-goalToDelete.penaltyPointsIfDeleted, `⚠️ Büntetés elkerülve (törölve): ${goalToDelete.name}`);
+  } else {
+      // Hagyományos törlés megerősítés
+      if (confirm(`Biztosan törlöd a célt: "${goalToDelete.name}"?`) === false) return;
+  }
 
   goals.splice(i, 1);
   renderGoals();
@@ -3916,30 +4050,30 @@ function renderGoals() {
   const list = document.getElementById("goalList");
   list.innerHTML = "";
 // === ÚJ KIZÁRÓ SZŰRÉS AZ EDZÉS FÜL ALAPJÁN ===
-  let workoutCategory = "";
-  const filterSelect = document.getElementById("workoutGoalFilter");
-  if (filterSelect) {
-    workoutCategory = filterSelect.value;
-  }
-  // ============================================
+  let workoutCategory = "";
+  const filterSelect = document.getElementById("workoutGoalFilter");
+  if (filterSelect) {
+    workoutCategory = filterSelect.value;
+  }
+  // ============================================
   // === MÓDOSÍTÁS KEZDETE: Dátum alapú szűrés ===
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Dátum normalizálása éjfélre a tiszta összehasonlításért
 
   const visibleGoals = goals
-    .map((goal, i) => ({ ...goal,
-      originalIndex: i
-    }))
-    .filter(g => {
-      // ===== EZ AZ ÚJ BLOKK =====
-      // Ha az Edzés fülön ki van választva egy kategória, és a cél abba tartozik,
-      // akkor itt NE jelenjen meg (return false).
-      if (workoutCategory !== "" && g.category === workoutCategory) {
-        return false;
-      }
-      // ==========================
+    .map((goal, i) => ({ ...goal,
+      originalIndex: i
+    }))
+    .filter(g => {
+      // ===== EZ AZ ÚJ BLOKK =====
+      // Ha az Edzés fülön ki van választva egy kategória, és a cél abba tartozik,
+      // akkor itt NE jelenjen meg (return false).
+      if (workoutCategory !== "" && g.category === workoutCategory) {
+        return false;
+      }
+      // ==========================
 
-      if (g.startDate) {
+      if (g.startDate) {
         // Az input type="date" YYYY-MM-DD formátumú stringet ad
         const startDateISO = g.startDate; // YYYY-MM-DD
         const todayISO = toDateInputString(today.toISOString()); // <--- EZ A JAVÍTÁS
@@ -3952,13 +4086,16 @@ function renderGoals() {
   // === MÓDOSÍTÁS VÉGE ===
 
   // ===== ÚJ SZÉTVÁLOGATÁSI LOGIKA =====
+  const punishmentGoals = []; // <--- ÚJ TÖMB
   const priorityGoals = [];
   const categorized = {};
   const uncategorized = [];
 
   // MÓDOSÍTÁS: A 'goals' helyett a 'visibleGoals' tömböt használjuk
   visibleGoals.forEach((item) => {
-    if (item.isPriority) {
+    if (item.isPunishment) { // <--- HA BÜNTETÉS, IDE KERÜL
+        punishmentGoals.push(item);
+    } else if (item.isPriority) {
       priorityGoals.push(item);
     } else if (item.category) {
       if (!categorized[item.category]) {
@@ -4062,7 +4199,16 @@ function renderGoals() {
   };
 
   // ===== ÚJ RENDERELÉSI SORREND =====
-
+	// 0. BÜNTETÉSEK RENDERELÉSE (Legfelül) <--- EZT ILLESZD BE
+  if (punishmentGoals.length > 0) {
+    const title = document.createElement("h3");
+    title.className = "category-title";
+    title.textContent = "🔥 BÜNTETÉSEK (24h)";
+    title.style.color = "#b71c1c"; 
+    title.style.borderColor = "#b71c1c";
+    list.appendChild(title);
+    punishmentGoals.forEach(item => renderItem(item, item.originalIndex));
+  }
   // 1. Prioritásos célok renderelése
   if (priorityGoals.length > 0) {
     const title = document.createElement("h3");
@@ -4104,6 +4250,148 @@ function renderGoals() {
     });
   }
   // ===== SORREND VÉGE =====
+}
+// ==========================================================
+// ===== ÚJ FUNKCIÓ: FOGADALMAK (VOWS) KEZELÉSE =============
+// ==========================================================
+
+async function saveVow() {
+    const name = document.getElementById("vowNameInput").value.trim();
+    const duration = document.getElementById("vowDurationInput").value;
+    const points = parseInt(document.getElementById("vowPointsInput").value);
+    const penalty = document.getElementById("vowPenaltyInput").value.trim();
+    const penaltyPoints = parseInt(document.getElementById("vowPenaltyPointsInput").value) || 0;
+    
+    const subGoalsText = document.getElementById("vowSubGoalsInput").value;
+    let subGoals = [];
+    if (subGoalsText.trim() !== "") {
+        subGoals = subGoalsText.split('\n').map(text => text.trim()).filter(text => text.length > 0).map(rawText => {
+            return { type: 'task', text: rawText, done: false };
+        });
+    }
+
+    if (!name || isNaN(points) || points < 0) return alert("Kérlek adj meg egy nevet és érvényes pontértéket!");
+
+    vows.push({
+        id: Date.now(),
+        name, duration, points,
+        startDate: new Date().toISOString().slice(0, 10),
+        lastCompletedDate: null,
+        penalty: penalty || null,
+        penaltyPoints: penaltyPoints,
+        subGoals: subGoals,
+    });
+    
+    document.getElementById("vowNameInput").value = "";
+    document.getElementById("vowPointsInput").value = "";
+    document.getElementById("vowPenaltyInput").value = "";
+    document.getElementById("vowPenaltyPointsInput").value = "";
+    document.getElementById("vowSubGoalsInput").value = "";
+    closeModal('vowModal');
+    renderVows();
+    await logActivity(`✋ Új fogadalom: ${name} (${duration})`);
+}
+
+function renderVows() {
+    const list = document.getElementById("vowList");
+    if (!list) return;
+    list.innerHTML = "";
+    const todayISO = new Date().toISOString().slice(0, 10);
+    
+    if (vows.length === 0) {
+        list.innerHTML = "<p style='text-align:center; padding: 10px;'>Még nincsenek aktív fogadalmaid.</p>";
+        return;
+    }
+
+    vows.forEach((vow, i) => {
+        const div = document.createElement("div");
+        const isCompletedToday = vow.lastCompletedDate === todayISO;
+        div.className = `vow-item fade-in ${isCompletedToday ? 'completed-today' : ''}`;
+        
+        const totalTasks = vow.subGoals ? vow.subGoals.filter(sg => sg.type === 'task').length : 0;
+        const completedTasks = vow.subGoals ? vow.subGoals.filter(sg => sg.type === 'task' && sg.done).length : 0;
+        const progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+        
+        let progressBarHTML = totalTasks > 0 ? `<div class="subgoal-progress-container" style="height: 3px; background: #90caf9; border-color: #64b5f6; margin-top: 5px;"><div class="subgoal-progress-fill" style="width: ${progressPercent}%; background: #2196f3; border-radius: 5px;"></div></div>` : "";
+        let endText = vow.duration === 'weekly' ? "(Heti)" : "(Havi)";
+
+        div.innerHTML = `
+            <div class="item-name" style="flex-direction: column;">
+                <div class="item-name-main" style="${isCompletedToday ? 'text-decoration: none;' : ''}">✋ ${vow.name} <span style="font-size: 0.8em; font-weight: normal; color: #1e88e5;">${endText}</span></div>
+                ${progressBarHTML}
+                <div class="subgoal-list" style="margin-top: 5px;">
+                    ${vow.subGoals ? vow.subGoals.map((sg, subIndex) => `<div><input type="checkbox" onchange="toggleVowSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''} style="margin-top: 0;"><span class="${sg.done ? 'subgoal-done' : ''}" style="color: #222;">${sg.text}</span></div>`).join('') : ''}
+                </div>
+                ${vow.penalty ? `<small style="color: #c62828; margin-top: 5px; font-weight: bold;">⚠️ Büntetés: ${vow.penalty} (${vow.penaltyPoints} pont)</small>` : ''}
+            </div>
+            <div class="item-actions" style="background: ${isCompletedToday ? '#90caf9' : '#e3f2fd'};">
+                ${isCompletedToday ? `<button style="color:#00796b; font-size: 1.1em;" title="Teljesítés visszavonása" onclick="toggleVowCompletion(${i})">❌</button>` : `<button style="color:#00796b; font-size: 1.1em;" title="Mai teljesítés" onclick="toggleVowCompletion(${i})">✅</button>`}
+                <button class="fail-btn" title="Fogadalom megszegése" onclick="failVowToday(${i})">🔥</button>
+                <button title="Törlés" onclick="deleteVow(${i})">🗑️</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+async function toggleVowCompletion(i) {
+    const vow = vows[i];
+    const todayISO = new Date().toISOString().slice(0, 10);
+    if (vow.lastCompletedDate === todayISO) {
+        vow.lastCompletedDate = null;
+        totalPoints -= vow.points;
+        addPointsLogEntry(-vow.points, `❌ Fogadalom visszavonva: ${vow.name}`);
+    } else {
+        vow.lastCompletedDate = todayISO;
+        totalPoints += vow.points;
+        addPointsLogEntry(vow.points, `✅ Fogadalom teljesítve: ${vow.name}`);
+    }
+    animatePoints(totalPoints);
+    renderVows();
+    await saveDataToFirestore();
+}
+
+async function toggleVowSubGoal(vowIndex, subGoalIndex) {
+    const vow = vows[vowIndex];
+    if (vow && vow.subGoals && vow.subGoals[subGoalIndex]) {
+        vow.subGoals[subGoalIndex].done = !vow.subGoals[subGoalIndex].done;
+        renderVows();
+        await saveDataToFirestore();
+    }
+}
+
+async function failVowToday(i) {
+    const vow = vows[i];
+    if (!vow.penalty) return alert("Nincs büntetés megadva.");
+    if (!confirm(`Megszegted? Büntetés hozzáadása: "${vow.penalty}"`)) return;
+
+    const penaltyGoal = {
+        name: `BÜNTETÉS: ${vow.name} - ${vow.penalty}`,
+        points: 0,
+        penaltyPointsIfDeleted: vow.penaltyPoints,
+        done: false, category: "Büntetés", isPriority: true, isPunishment: true,
+        startDate: toDateInputString(new Date()),
+        subGoals: [{ type: 'task', text: vow.penalty, done: false }]
+    };
+    goals.unshift(penaltyGoal);
+    
+    if (vow.lastCompletedDate === new Date().toISOString().slice(0, 10)) {
+        vow.lastCompletedDate = null;
+        totalPoints -= vow.points;
+        addPointsLogEntry(-vow.points, `❌ Büntetés miatt pontlevonás`);
+    }
+    animatePoints(totalPoints);
+    renderGoals();
+    renderVows();
+    await logActivity(`🔥 FOGADALOM MEGSZEGVE: ${vow.name}`);
+}
+
+async function deleteVow(i) {
+    if (!confirm(`Törlöd a(z) "${vows[i].name}" fogadalmat?`)) return;
+    const name = vows[i].name;
+    vows.splice(i, 1);
+    renderVows();
+    await logActivity(`🗑️ Fogadalom törölve: ${name}`);
 }
 // ===== ARCHÍVUM FUNKCIÓK =====
 function openArchiveModal() {
@@ -5695,6 +5983,7 @@ async function importData(event) { // Make async
 async function resetAll() { // Make async
   if (confirm("Biztosan törölni szeretnél MINDENT? Ez végleges!")) {
     goals = [];
+	vows = [];
     rewards = [];
     notes = [];
     transactions = [];
@@ -5721,6 +6010,7 @@ function renderAll() {
   document.getElementById("totalPointsDisplay").textContent = totalPoints;
 
   renderGoals();
+  renderVows();
   renderRewards();
   renderNotes();
   renderLogs();
@@ -5920,7 +6210,5 @@ function showReminderNotification(reminder) {
   }
 }
 </script>
-
 </body>
-
 </html>
