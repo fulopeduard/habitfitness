@@ -3024,6 +3024,54 @@ function checkAndAskForWorkoutLog() {
         list.appendChild(div);
       });
     }
+	// Ellenőrzi a büntetéseket: Lejárt-e? Ha igen, büntetés levonása és törlés!
+async function checkPunishments() {
+    const now = Date.now();
+    let hasExpired = false;
+
+    // Visszafelé iterálunk, hogy biztonságosan törölhessünk a tömbből
+    for (let i = goals.length - 1; i >= 0; i--) {
+        const g = goals[i];
+        
+        // Csak az aktív (nem kész) büntetéseket nézünk
+        if (g.isPunishment && !g.done) {
+            // Ha van deadline, azt használjuk, ha nincs (régi adat), akkor startDate + 24h
+            const deadline = g.deadline || (new Date(g.startDate).getTime() + 24 * 60 * 60 * 1000);
+
+            if (now > deadline) {
+                // --- IDŐ LEJÁRT ---
+                console.log(`Büntetés lejárt: ${g.name}`);
+                
+                // 1. Pontlevonás (ha van beállítva büntetőpont)
+                const penalty = g.penaltyPointsIfDeleted || 0;
+                if (penalty > 0) {
+                    totalPoints -= penalty;
+                    addPointsLogEntry(-penalty, `⌛ LEJÁRT BÜNTETÉS: ${g.name}`);
+                }
+                
+                // 2. Naplózás
+                await logActivity(`⌛ Büntetés lejárt (nem teljesítetted): ${g.name} (-${penalty} pont)`);
+
+                // 3. TÖRLÉS A LISTÁBÓL (hogy eltűnjön)
+                goals.splice(i, 1);
+                hasExpired = true;
+            }
+        }
+    }
+
+    // Ha történt változás (lejárt valami), mentünk és frissítünk
+    if (hasExpired) {
+        animatePoints(totalPoints);
+        renderGoals(); // Azonnal eltünteti a felületről
+        await saveDataToFirestore();
+    }
+    
+    // Minden percben újra kell rajzolni a listát a visszaszámláló frissítése miatt,
+    // de csak ha nem történt most törlés (mert akkor fentebb már rendereltünk)
+    if (!hasExpired && document.getElementById("main").classList.contains("active")) {
+        renderGoals();
+    }
+}
 
     async function deleteWorkout(index) {
       if (!confirm(`Biztosan törlöd az edzést erről a napról: ${workouts[index].date}?`)) {
@@ -3782,97 +3830,83 @@ async function toggleGoal(i) { // Make async
 // ===== ÚJ FUNKCIÓ: ALCÉL KIPIPÁLÁSA =====
 async function toggleSubGoal(goalIndex, subGoalIndex) {
   const goal = goals[goalIndex];
-  if (!goal || !goal.subGoals || !goal.subGoals[subGoalIndex]) {
-    console.error("Invalid sub-goal toggle.", goalIndex, subGoalIndex);
-    return;
-  }
-
-  // ===== ÚJ BIZTONSÁGI ELLENŐRZÉS =====
-  // Csak 'task' típust (vagy régitípusú 'undefined'-et) engedünk pipálni
-  const subGoal = goal.subGoals[subGoalIndex];
-  const sgType = subGoal.type || 'task'; // Alapértelmezett a 'task' a régi adatok miatt
-
-  if (sgType !== 'task') {
-    console.warn("Nem 'task' típusú alcél pipálása kísérlet megakadályozva.");
-    return; // Megállítjuk a futást
-  }
-  // ===== VÉGE =====
-
-  const wasMainGoalDone = goal.done;
+  if (!goal || !goal.subGoals || !goal.subGoals[subGoalIndex]) return;
 
   // 1. Alcél állapotának váltása
+  const subGoal = goal.subGoals[subGoalIndex];
   subGoal.done = !subGoal.done;
 
-  // 2. Ellenőrzés, hogy az összes 'task' típusú alcél kész van-e
+  // 2. Ellenőrzés: Minden feladat kész van-e?
   // Csak a 'task' típusúakat vesszük számításba!
   const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
   const allDone = taskSubGoals.length > 0 && taskSubGoals.every(sg => sg.done);
 
-  // 3. Fő cél állapotának és pontoknak frissítése
-  if (allDone && !wasMainGoalDone) {
-    // === ÉPP MOST LETT KÉSZ ===
-    goal.done = true;
-    totalPoints += goal.points;
-    animatePoints(totalPoints);
-
-    checkAndAskForWorkoutLog(); // <--- EZ AZ ÚJ SOR
-
-    if (goal.isRecurring) {
-      // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
-      goal.lastCompleted = new Date().toISOString();
-
-      let logMessage = `✅ Ismétlődő cél archiválva: ${goal.name}`;
-      const recurrence = goal.recurrence;
-
-      if (recurrence && typeof recurrence === 'object') {
-        // Növeljük a belső számlálót
-        recurrence.currentCount = (recurrence.currentCount || 0) + 1;
-
-        // Ellenőrizzük, hogy ezzel lejárt-e
-        if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
-          goal.isRecurring = false; // Lejárt, ne aktiválja újra
-          logMessage = `✅ Ismétlődő cél VÉGLEGESEN teljesítve: ${goal.name}`;
-          console.log(`Ismétlődés (darabszám) véget ért: ${goal.name}`);
+  // 3. Fő cél frissítése
+  if (allDone) {
+    // === MINDEN KÉSZ ===
+    
+    if (goal.isPunishment) {
+        // --- HA EZ EGY BÜNTETÉS ---
+        // Azonnal kivesszük a listából, mert teljesítetted ("letudtad")
+        goals.splice(goalIndex, 1);
+        
+        // Naplózzuk pozitívan (büntetés elkerülve)
+        await logActivity(`✅ Büntetés teljesítve/kiváltva: ${goal.name}`);
+        // Nem adunk pontot és nem is vonunk le (ez a jutalom: megúsztad)
+        
+        // Mentés és Renderelés
+        renderGoals();
+        await saveDataToFirestore();
+        return; // Kilépünk, mert a cél már nem létezik a tömbben
+    } 
+    
+    // --- HA NORMÁL CÉL ---
+    else if (!goal.done) {
+        goal.done = true;
+        totalPoints += goal.points;
+        animatePoints(totalPoints);
+        
+        if (goal.isRecurring) {
+             goal.lastCompleted = new Date().toISOString();
+             
+             // Ismétlődés számláló logika
+             const recurrence = goal.recurrence;
+             if (recurrence && typeof recurrence === 'object') {
+                recurrence.currentCount = (recurrence.currentCount || 0) + 1;
+                if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
+                    goal.isRecurring = false;
+                }
+             }
+             
+             addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
+             await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
+             
+             // Áthelyezés az archívumba
+             const goalToArchive = goals.splice(goalIndex, 1)[0];
+             archivedGoals.unshift(goalToArchive);
+        } else {
+             addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
+             await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
         }
-      }
-      
-      addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
-      await logActivity(`${logMessage} (+${goal.points} pont)`);
-
-      // Áthelyezés az archívumba
-      const goalToArchive = goals.splice(goalIndex, 1)[0];
-      archivedGoals.unshift(goalToArchive);
-
-      if (document.getElementById('archiveModal').style.display === 'flex') {
-        renderArchivedGoals();
-      }
-    } else {
-      // --- NEM ISMÉTLŐDŐ CÉL TELJESÍTVE ---
-      addPointsLogEntry(goal.points, `✅ Cél (alcélokkal): ${goal.name}`);
-      await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
+        
+        checkAndAskForWorkoutLog();
     }
-
-    await saveDataToFirestore();
-
-  } else if (!allDone && wasMainGoalDone) {
-    // === ÉPP MOST LETT VISSZAVONVA ===
-    goal.done = false;
-    totalPoints -= goal.points;
-    animatePoints(totalPoints);
-
-    if (goal.isRecurring) {
-      goal.lastCompleted = null;
-    }
-    addPointsLogEntry(-goal.points, `❌ Cél (alcélokkal): ${goal.name}`);
-    await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
-    await saveDataToFirestore();
-
   } else {
-    // A fő cél állapota nem változott, csak az alcélé
-    await saveDataToFirestore();
+    // Ha visszavontad a pipát (és normál cél volt), akkor 'done = false'
+    if (goal.done && !goal.isPunishment) {
+        goal.done = false;
+        totalPoints -= goal.points;
+        animatePoints(totalPoints);
+        
+        if (goal.isRecurring) {
+            goal.lastCompleted = null;
+        }
+        addPointsLogEntry(-goal.points, `❌ Cél visszavonva: ${goal.name}`);
+        await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
+    }
   }
 
-  // 4. Fő cél lista újra-rajzolása
+  await saveDataToFirestore();
   renderGoals();
   // Edzés fül frissítése, ha az aktív
   if (document.getElementById('workouts').classList.contains('active')) {
@@ -4033,76 +4067,81 @@ async function deleteGoal(i) { // Make async
 function renderGoals() {
   const list = document.getElementById("goalList");
   list.innerHTML = "";
-// === ÚJ KIZÁRÓ SZŰRÉS AZ EDZÉS FÜL ALAPJÁN ===
+
+  // === ÚJ KIZÁRÓ SZŰRÉS AZ EDZÉS FÜL ALAPJÁN ===
   let workoutCategory = "";
   const filterSelect = document.getElementById("workoutGoalFilter");
   if (filterSelect) {
     workoutCategory = filterSelect.value;
   }
-  // ============================================
-  // === MÓDOSÍTÁS KEZDETE: Dátum alapú szűrés ===
+
+  // === Dátum alapú szűrés ===
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Dátum normalizálása éjfélre a tiszta összehasonlításért
+  today.setHours(0, 0, 0, 0); 
+  const todayISO = toDateInputString(new Date().toISOString());
 
   const visibleGoals = goals
-    .map((goal, i) => ({ ...goal,
-      originalIndex: i
-    }))
+    .map((goal, i) => ({ ...goal, originalIndex: i }))
     .filter(g => {
-      // ===== EZ AZ ÚJ BLOKK =====
-      // Ha az Edzés fülön ki van választva egy kategória, és a cél abba tartozik,
-      // akkor itt NE jelenjen meg (return false).
-      if (workoutCategory !== "" && g.category === workoutCategory) {
-        return false;
-      }
-      // ==========================
-
+      // Ha az Edzés fülön szűrünk kategóriára, itt ne jelenjen meg
+      if (workoutCategory !== "" && g.category === workoutCategory) return false;
+      
       if (g.startDate) {
-        // Az input type="date" YYYY-MM-DD formátumú stringet ad
-        const startDateISO = g.startDate; // YYYY-MM-DD
-        const todayISO = toDateInputString(today.toISOString()); // <--- EZ A JAVÍTÁS
-        
-        // Csak akkor jelenítjük meg, ha a start dátum ma van, vagy korábban volt
-        return startDateISO <= todayISO;
+         return g.startDate <= todayISO;
       }
-      return true; // Ha nincs startDate, mindig látszik
+      return true;
     });
-  // === MÓDOSÍTÁS VÉGE ===
 
-  // ===== ÚJ SZÉTVÁLOGATÁSI LOGIKA =====
-  const punishmentGoals = []; // <--- ÚJ TÖMB
+  // ===== SZÉTVÁLOGATÁSI LOGIKA =====
+  const punishmentGoals = [];
   const priorityGoals = [];
   const categorized = {};
   const uncategorized = [];
 
-  // MÓDOSÍTÁS: A 'goals' helyett a 'visibleGoals' tömböt használjuk
   visibleGoals.forEach((item) => {
-    if (item.isPunishment) { // <--- HA BÜNTETÉS, IDE KERÜL
+    if (item.isPunishment) {
         punishmentGoals.push(item);
     } else if (item.isPriority) {
       priorityGoals.push(item);
     } else if (item.category) {
-      if (!categorized[item.category]) {
-        categorized[item.category] = [];
-      }
+      if (!categorized[item.category]) categorized[item.category] = [];
       categorized[item.category].push(item);
     } else {
       uncategorized.push(item);
     }
   });
-  // ===== LOGIKA VÉGE =====
 
-  const renderItem = (g, i) => { // 'i' itt már az originalIndex lesz
+  const renderItem = (g, i) => {
     const div = document.createElement("div");
-    
-    // ===== ÚJ OSZTÁLY HOZZÁADÁSA =====
     let classList = "goal-item";
     if (g.done) classList += " completed";
-    if (g.isPriority) classList += " priority"; // EZ AZ ÚJ SOR
+    if (g.isPriority) classList += " priority";
+    if (g.isPunishment) classList += " punishment"; 
     div.className = classList;
-    // ===== VÉGE =====
 
-    // ===== MÓDOSÍTOTT ALCÉL LOGIKA KEZDETE =====
+    // === VISSZASZÁMLÁLÁS ÉS LEJÁRAT ELLENŐRZÉS ===
+    let countdownHTML = "";
+    let isExpired = false; // Segédváltozó: lejárt-e a büntetés?
+
+    if (g.isPunishment && !g.done) {
+        const now = Date.now();
+        // Ha nincs deadline (régi adat), akkor a startDate-ből számolunk + 24h-t
+        const deadline = g.deadline || (new Date(g.startDate).getTime() + 24 * 60 * 60 * 1000);
+        const diff = deadline - now;
+
+        if (diff > 0) {
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            // Ha kevesebb mint 1 óra, piros legyen
+            const colorStyle = hours < 1 ? "color: #ff5252;" : "color: #ff8a80;";
+            countdownHTML = `<span class="punishment-deadline" style="${colorStyle}">⏳ Hátralévő idő: ${hours}ó ${minutes}p</span>`;
+        } else {
+            isExpired = true; // IGEN, LEJÁRT!
+            countdownHTML = `<span class="punishment-deadline" style="color: red; font-weight: bold;">⌛ LEJÁRT - FELDOLGOZÁS...</span>`;
+        }
+    }
+    // ===========================================
+
     let subGoalsHTML = "";
     let hasSubGoals = g.subGoals && g.subGoals.length > 0;
     let hasTasks = false; 
@@ -4112,78 +4151,70 @@ function renderGoals() {
       g.subGoals.forEach((sg, subIndex) => {
         const sgType = sg.type || 'task';
         switch (sgType) {
-          case 'header':
-            subGoalsHTML += `<h4 class="subgoal-header">${sg.text}</h4>`;
-            break;
-          case 'separator':
-            subGoalsHTML += `<hr class="subgoal-separator">`;
-            break;
-          case 'task':
-          default:
+          case 'header': subGoalsHTML += `<h4 class="subgoal-header">${sg.text}</h4>`; break;
+          case 'separator': subGoalsHTML += `<hr class="subgoal-separator">`; break;
+          case 'task': default:
             hasTasks = true; 
-            subGoalsHTML += `
-              <div>
-                <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
-                <span class="${sg.done ? 'subgoal-done' : ''}">${sg.text}</span>
-              </div>
-            `;
+            // ITT A VÁLTOZTATÁS: Ha lejárt (isExpired), nem renderelünk checkboxot, csak szöveget!
+            if (g.isPunishment && isExpired) {
+                subGoalsHTML += `
+                  <div style="opacity: 0.6;">
+                    <span style="margin-right: 10px;">🚫</span>
+                    <span style="text-decoration: line-through;">${sg.text}</span>
+                  </div>
+                `;
+            } else {
+                subGoalsHTML += `
+                  <div>
+                    <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
+                    <span class="${sg.done ? 'subgoal-done' : ''}">${sg.text}</span>
+                  </div>
+                `;
+            }
             break;
         }
       });
       subGoalsHTML += '</div>';
     }
-    // ===== MÓDOSÍTOTT ALCÉL LOGIKA VÉGE =====
 
-    // ===== EZ AZ ÚJ KÓD BLOKK (PROGRESS BAR) =====
     let progressBarHTML = "";
-    if (hasTasks) {
+    if (hasTasks && !(g.isPunishment && isExpired)) { // Ne mutassuk a sávot, ha lejárt
       const tasks = g.subGoals.filter(sg => (sg.type || 'task') === 'task');
       const totalTasks = tasks.length;
       const completedTasks = tasks.filter(sg => sg.done).length;
-      let progressPercent = 0;
-      
-      if (totalTasks > 0) {
-        progressPercent = (completedTasks / totalTasks) * 100;
-      }
-
-      progressBarHTML = `
-        <div class="subgoal-progress-container">
-          <div class="subgoal-progress-fill" style="width: ${progressPercent}%;"></div>
-        </div>
-      `;
+      let progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+      progressBarHTML = `<div class="subgoal-progress-container"><div class="subgoal-progress-fill" style="width: ${progressPercent}%;"></div></div>`;
     }
-    // ===== ÚJ BLOKK VÉGE =====
 
-    // ===== ÚJ IKON HOZZÁADÁSA A NÉVHEZ =====
-    const priorityIcon = g.isPriority ? '📌 ' : ''; // Tű ikon
-    const recurringIcon = g.isRecurring ? ' 🔄' : ''; // Ismétlődő ikon
+    const priorityIcon = g.isPriority ? '📌 ' : '';
+    const recurringIcon = g.isRecurring ? ' 🔄' : '';
 
     div.innerHTML = `
       <div class="item-name">
         <div class="item-name-main">${priorityIcon}${g.name}${recurringIcon}</div>
-        ${progressBarHTML}         ${subGoalsHTML}
+        ${countdownHTML}
+        ${progressBarHTML} ${subGoalsHTML}
       </div>
       <div class="item-points">
         ${g.points} pont
       </div>
       <div class="item-actions">
-      <button class="archive-btn" title="" onclick="archiveGoal(${i})">📥</button>
-        <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
+        ${(g.isPunishment && isExpired) ? '' : `<button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>`}
+        ${(g.isPunishment && isExpired) ? '' : `<button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>`}
+        
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
-        ${!hasTasks ? ( 
-          g.done ?
-          `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>` :
+        
+        ${!hasTasks && !(g.isPunishment && isExpired) ? ( 
+          g.done ? 
+          `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>` : 
           `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`
-        ) :
-        ''
-      }
+        ) : '' }
       </div>
     `;
     list.appendChild(div);
   };
 
-  // ===== ÚJ RENDERELÉSI SORREND =====
-	// 0. BÜNTETÉSEK RENDERELÉSE (Legfelül) <--- EZT ILLESZD BE
+  // 0. BÜNTETÉSEK RENDERELÉSE (Legfelül)
   if (punishmentGoals.length > 0) {
     const title = document.createElement("h3");
     title.className = "category-title";
@@ -4193,47 +4224,38 @@ function renderGoals() {
     list.appendChild(title);
     punishmentGoals.forEach(item => renderItem(item, item.originalIndex));
   }
-  // 1. Prioritásos célok renderelése
+
+  // 1. Prioritásos célok
   if (priorityGoals.length > 0) {
     const title = document.createElement("h3");
     title.className = "category-title";
     title.textContent = "📌 Fontos Célok";
-    title.style.color = "#c62828"; // Piros cím
-    title.style.borderColor = "#e57373"; // Piros vonal
+    title.style.color = "#c62828";
+    title.style.borderColor = "#e57373"; 
     list.appendChild(title);
-    
-    priorityGoals.forEach(item => {
-      renderItem(item, item.originalIndex); // MÓDOSÍTVA: az 'originalIndex'-et adjuk át
-    });
+    priorityGoals.forEach(item => renderItem(item, item.originalIndex));
   }
 
-  // 2. Kategóriák kirajzolása (ABC sorrendben)
+  // 2. Kategóriák
   const categoryNames = Object.keys(categorized).sort();
   categoryNames.forEach(categoryName => {
     const title = document.createElement("h3");
     title.className = "category-title";
     title.textContent = categoryName;
     list.appendChild(title);
-
-    categorized[categoryName].forEach(item => {
-      renderItem(item, item.originalIndex); // MÓDOSÍTVA: az 'originalIndex'-et adjuk át
-    });
+    categorized[categoryName].forEach(item => renderItem(item, item.originalIndex));
   });
 
-  // 3. Kategória nélküliek kirajzolása
+  // 3. Egyéb
   if (uncategorized.length > 0) {
-    // Csak akkor kell "Egyéb" cím, ha volt már prioritásos VAGY kategorizált
-    if (categoryNames.length > 0 || priorityGoals.length > 0) { 
+    if (categoryNames.length > 0 || priorityGoals.length > 0 || punishmentGoals.length > 0) { 
       const title = document.createElement("h3");
       title.className = "category-title";
       title.textContent = "Egyéb";
       list.appendChild(title);
     }
-    uncategorized.forEach(item => {
-      renderItem(item, item.originalIndex); // MÓDOSÍTVA: az 'originalIndex'-et adjuk át
-    });
+    uncategorized.forEach(item => renderItem(item, item.originalIndex));
   }
-  // ===== SORREND VÉGE =====
 }
 // ==========================================================
 // ===== ÚJ FUNKCIÓ: FOGADALMAK (VOWS) KEZELÉSE =============
@@ -4349,12 +4371,17 @@ async function failVowToday(i) {
     if (!vow.penalty) return alert("Nincs büntetés megadva.");
     if (!confirm(`Megszegted? Büntetés hozzáadása: "${vow.penalty}"`)) return;
 
+    // 24 óra milliszekundumban
+    const dayInMs = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
     const penaltyGoal = {
         name: `BÜNTETÉS: ${vow.name} - ${vow.penalty}`,
         points: 0,
         penaltyPointsIfDeleted: vow.penaltyPoints,
         done: false, category: "Büntetés", isPriority: true, isPunishment: true,
         startDate: toDateInputString(new Date()),
+        deadline: now + dayInMs, // ITT A LÉNYEG: 24 óra múlva jár le
         subGoals: [{ type: 'task', text: vow.penalty, done: false }]
     };
     goals.unshift(penaltyGoal);
