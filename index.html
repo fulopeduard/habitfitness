@@ -5497,10 +5497,17 @@ async function confirmEdit() { // Make async
   }
     renderGoals();
     await logActivity(`✏️ Cél szerkesztve: ${v1}`);
-  } else if (editTarget.type === 'reward') {	
+  } else if (editTarget.type === 'reward') {
     const v2 = parseInt(document.getElementById("editInput2").value); // Ár
-	renderGoals();
-    await logActivity(`✏️ Cél szerkesztve: ${v1}`);
+    
+    if (!v1) return alert("A jutalomnak nevet kell adni!");
+    if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pont ár! A 0 vagy nagyobb érték megengedett.");
+
+    rewards[editTarget.index].name = v1;
+    rewards[editTarget.index].cost = v2;
+    
+    renderRewards(); // Ez a fontos: a jutalmakat rajzolja újra
+    await logActivity(`✏️ Jutalom szerkesztve: ${v1}`);
 
   // === EZT ILLESZD BE IDE: ===
   } else if (editTarget.type === 'archivedGoal') {
