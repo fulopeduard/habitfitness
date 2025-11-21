@@ -1433,7 +1433,7 @@
       <input id="goalCategoryInput" type="text" placeholder="Kategória (válassz vagy írj be újat,opcionális)" list="categoryDatalist">
       <datalist id="categoryDatalist">
       </datalist>
-      <textarea id="goalSubGoalsInput" rows="6" placeholder="&#10;Alcélok (opcionális, minden sor egy alcél)&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására"></textarea>
+      <textarea id="goalSubGoalsInput" rows="7" placeholder="&#10;Alcélok (opcionális, minden sor egy alcél)&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására&#10;*** → Opcionális cél jelölése"></textarea>
       <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
         <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
         <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
@@ -3630,7 +3630,7 @@ async function saveGoal() { // Make async
   if (!name) return alert("A célnak nevet kell adni!");
   if (isNaN(points) || points < 0) return alert("Érvénytelen pontszám! Adj meg 0-t vagy nagyobbat.");
 
-  // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS KEZDETE =====
+  // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS (FEJEDELEM EDITION) =====
   const subGoalsText = document.getElementById("goalSubGoalsInput").value;
   let subGoals = [];
   if (subGoalsText.trim() !== "") {
@@ -3640,20 +3640,23 @@ async function saveGoal() { // Make async
       .map(rawText => {
         // Típus meghatározása
         if (rawText.startsWith('#')) {
-          return {
-            type: 'header',
-            text: rawText.substring(1).trim()
-          };
+          return { type: 'header', text: rawText.substring(1).trim() };
         } else if (rawText === '---') {
-          return {
-            type: 'separator',
-            text: '---'
+          return { type: 'separator', text: '---' };
+        } else if (rawText.startsWith('@')) {
+          // OPCIONÁLIS ALCÉL FELISMERÉSE (@ jel)
+          return { 
+            type: 'task', 
+            text: rawText.substring(1).trim(), 
+            done: false, 
+            isOptional: true // ÚJ TULAJDONSÁG
           };
         } else {
-          return {
-            type: 'task',
-            text: rawText,
-            done: false
+          return { 
+            type: 'task', 
+            text: rawText, 
+            done: false,
+            isOptional: false // KÖTELEZŐ
           };
         }
       });
@@ -3754,17 +3757,28 @@ async function toggleGoal(i) { // Make async
     return;
   }
 
-  const goal = goals[i];
+   const goal = goals[i];
 
+  // === BÓNUSZ PONT SZÁMÍTÁSI LOGIKA (KÖZÖS) ===
+  // Ezt használjuk teljesítéskor és visszavonáskor is
+  let calculatedPoints = goal.points;
   if (goal.subGoals && goal.subGoals.length > 0) {
-    console.warn("toggleGoal called on a goal with sub-goals. This shouldn't happen.");
-    return;
+      const tasks = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
+      const mandatoryCount = tasks.filter(sg => !sg.isOptional).length;
+      // Figyelem: visszavonásnál a 'done' true, tehát a pipák még bent vannak,
+      // így a doneCount helyes lesz mindkét esetben.
+      const doneCount = tasks.filter(sg => sg.done).length;
+
+      if (mandatoryCount > 0 && doneCount > mandatoryCount) {
+           calculatedPoints = Math.round(goal.points * (doneCount / mandatoryCount));
+      }
   }
 
   // Csak a teljesítés érdekel (amikor 'done' false-ról true-ra vált)
   if (!goal.done) {
     goal.done = true;
-    totalPoints += goal.points;
+    
+    totalPoints += calculatedPoints;
     animatePoints(totalPoints);
 
     if (goal.isRecurring) {
@@ -3775,50 +3789,42 @@ async function toggleGoal(i) { // Make async
       const recurrence = goal.recurrence;
 
       if (recurrence && typeof recurrence === 'object') {
-        // Növeljük a belső számlálót
         recurrence.currentCount = (recurrence.currentCount || 0) + 1;
-
-        // Ellenőrizzük, hogy ezzel lejárt-e
         if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
-          goal.isRecurring = false; // Lejárt, ne aktiválja újra
-          logMessage = `✅ Ismétlődő cél VÉGLEGESEN teljesítve: ${goal.name}`;
-          console.log(`Ismétlődés (darabszám) véget ért: ${goal.name}`);
+            goal.isRecurring = false;
         }
-        // Dátum alapú lejárattal itt nem kell foglalkozni, azt a checkRecurringGoals kezeli
       }
       
-      addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
-      await logActivity(`${logMessage} (+${goal.points} pont)`);
-
-      // Áthelyezés az archívumba
+      // Használjuk a calculatedPoints-ot a naplózáshoz
+      addPointsLogEntry(calculatedPoints, `✅ Ismétlődő cél: ${goal.name}`);
+      await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${calculatedPoints} pont)`);
+      
       const goalToArchive = goals.splice(i, 1)[0];
       archivedGoals.unshift(goalToArchive);
-
-      // Listák újrarajzolása
-      renderGoals();
-      if (document.getElementById('archiveModal').style.display === 'flex') {
-        renderArchivedGoals();
-      }
     } else {
       // --- NEM ISMÉTLŐDŐ CÉL TELJESÍTVE ---
-      addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
-      await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
-      renderGoals(); // Csak a cél listát rajzoljuk újra (áthúzáshoz)
+      addPointsLogEntry(calculatedPoints, `✅ Cél teljesítve: ${goal.name}`);
+      await logActivity(`✅ Cél teljesítve: ${goal.name} (+${calculatedPoints} pont)`);
+      renderGoals(); 
     }
-	checkAndAskForWorkoutLog();
+    checkAndAskForWorkoutLog();
     await saveDataToFirestore();
 
   } else {
     // --- TELJESÍTÉS VISSZAVONÁSA (Csak nem ismétlődő céloknál lehetséges) ---
     if (!goal.isRecurring) {
       goal.done = false;
-      totalPoints -= goal.points;
+      // Itt is a calculatedPoints-ot vonjuk le
+      totalPoints -= calculatedPoints;
       animatePoints(totalPoints);
-      addPointsLogEntry(-goal.points, `❌ Cél visszavonva: ${goal.name}`);
-      await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
+      
+      addPointsLogEntry(-calculatedPoints, `❌ Cél visszavonva: ${goal.name}`);
+      await logActivity(`❌ Cél visszavonva: ${goal.name} (-${calculatedPoints} pont)`);
+      
       await saveDataToFirestore();
       renderGoals();
     }
+    // Edzés fül frissítése...
 	// Edzés fül frissítése, ha az aktív
   if (document.getElementById('workouts').classList.contains('active')) {
     populateWorkoutCategoryFilter();
@@ -3836,14 +3842,19 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
   const subGoal = goal.subGoals[subGoalIndex];
   subGoal.done = !subGoal.done;
 
-  // 2. Ellenőrzés: Minden feladat kész van-e?
-  // Csak a 'task' típusúakat vesszük számításba!
+  // 2. Ellenőrzés: Minden KÖTELEZŐ feladat kész van-e?
   const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
-  const allDone = taskSubGoals.length > 0 && taskSubGoals.every(sg => sg.done);
+  const mandatoryTasks = taskSubGoals.filter(sg => !sg.isOptional);
+  const hasOptional = taskSubGoals.some(sg => sg.isOptional);
+  
+  // Akkor tekintjük "késznek" az automatikus pipáláshoz, ha:
+  // 1. Minden kötelező kész
+  // 2. ÉS NINCS opcionális feladat (mert ha van, kézzel kell pipálni a bónusz miatt)
+  const allMandatoryDone = mandatoryTasks.every(sg => sg.done);
+  const shouldAutoComplete = allMandatoryDone && !hasOptional;
 
   // 3. Fő cél frissítése
-  if (allDone) {
-    // === MINDEN KÉSZ ===
+  if (shouldAutoComplete) {
     
     if (goal.isPunishment) {
         // --- HA EZ EGY BÜNTETÉS ---
@@ -3878,15 +3889,17 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
                 }
              }
              
-             addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
-             await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
+             // MÓDOSÍTVA: pointsToAdd használata a naplózásnál a pontos értékért
+             addPointsLogEntry(pointsToAdd, `✅ Ismétlődő cél: ${goal.name}`);
+             await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${pointsToAdd} pont)`);
              
-             // Áthelyezés az archívumba
-             const goalToArchive = goals.splice(goalIndex, 1)[0];
+             // Áthelyezés az archívumba (JAVÍTVA: i használata goalIndex helyett)
+             const goalToArchive = goals.splice(i, 1)[0];
              archivedGoals.unshift(goalToArchive);
         } else {
-             addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
-             await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
+             // MÓDOSÍTVA: pointsToAdd használata a naplózásnál a pontos értékért
+             addPointsLogEntry(pointsToAdd, `✅ Cél teljesítve: ${goal.name}`);
+             await logActivity(`✅ Cél teljesítve: ${goal.name} (+${pointsToAdd} pont)`);
         }
         
         checkAndAskForWorkoutLog();
@@ -3937,17 +3950,20 @@ function editGoal(i) {
   document.getElementById("editInput3").style.display = "block";
   document.getElementById("editLabel3").style.display = "block";
 
-  // ÚJ: Alcélok betöltése a szerkesztőbe
-  const subGoalsText = (goals[i].subGoals || [])
+  // ÚJ: Alcélok betöltése a szerkesztőbe (Opcionális jel visszaállítása)
+  const subGoalsText = (goals[i].subGoals || []) // editArchivedGoal-nál: (goal.subGoals || [])
     .map(sg => {
-      // MÓDOSÍTVA: Visszaalakítjuk a Markdown szintaxist a szerkesztőhöz
       const sgType = sg.type || 'task';
       if (sgType === 'header') {
         return `# ${sg.text}`;
       } else if (sgType === 'separator') {
         return '---';
       }
-      return sg.text; // 'task'
+      // Ha opcionális, tegyük vissza a @-ot
+      if (sg.isOptional) {
+        return `@ ${sg.text}`; 
+      }
+      return sg.text; // Sima task
     })
     .join('\n');
 
@@ -4164,10 +4180,15 @@ function renderGoals() {
                   </div>
                 `;
             } else {
+                // === ÚJ: Highlightok (Háttérszínek) ===
+                // Kötelező (fő): Pirosas (#ffebee), Opcionális: Kékes (#e1f5fe)
+                // Betűszín: Fekete marad, padding és lekerekítés a szép megjelenésért
+                const bgStyle = sg.isOptional ? 'background-color: #e1f5fe;' : 'background-color: #ffebee;';
+                
                 subGoalsHTML += `
-                  <div>
+                  <div style="margin-bottom: 2px;">
                     <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
-                    <span class="${sg.done ? 'subgoal-done' : ''}">${sg.text}</span>
+                    <span class="${sg.done ? 'subgoal-done' : ''}" style="${bgStyle} color: black; padding: 2px 5px; border-radius: 4px;">${sg.text}</span>
                   </div>
                 `;
             }
@@ -4185,9 +4206,39 @@ function renderGoals() {
       let progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
       progressBarHTML = `<div class="subgoal-progress-container"><div class="subgoal-progress-fill" style="width: ${progressPercent}%;"></div></div>`;
     }
+	
+	// === ÚJ GOMB LOGIKA: Kötelezők készenléte esetén gomb megjelenítése ===
+    let showCheckBtn = false;
+    const tasks = (g.subGoals || []).filter(sg => (sg.type || 'task') === 'task');
+    const mandatoryTasks = tasks.filter(t => !t.isOptional);
+    
+    if (tasks.length === 0) {
+       showCheckBtn = true; // Nincs alcél, kell a gomb
+    } else {
+       // Ha minden kötelező kész, megjelenítjük a gombot (opcionálisok miatt vagy simán)
+       if (mandatoryTasks.every(t => t.done)) {
+          showCheckBtn = true;
+       }
+    }
 
+    // Visszavonás gomb (X) mindig kell, ha kész van
+    if (g.done) showCheckBtn = true;
+	
     const priorityIcon = g.isPriority ? '📌 ' : '';
     const recurringIcon = g.isRecurring ? ' 🔄' : '';
+
+    // === ÚJ: Ponttartomány számítása (pl. 100-120 pont) ===
+    let pointsDisplay = `${g.points} pont`;
+    if (hasTasks) {
+        const tasks = g.subGoals.filter(sg => (sg.type || 'task') === 'task');
+        const mandatoryCount = tasks.filter(t => !t.isOptional).length;
+        const totalCount = tasks.length;
+        // Ha van kötelező és van extra (opcionális) is
+        if (mandatoryCount > 0 && totalCount > mandatoryCount) {
+             const maxPoints = Math.round(g.points * (totalCount / mandatoryCount));
+             pointsDisplay = `${g.points}-${maxPoints} pont`;
+        }
+    }
 
     div.innerHTML = `
       <div class="item-name">
@@ -4196,7 +4247,7 @@ function renderGoals() {
         ${progressBarHTML} ${subGoalsHTML}
       </div>
       <div class="item-points">
-        ${g.points} pont
+        ${pointsDisplay}
       </div>
       <div class="item-actions">
         ${(g.isPunishment && isExpired) ? '' : `<button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>`}
@@ -4204,10 +4255,10 @@ function renderGoals() {
         
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
         
-        ${!hasTasks && !(g.isPunishment && isExpired) ? ( 
+        ${showCheckBtn && !(g.isPunishment && isExpired) ? ( 
           g.done ? 
           `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>` : 
-          `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`
+          `<button onclick="toggleGoal(${i})" title="Teljesít (+Bónusz)">✅</button>`
         ) : '' }
       </div>
     `;
@@ -4823,13 +4874,49 @@ function parseTextToStructuredArray(text) {
         .map(text => text.trim())
         .filter(text => text.length > 0)
         .map(rawText => {
-            if (rawText.startsWith('#')) {
-                return { type: 'header', text: rawText.substring(1).trim() };
-            } else if (rawText === '---') {
-                return { type: 'separator', text: '---' };
-            } else {
-                return { type: 'paragraph', text: rawText }; // Céloknál 'task', itt 'paragraph'
-            }
+          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
+          let newItem;
+if (rawText.startsWith('#')) {
+            newItem = {
+              type: 'header',
+              text: rawText.substring(1).trim()
+            };
+          } else if (rawText === '---') {
+            newItem = {
+              type: 'separator',
+              text: '---'
+            };
+          // === JAVÍTÁS: Opcionális alcél felismerése szerkesztéskor ===
+          } else if (rawText.startsWith('***')) {
+            newItem = {
+              type: 'task',
+              text: rawText.substring(3).trim(), // Levágjuk a '*** ' részt
+              done: false,
+              isOptional: true // Beállítjuk opcionálisnak
+            };
+          } else {
+            newItem = {
+              type: 'task',
+              text: rawText,
+              done: false,
+              isOptional: false
+            };
+          }
+
+          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ, SZÖVEGŰ (és Opcionális státuszú) régi alcélt
+          const existingIndex = availableOldSubGoals.findIndex(
+            sg => (sg.type || 'task') === (newItem.type || 'task') 
+               && sg.text === newItem.text
+               && !!sg.isOptional === !!newItem.isOptional
+          );
+          
+          // ... (a kód többi része változatlan marad a return existing-el) ...
+          if (existingIndex > -1) {
+            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
+            return existing;
+          } else {
+            return newItem;
+          }
         });
 }
 
