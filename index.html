@@ -4864,60 +4864,32 @@ async function toggleRecurrenceInArchive(index) {
  
 
 /**
- * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
- * Hasonló a saveGoal-ban lévőhöz, de 'task' helyett 'paragraph'-t használ.
- */
+ * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
+ */
 function parseTextToStructuredArray(text) {
-    if (!text || text.trim() === "") return [];
+    if (!text || text.trim() === "") return [];
 
-    return text.split('\n')
-        .map(text => text.trim())
-        .filter(text => text.length > 0)
-        .map(rawText => {
-          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
-          let newItem;
-if (rawText.startsWith('#')) {
-            newItem = {
-              type: 'header',
-              text: rawText.substring(1).trim()
-            };
-          } else if (rawText === '---') {
-            newItem = {
-              type: 'separator',
-              text: '---'
-            };
-          // === JAVÍTÁS: Opcionális alcél felismerése szerkesztéskor ===
-          } else if (rawText.startsWith('***')) {
-            newItem = {
-              type: 'task',
-              text: rawText.substring(3).trim(), // Levágjuk a '*** ' részt
-              done: false,
-              isOptional: true // Beállítjuk opcionálisnak
-            };
-          } else {
-            newItem = {
-              type: 'task',
-              text: rawText,
-              done: false,
-              isOptional: false
-            };
-          }
-
-          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ, SZÖVEGŰ (és Opcionális státuszú) régi alcélt
-          const existingIndex = availableOldSubGoals.findIndex(
-            sg => (sg.type || 'task') === (newItem.type || 'task') 
-               && sg.text === newItem.text
-               && !!sg.isOptional === !!newItem.isOptional
-          );
-          
-          // ... (a kód többi része változatlan marad a return existing-el) ...
-          if (existingIndex > -1) {
-            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
-            return existing;
-          } else {
-            return newItem;
-          }
-        });
+    return text.split('\n')
+        .map(text => text.trim())
+        .filter(text => text.length > 0)
+        .map(rawText => {
+          if (rawText.startsWith('#')) {
+            return {
+              type: 'header',
+              text: rawText.substring(1).trim()
+            };
+          } else if (rawText === '---') {
+            return {
+              type: 'separator',
+              text: '---'
+            };
+          } else {
+            return {
+              type: 'paragraph',
+              text: rawText
+            };
+          }
+        });
 }
 
 /**
@@ -5454,42 +5426,52 @@ async function confirmEdit() { // Make async
         .map(text => text.trim())
         .filter(text => text.length > 0)
         .map(rawText => {
-          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
-          let newItem;
-          if (rawText.startsWith('#')) {
-            newItem = {
-              type: 'header',
-              text: rawText.substring(1).trim()
-            };
-          } else if (rawText === '---') {
-            newItem = {
-              type: 'separator',
-              text: '---'
-            };
-          } else {
-            newItem = {
-              type: 'task',
-              text: rawText,
-              done: false
-            };
-          }
+          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
+          let newItem;
+          if (rawText.startsWith('#')) {
+            newItem = {
+              type: 'header',
+              text: rawText.substring(1).trim()
+            };
+          } else if (rawText === '---') {
+            newItem = {
+              type: 'separator',
+              text: '---'
+            };
+          // === JAVÍTÁS: Opcionális alcél felismerése (@ jel) ===
+          } else if (rawText.startsWith('@')) {
+            newItem = {
+              type: 'task',
+              text: rawText.substring(1).trim(), // Levágjuk a @ jelet
+              done: false,
+              isOptional: true // Beállítjuk opcionálisnak
+            };
+          } else {
+            newItem = {
+              type: 'task',
+              text: rawText,
+              done: false,
+              isOptional: false
+            };
+          }
 
-          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
-          const existingIndex = availableOldSubGoals.findIndex(
-            sg => (sg.type || 'task') === (newItem.type || 'task') && sg.text === newItem.text
-          );
+          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
+          // JAVÍTÁS: Most már az isOptional tulajdonságot is figyeljük az egyezésnél
+          const existingIndex = availableOldSubGoals.findIndex(
+            sg => (sg.type || 'task') === (newItem.type || 'task') 
+               && sg.text === newItem.text
+               && !!sg.isOptional === !!newItem.isOptional
+          );
 
-          if (existingIndex > -1) {
-            // Ha találtunk...
-            // 1. Kivesszük az "elfogyasztott" elemet a másolat tömbből
-            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
-            // 2. Visszaadjuk a régi, "done" állapotot is tartalmazó objektumot
-            return existing;
-          } else {
-            // Ha nem találtunk, ez egy új alcél
-            return newItem;
-          }
-        });
+          if (existingIndex > -1) {
+            // Ha találtunk...
+            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
+            return existing;
+          } else {
+            // Ha nem találtunk, ez egy új alcél
+            return newItem;
+          }
+        });
     }
     // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS VÉGE =====
     goals[editTarget.index].subGoals = newSubGoals;
