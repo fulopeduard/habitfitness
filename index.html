@@ -2438,8 +2438,9 @@ function renderWorkoutGoals() {
     .filter(g => {
       // Dátum szűrés (mint a renderGoals-ban)
       const todayISO = toDateInputString(new Date().toISOString());
-      const isStartDateOK = !g.startDate || g.startDate <= todayISO;
-      if (!isStartDateOK) return false;
+      if (g.startDate && g.startDate > todayISO) {
+         return false;
+      }
 
       // Kategória szűrés
       if (selectedCategory === "") {
@@ -2457,20 +2458,45 @@ function renderWorkoutGoals() {
     return;
   }
 
-  // 2. Renderelő segédfüggvény (a renderGoals-ból másolva és módosítva)
+  // 2. Renderelő segédfüggvény (EGYEZNIE KELL A FŐOLDALIVAL)
   const renderItem = (g, i) => { // 'i' itt már az originalIndex lesz
     const div = document.createElement("div");
     let classList = "goal-item";
     if (g.done) classList += " completed";
     if (g.isPriority) classList += " priority";
+    if (g.isPunishment) classList += " punishment";
     div.className = classList;
 
+    // === VISSZASZÁMLÁLÁS ÉS LEJÁRAT ELLENŐRZÉS ===
+    let countdownHTML = "";
+    let isExpired = false;
+
+    if (g.isPunishment && !g.done) {
+        const now = Date.now();
+        const deadline = g.deadline || (new Date(g.startDate).getTime() + 24 * 60 * 60 * 1000);
+        const diff = deadline - now;
+
+        if (diff > 0) {
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const colorStyle = hours < 1 ? "color: #ff5252;" : "color: #ff8a80;";
+            countdownHTML = `<span class="punishment-deadline" style="${colorStyle}">⏳ Hátralévő idő: ${hours}ó ${minutes}p</span>`;
+        } else {
+            isExpired = true;
+            countdownHTML = `<span class="punishment-deadline" style="color: red; font-weight: bold;">⌛ LEJÁRT - FELDOLGOZÁS...</span>`;
+        }
+    }
+
+    // === ALCÉLOK RENDERELÉSE ===
     let subGoalsHTML = "";
     let hasSubGoals = g.subGoals && g.subGoals.length > 0;
     let hasTasks = false;
 
     if (hasSubGoals) {
       subGoalsHTML = '<div class="subgoal-list">';
+      // Ellenőrizzük, van-e opcionális feladat a listában a színezéshez
+      const hasOptionalTasks = g.subGoals.some(s => s.isOptional);
+
       g.subGoals.forEach((sg, subIndex) => {
         const sgType = sg.type || 'task';
         switch (sgType) {
@@ -2478,19 +2504,40 @@ function renderWorkoutGoals() {
           case 'separator': subGoalsHTML += `<hr class="subgoal-separator">`; break;
           case 'task': default:
             hasTasks = true;
-            subGoalsHTML += `
-              <div>
-                <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
-                <span class="${sg.done ? 'subgoal-done' : ''}">${sg.text}</span>
-              </div>`;
+            
+            if (g.isPunishment && isExpired) {
+                subGoalsHTML += `
+                  <div style="opacity: 0.6;">
+                    <span style="margin-right: 10px;">🚫</span>
+                    <span style="text-decoration: line-through;">${sg.text}</span>
+                  </div>`;
+            } else {
+                // === SZÍNEZÉSI LOGIKA (FŐOLDAL MINTÁJÁRA) ===
+                let bgStyle = '';
+                if (sg.isOptional) {
+                    bgStyle = 'background-color: #e1f5fe;'; // Kékes
+                } else {
+                    if (hasOptionalTasks) {
+                        bgStyle = 'background-color: #ffebee;'; // Pirosas (ha van opcionális a listában)
+                    } else {
+                        bgStyle = 'background-color: transparent;'; // Átlátszó (ha nincs opcionális)
+                    }
+                }
+
+                subGoalsHTML += `
+                  <div style="margin-bottom: 2px;">
+                    <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
+                    <span class="${sg.done ? 'subgoal-done' : ''}" style="${bgStyle} color: black; padding: 2px 5px; border-radius: 4px;">${sg.text}</span>
+                  </div>`;
+            }
             break;
-  D       }
+        }
       });
       subGoalsHTML += '</div>';
     }
 
     let progressBarHTML = "";
-    if (hasTasks) {
+    if (hasTasks && !(g.isPunishment && isExpired)) {
       const tasks = g.subGoals.filter(sg => (sg.type || 'task') === 'task');
       const totalTasks = tasks.length;
       const completedTasks = tasks.filter(sg => sg.done).length;
@@ -2501,22 +2548,49 @@ function renderWorkoutGoals() {
         </div>`;
     }
 
+    // === GOMB MEGJELENÍTÉSI LOGIKA ===
+    let showCheckBtn = false;
+    const tasks = (g.subGoals || []).filter(sg => (sg.type || 'task') === 'task');
+    const mandatoryTasks = tasks.filter(t => !t.isOptional);
+    
+    if (tasks.length === 0) {
+       showCheckBtn = true;
+    } else {
+       if (mandatoryTasks.every(t => t.done)) {
+          showCheckBtn = true;
+       }
+    }
+    if (g.done) showCheckBtn = true;
+
     const priorityIcon = g.isPriority ? '📌 ' : '';
     const recurringIcon = g.isRecurring ? ' 🔄' : '';
+
+    // === PONT TARTOMÁNY SZÁMÍTÁSA ===
+    let pointsDisplay = `${g.points} pont`;
+    if (hasTasks) {
+        const tasks = g.subGoals.filter(sg => (sg.type || 'task') === 'task');
+        const mandatoryCount = tasks.filter(t => !t.isOptional).length;
+        const totalCount = tasks.length;
+        if (mandatoryCount > 0 && totalCount > mandatoryCount) {
+             const maxPoints = Math.round(g.points * (totalCount / mandatoryCount));
+             pointsDisplay = `${g.points}-${maxPoints} pont`;
+        }
+    }
 
     div.innerHTML = `
       <div class="item-name">
         <div class="item-name-main">${priorityIcon}${g.name}${recurringIcon}</div>
+        ${countdownHTML}
         ${progressBarHTML} ${subGoalsHTML}
       </div>
       <div class="item-points">
-        ${g.points} pont
+        ${pointsDisplay}
       </div>
       <div class="item-actions">
-        <button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>
-        <button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>
+        ${(g.isPunishment && isExpired) ? '' : `<button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>`}
+        ${(g.isPunishment && isExpired) ? '' : `<button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>`}
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
-        ${!hasTasks ? (
+        ${showCheckBtn && !(g.isPunishment && isExpired) ? (
           g.done ?
           `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>` :
           `<button onclick="toggleGoal(${i})" title="Teljesít">✅</button>`
@@ -4180,24 +4254,10 @@ function renderGoals() {
                   </div>
                 `;
             } else {
-                // === JAVÍTOTT Highlight Logic ===
-                // 1. Megnézzük, van-e ebben a célban BÁRMILYEN opcionális feladat
-                const hasOptionalTasks = g.subGoals.some(s => s.isOptional);
-
-                let bgStyle = '';
-                if (sg.isOptional) {
-                    // Opcionális: Mindig Kékes (#e1f5fe)
-                    bgStyle = 'background-color: #e1f5fe;';
-                } else {
-                    // Kötelező feladat
-                    if (hasOptionalTasks) {
-                        // Ha VAN mellette opcionális, akkor legyen Pirosas (#ffebee) a kontraszt miatt
-                        bgStyle = 'background-color: #ffebee;';
-                    } else {
-                        // Ha NINCS opcionális (csak sima lista), maradjon semleges
-                        bgStyle = 'background-color: transparent;'; 
-                    }
-                }
+                // === ÚJ: Highlightok (Háttérszínek) ===
+                // Kötelező (fő): Pirosas (#ffebee), Opcionális: Kékes (#e1f5fe)
+                // Betűszín: Fekete marad, padding és lekerekítés a szép megjelenésért
+                const bgStyle = sg.isOptional ? 'background-color: #e1f5fe;' : 'background-color: #ffebee;';
                 
                 subGoalsHTML += `
                   <div style="margin-bottom: 2px;">
@@ -4878,32 +4938,32 @@ async function toggleRecurrenceInArchive(index) {
  
 
 /**
- * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
- */
+ * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
+ */
 function parseTextToStructuredArray(text) {
-    if (!text || text.trim() === "") return [];
+    if (!text || text.trim() === "") return [];
 
-    return text.split('\n')
-        .map(text => text.trim())
-        .filter(text => text.length > 0)
-        .map(rawText => {
-          if (rawText.startsWith('#')) {
-            return {
-              type: 'header',
-              text: rawText.substring(1).trim()
-            };
-          } else if (rawText === '---') {
-            return {
-              type: 'separator',
-              text: '---'
-            };
-          } else {
-            return {
-              type: 'paragraph',
-              text: rawText
-            };
-          }
-        });
+    return text.split('\n')
+        .map(text => text.trim())
+        .filter(text => text.length > 0)
+        .map(rawText => {
+          if (rawText.startsWith('#')) {
+            return {
+              type: 'header',
+              text: rawText.substring(1).trim()
+            };
+          } else if (rawText === '---') {
+            return {
+              type: 'separator',
+              text: '---'
+            };
+          } else {
+            return {
+              type: 'paragraph',
+              text: rawText
+            };
+          }
+        });
 }
 
 /**
@@ -5440,52 +5500,52 @@ async function confirmEdit() { // Make async
         .map(text => text.trim())
         .filter(text => text.length > 0)
         .map(rawText => {
-          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
-          let newItem;
-          if (rawText.startsWith('#')) {
-            newItem = {
-              type: 'header',
-              text: rawText.substring(1).trim()
-            };
-          } else if (rawText === '---') {
-            newItem = {
-              type: 'separator',
-              text: '---'
-            };
-          // === JAVÍTÁS: Opcionális alcél felismerése (@ jel) ===
-          } else if (rawText.startsWith('@')) {
-            newItem = {
-              type: 'task',
-              text: rawText.substring(1).trim(), // Levágjuk a @ jelet
-              done: false,
-              isOptional: true // Beállítjuk opcionálisnak
-            };
-          } else {
-            newItem = {
-              type: 'task',
-              text: rawText,
-              done: false,
-              isOptional: false
-            };
-          }
+          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
+          let newItem;
+          if (rawText.startsWith('#')) {
+            newItem = {
+              type: 'header',
+              text: rawText.substring(1).trim()
+            };
+          } else if (rawText === '---') {
+            newItem = {
+              type: 'separator',
+              text: '---'
+            };
+          // === JAVÍTÁS: Opcionális alcél felismerése (@ jel) ===
+          } else if (rawText.startsWith('@')) {
+            newItem = {
+              type: 'task',
+              text: rawText.substring(1).trim(), // Levágjuk a @ jelet
+              done: false,
+              isOptional: true // Beállítjuk opcionálisnak
+            };
+          } else {
+            newItem = {
+              type: 'task',
+              text: rawText,
+              done: false,
+              isOptional: false
+            };
+          }
 
-          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
-          // JAVÍTÁS: Most már az isOptional tulajdonságot is figyeljük az egyezésnél
-          const existingIndex = availableOldSubGoals.findIndex(
-            sg => (sg.type || 'task') === (newItem.type || 'task') 
-               && sg.text === newItem.text
-               && !!sg.isOptional === !!newItem.isOptional
-          );
+          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
+          // JAVÍTÁS: Most már az isOptional tulajdonságot is figyeljük az egyezésnél
+          const existingIndex = availableOldSubGoals.findIndex(
+            sg => (sg.type || 'task') === (newItem.type || 'task') 
+               && sg.text === newItem.text
+               && !!sg.isOptional === !!newItem.isOptional
+          );
 
-          if (existingIndex > -1) {
-            // Ha találtunk...
-            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
-            return existing;
-          } else {
-            // Ha nem találtunk, ez egy új alcél
-            return newItem;
-          }
-        });
+          if (existingIndex > -1) {
+            // Ha találtunk...
+            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
+            return existing;
+          } else {
+            // Ha nem találtunk, ez egy új alcél
+            return newItem;
+          }
+        });
     }
     // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS VÉGE =====
     goals[editTarget.index].subGoals = newSubGoals;
