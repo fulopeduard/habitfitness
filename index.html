@@ -4180,10 +4180,24 @@ function renderGoals() {
                   </div>
                 `;
             } else {
-                // === ÚJ: Highlightok (Háttérszínek) ===
-                // Kötelező (fő): Pirosas (#ffebee), Opcionális: Kékes (#e1f5fe)
-                // Betűszín: Fekete marad, padding és lekerekítés a szép megjelenésért
-                const bgStyle = sg.isOptional ? 'background-color: #e1f5fe;' : 'background-color: #ffebee;';
+                // === JAVÍTOTT Highlight Logic ===
+                // 1. Megnézzük, van-e ebben a célban BÁRMILYEN opcionális feladat
+                const hasOptionalTasks = g.subGoals.some(s => s.isOptional);
+
+                let bgStyle = '';
+                if (sg.isOptional) {
+                    // Opcionális: Mindig Kékes (#e1f5fe)
+                    bgStyle = 'background-color: #e1f5fe;';
+                } else {
+                    // Kötelező feladat
+                    if (hasOptionalTasks) {
+                        // Ha VAN mellette opcionális, akkor legyen Pirosas (#ffebee) a kontraszt miatt
+                        bgStyle = 'background-color: #ffebee;';
+                    } else {
+                        // Ha NINCS opcionális (csak sima lista), maradjon semleges
+                        bgStyle = 'background-color: transparent;'; 
+                    }
+                }
                 
                 subGoalsHTML += `
                   <div style="margin-bottom: 2px;">
@@ -4864,32 +4878,32 @@ async function toggleRecurrenceInArchive(index) {
  
 
 /**
- * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
- */
+ * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
+ */
 function parseTextToStructuredArray(text) {
-    if (!text || text.trim() === "") return [];
+    if (!text || text.trim() === "") return [];
 
-    return text.split('\n')
-        .map(text => text.trim())
-        .filter(text => text.length > 0)
-        .map(rawText => {
-          if (rawText.startsWith('#')) {
-            return {
-              type: 'header',
-              text: rawText.substring(1).trim()
-            };
-          } else if (rawText === '---') {
-            return {
-              type: 'separator',
-              text: '---'
-            };
-          } else {
-            return {
-              type: 'paragraph',
-              text: rawText
-            };
-          }
-        });
+    return text.split('\n')
+        .map(text => text.trim())
+        .filter(text => text.length > 0)
+        .map(rawText => {
+          if (rawText.startsWith('#')) {
+            return {
+              type: 'header',
+              text: rawText.substring(1).trim()
+            };
+          } else if (rawText === '---') {
+            return {
+              type: 'separator',
+              text: '---'
+            };
+          } else {
+            return {
+              type: 'paragraph',
+              text: rawText
+            };
+          }
+        });
 }
 
 /**
@@ -5426,52 +5440,52 @@ async function confirmEdit() { // Make async
         .map(text => text.trim())
         .filter(text => text.length > 0)
         .map(rawText => {
-          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
-          let newItem;
-          if (rawText.startsWith('#')) {
-            newItem = {
-              type: 'header',
-              text: rawText.substring(1).trim()
-            };
-          } else if (rawText === '---') {
-            newItem = {
-              type: 'separator',
-              text: '---'
-            };
-          // === JAVÍTÁS: Opcionális alcél felismerése (@ jel) ===
-          } else if (rawText.startsWith('@')) {
-            newItem = {
-              type: 'task',
-              text: rawText.substring(1).trim(), // Levágjuk a @ jelet
-              done: false,
-              isOptional: true // Beállítjuk opcionálisnak
-            };
-          } else {
-            newItem = {
-              type: 'task',
-              text: rawText,
-              done: false,
-              isOptional: false
-            };
-          }
+          // 1. Először meghatározzuk az ÚJ elem típusát és tiszta szövegét
+          let newItem;
+          if (rawText.startsWith('#')) {
+            newItem = {
+              type: 'header',
+              text: rawText.substring(1).trim()
+            };
+          } else if (rawText === '---') {
+            newItem = {
+              type: 'separator',
+              text: '---'
+            };
+          // === JAVÍTÁS: Opcionális alcél felismerése (@ jel) ===
+          } else if (rawText.startsWith('@')) {
+            newItem = {
+              type: 'task',
+              text: rawText.substring(1).trim(), // Levágjuk a @ jelet
+              done: false,
+              isOptional: true // Beállítjuk opcionálisnak
+            };
+          } else {
+            newItem = {
+              type: 'task',
+              text: rawText,
+              done: false,
+              isOptional: false
+            };
+          }
 
-          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
-          // JAVÍTÁS: Most már az isOptional tulajdonságot is figyeljük az egyezésnél
-          const existingIndex = availableOldSubGoals.findIndex(
-            sg => (sg.type || 'task') === (newItem.type || 'task') 
-               && sg.text === newItem.text
-               && !!sg.isOptional === !!newItem.isOptional
-          );
+          // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
+          // JAVÍTÁS: Most már az isOptional tulajdonságot is figyeljük az egyezésnél
+          const existingIndex = availableOldSubGoals.findIndex(
+            sg => (sg.type || 'task') === (newItem.type || 'task') 
+               && sg.text === newItem.text
+               && !!sg.isOptional === !!newItem.isOptional
+          );
 
-          if (existingIndex > -1) {
-            // Ha találtunk...
-            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
-            return existing;
-          } else {
-            // Ha nem találtunk, ez egy új alcél
-            return newItem;
-          }
-        });
+          if (existingIndex > -1) {
+            // Ha találtunk...
+            const existing = availableOldSubGoals.splice(existingIndex, 1)[0];
+            return existing;
+          } else {
+            // Ha nem találtunk, ez egy új alcél
+            return newItem;
+          }
+        });
     }
     // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS VÉGE =====
     goals[editTarget.index].subGoals = newSubGoals;
