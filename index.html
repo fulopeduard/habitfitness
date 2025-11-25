@@ -3907,7 +3907,7 @@ async function toggleGoal(i) { // Make async
   }
 }
 
-// ===== ÚJ FUNKCIÓ: ALCÉL KIPIPÁLÁSA =====
+// ===== ÚJ FUNKCIÓ: ALCÉL KIPIPÁLÁSA (JAVÍTOTT) =====
 async function toggleSubGoal(goalIndex, subGoalIndex) {
   const goal = goals[goalIndex];
   if (!goal || !goal.subGoals || !goal.subGoals[subGoalIndex]) return;
@@ -3963,17 +3963,17 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
                 }
              }
              
-             // MÓDOSÍTVA: pointsToAdd használata a naplózásnál a pontos értékért
-             addPointsLogEntry(pointsToAdd, `✅ Ismétlődő cél: ${goal.name}`);
-             await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${pointsToAdd} pont)`);
+             // JAVÍTVA: goal.points használata pointsToAdd helyett
+             addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
+             await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
              
-             // Áthelyezés az archívumba (JAVÍTVA: i használata goalIndex helyett)
-             const goalToArchive = goals.splice(i, 1)[0];
+             // Áthelyezés az archívumba (JAVÍTVA: goalIndex használata i helyett)
+             const goalToArchive = goals.splice(goalIndex, 1)[0];
              archivedGoals.unshift(goalToArchive);
         } else {
-             // MÓDOSÍTVA: pointsToAdd használata a naplózásnál a pontos értékért
-             addPointsLogEntry(pointsToAdd, `✅ Cél teljesítve: ${goal.name}`);
-             await logActivity(`✅ Cél teljesítve: ${goal.name} (+${pointsToAdd} pont)`);
+             // JAVÍTVA: goal.points használata pointsToAdd helyett
+             addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
+             await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
         }
         
         checkAndAskForWorkoutLog();
