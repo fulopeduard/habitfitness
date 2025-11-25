@@ -4539,14 +4539,56 @@ async function archiveGoal(index) {
   const goalToArchive = goals.splice(index, 1)[0];
 
   if (goalToArchive) {
+    
+    // --- ÚJ LOGIKA: Ha ismétlődő, állítsuk be a következő dátumot ---
+    if (goalToArchive.isRecurring && goalToArchive.recurrence) {
+        const today = new Date();
+        let nextDate = new Date(today); // Ma
+        const rec = goalToArchive.recurrence;
+        const interval = parseInt(rec.interval) || 1;
+
+        // Kiszámoljuk a következő dátumot a gyakoriság alapján
+        switch(rec.frequency) {
+            case 'daily': 
+                nextDate.setDate(today.getDate() + interval); 
+                break;
+            case 'weekly': 
+                nextDate.setDate(today.getDate() + (interval * 7)); 
+                break;
+            case 'monthly': 
+                nextDate.setMonth(today.getMonth() + interval); 
+                break;
+            case 'yearly': 
+                nextDate.setFullYear(today.getFullYear() + interval); 
+                break;
+            default: 
+                nextDate.setDate(today.getDate() + 1); // Alapértelmezett: holnap
+        }
+        
+        // Biztosítjuk, hogy a dátum formátuma megfelelő legyen (YYYY-MM-DD)
+        // Ehhez felhasználjuk a létező toDateInputString logikáját, de helyben generáljuk
+        const y = nextDate.getFullYear();
+        const m = (nextDate.getMonth() + 1).toString().padStart(2, '0');
+        const d = nextDate.getDate().toString().padStart(2, '0');
+        const formattedNextDate = `${y}-${m}-${d}`;
+
+        // Beállítjuk az új dátumot az objektumba
+        goalToArchive.recurrence.recurrenceStartDate = formattedNextDate;
+        
+        console.log(`Cél archiválva a következő dátumig: ${formattedNextDate}`);
+    }
+    // ----------------------------------------------------------------------
+
     archivedGoals.unshift(goalToArchive);
     renderGoals();
-	// Edzés fül frissítése, ha az aktív
-  if (document.getElementById('workouts').classList.contains('active')) {
-    populateWorkoutCategoryFilter();
-    renderWorkoutGoals();
-  }
-    await logActivity(`📥 Cél archiválva: ${goalToArchive.name}`);
+    
+    // Edzés fül frissítése, ha az aktív
+    if (document.getElementById('workouts').classList.contains('active')) {
+      populateWorkoutCategoryFilter();
+      renderWorkoutGoals();
+    }
+    
+    await logActivity(`📥 Cél archiválva (következő: ${goalToArchive.isRecurring ? goalToArchive.recurrence.recurrenceStartDate : 'manuális'}): ${goalToArchive.name}`);
   }
 }
 
