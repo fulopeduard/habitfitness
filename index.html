@@ -2,1103 +2,1103 @@
 <html lang="hu">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FitGarden 2.0 – Fejedelem Edition 💪🌿</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔥</text></svg>">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      color: #222;
-	  background: linear-gradient(
-	  180deg,
-	  #034c3f 0%,
-	  #222 50%,
-	  #034c3f 100%
-	);
-      overflow-x: hidden;
-    }
-
-    #motivationBar {
-      background: #004d40;
-      color: white;
-      padding: 8px;
-      text-align: center;
-      font-style: italic;
-      font-size: 0.95em;
-      letter-spacing: 0.3px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    main {
-      max-width: 1200px;
-      margin: 5px auto;
-      padding: 1px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      padding: 6px;
-      margin-bottom: 5px;
-    }
-
-    h2 {
-      color: #00796b;
-      margin-bottom: 5px;
-	  font-size: large;
-    }
-
-    button {
-      background: #00796b;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 8px 15px;
-      font-size: 0.95em;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #004d40;
-    }
-
-    .icon-box {
-      display: flex;
-      justify-content: space-around;
-      align-items: stretch;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .icon-card {
-      flex: 1;
-      min-width: 280px;
-      background: #e8f5e9;
-      border-radius: 12px;
-      text-align: center;
-      padding: 20px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .icon-card i {
-      font-size: 2em;
-      color: #00796b;
-      display: block;
-    }
-
-    .icon-card span {
-      display: block;
-      margin-top: 5px;
-      font-weight: bold;
-      font-size: 1.1em;
-    }
-
-    .edit-btn {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      background: none;
-      color: #00796b;
-      border: none;
-      font-size: 1.1em;
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    #tabs {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      gap: 8px;
-    }
-
-    .tab-btn {
-      background: #dcedc8;
-      color: black;
-      padding: 10px 15px;
-      /* Kicsit csökkentettem a paddingot */
-      border-radius: 10px;
-      margin: 0;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-      /* ÚJ RÉSZEK INNENTŐL */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      /* Távolság az ikon és a szöveg között */
-      flex-grow: 1;
-      /* Növekedhessen */
-      flex-shrink: 1;
-      /* Zsugorodjon */
-      flex-basis: 120px;
-      /* Egy alapértelmezett kiinduló szélesség */
-      box-sizing: border-box;
-      /* Ez biztosítja, hogy a padding ne rontsa el a méretezést */
-    }
-
-    .tab-btn.active {
-      background: #00796b;
-      color: white;
-      font-weight: bold;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* EZT A BLOKKOT MÁSOLD BE */
-    .tab-icon {
-      font-size: 1.1em;
-      line-height: 1;
-      /* Megakadályozza a felesleges magasságot */
-    }
-
-    .tab-text {
-      white-space: nowrap;
-      /* Megakadályozza, hogy a szöveg törjön */
-    }
-    /* ===== RESPONSIVE FŐMENÜ (TAB) STÍLUSOK ===== */
-    @media (max-width: 845px) {
-      #tabs {
-        gap: 6px;
-        /* Kisebb rés a gombok között mobilon */
-      }
-
-      .tab-btn {
-        /* 33.3% - (rés / 3) -> Ez kényszeríti a 3 gombot egy sorba */
-        flex-basis: 31%;
-        padding: 10px 5px;
-        /* Kisebb padding, hogy elférjen */
-      }
-    }
-
-    @media (max-width: 420px) {
-      .tab-text {
-        display: none;
-        /* Kérésednek megfelelően a szöveg elrejtése */
-      }
-
-      .tab-btn {
-        flex-basis: 30%;
-        /* Maradhat a 3/sor elrendezés */
-        padding: 10px;
-        /* Egyenletesebb padding */
-        gap: 0;
-      }
-
-      .tab-icon {
-        font-size: 1.3em;
-        /* Ikon picit nagyobb, mert egyedül van */
-      }
-    }
-    /* ===== CÉL/JUTALOM ELRENDEZÉS ===== */
-    .flex-container {
-      display: flex;
-      gap: 25px;
-      flex-wrap: wrap;
-      align-items: flex-start;
-    }
-
-    .flex-container>.card {
-      flex: 1;
-      min-width: 300px;
-    }
-    /* ===== ÚJ PRIORITÁS CÉL STÍLUSOK (PIROS) ===== */
-    .goal-item.priority .item-name {
-      background: #ffebee; /* Világos piros */
-      color: #c62828; /* Sötét piros szöveg */
-    }
-    .goal-item.priority .item-points {
-      background: #ffcdd2; /* Közepes piros */
-      border-left: 1px solid #ef9a9a;
-      border-right: 1px solid #ef9a9a;
-      color: #b71c1c;
-    }
-    .goal-item.priority .item-actions {
-      background: #ffebee; /* Világos piros */
-    }
-    /* A kiemelt alcélok címe is legyen piros */
-    .goal-item.priority .subgoal-header {
-        color: #c62828;
-        border-bottom: 1px solid #ffcdd2;
-    }
-    /* ===== KÁRTYA FEJLÉC (CÍM + GOMB/PONTOK) STÍLUS ===== */
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .card-header h2 {
-      margin-bottom: 8px;
-    }
-
-    /* ÚJ STÍLUS A FEJLÉC ARCHÍV GOMBJÁHOZ */
-    .card-header .card-header-add-btn {
-      background: #00796b;
-      /* Világosabb zöld, mint az archív gomb */
-      font-size: 0.9em;
-      padding: 6px 12px;
-      font-weight: bold;
-    }
-
-    .card-header .new-note-btn-left {
-      margin-right: auto;
-      /* Ez tolja el a gombot balra, amennyire csak lehet */
-
-    }
-
-    .card-header .card-header-add-btn:hover {
-      background: #004d40;
-      /* Sötétebb zöld hover-re */
-    }
-    /* ===== PONTSZÁMLÁLÓ (JUTALMAK FEJLÉC) ===== */
-    .header-points-display {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-    }
-
-    .header-points-display .points-icon {
-      font-size: 1.3em;
-      margin-right: 8px;
-      color: #00796b;
-      /* Téma zöld */
-      line-height: 1;
-    }
-
-    .header-points-display .points-number {
-      color: #004d40;
-      /* Sötét zöld */
-      font-size: 1.4em;
-      /* Kiemelt szám */
-      line-height: 1;
-    }
-    .header-points-display .points-label {
-      color: #00796b;
-      /* Téma zöld */
-      margin-left: 5px;
-      font-size: 1.1em;
-      line-height: 1;
-    }
-    /* ===== ÚJ GOMB STÍLUS (KÁRTYA ALJÁN) ===== */
-    .new-item-button {
-      width: 100%;
-      /* Teljes szélesség */
-      padding: 12px;
-      /* Nagyobb, kényelmesebb gomb */
-      font-size: 1em;
-      font-weight: bold;
-      margin-top: 15px;
-      /* Távolság a listától */
-    }
-    /* ===== CÉL, JUTALOM, ÉTEL SÁV STÍLUS ===== */
-    .goal-item,
-    .reward-item,
-    .food-item,
-	.workout-item {
-      background: transparent;
-      border-radius: 10px;
-      padding: 0;
-      margin-bottom: 8px;
-      display: flex;
-      overflow: hidden;
-      align-items: stretch;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    .completed {
-      text-decoration: line-through;
-      opacity: 0.7;
-    }
-    .item-name {
-      flex: 1;
-      padding: 7px 15px;
-      background: #e8f5e9;
-      /* Világos zöld */
-      display: flex;
-      flex-direction: column;
-      /* MÓDOSÍTVA */
-      align-items: flex-start;
-      /* MÓDOSÍTVA */
-    }
-    .item-points {
-      flex-shrink: 0;
-      align-items: center;
-      justify-content: center;
-      width: 78px;
-      padding: 2px;
-      background: #dcedc8;
-      /* Árnyalattal sötétebb zöld */
-      text-align: center;
-      font-weight: bold;
-      border-left: 1px solid #c8e6c9;
-      border-right: 1px solid #c8e6c9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    /* ÚJ STÍLUS AZ ÉTEL KÁRTYÁHOZ */
-    .food-item .item-details {
-      flex-shrink: 0;
-      width: 120px;
-      padding: 1px;
-      background: #dcedc8;
-      text-align: center;
-      font-weight: bold;
-      border-left: 1px solid #c8e6c9;
-      border-right: 1px solid #c8e6c9;
-      font-size: 0.9em;
-      line-height: 1.3;
-    }
-    .food-item .item-details span {
-      display: block;
-    }
-    .item-actions {
-      flex-shrink: 0;
-      padding: 7px 10px;
-      background: #e8f5e9;
-      /* Világos zöld */
-      display: flex;
-      gap: 5px;
-      justify-content: center;
-      align-items: center;
-    }
-    .item-actions button {
-      background: transparent;
-      color: #00796b;
-      font-size: 1.1em;
-      cursor: pointer;
-      padding: 1px;
-    }
-    /* ÚJ STÍLUSOK AZ ARCHIVÁLÁSHOZ */
-    .item-actions button.archive-btn {
-      color: #004d40;
-      /* Sötétzöld az archiváláshoz */
-    }
-    /* Stílus az archivált elemek gombjaihoz */
-    #archivedGoalList .item-actions button.reactivate-btn {
-      color: #00796b;
-      /* Zöld */
-    }
-    #archivedGoalList .item-actions button.delete-btn {
-      color: #c00;
-      /* Piros */
-    }
-    .category-title {
-      margin-bottom: 5px;
-      color: #004d40;
-      border-bottom: 2px solid #b2dfdb;
-      padding-bottom: 4px;
-      font-size: 1.1em;
-    }
-
-    #goalList .category-title:first-of-type {
-      margin-top: 10px;
-    }
-    /* ===== ÚJ ALCÉL (SUB-GOAL) STÍLUSOK ===== */
-    .subgoal-list {
-      margin-top: 10px;
-      padding-left: 1px;
-      font-size: 0.9em;
-      text-align: left;
-      width: 100%;
-      /* Kitölti a .item-name szélességét */
-    }
-	/* ===== ÚJ ALCÉL PROGRESS BAR STÍLUS ===== */
-    .subgoal-progress-container {
-      width: 100%;
-      height: 2px; /* Kérésnek megfelelően vékony */
-      background: #c8e6c9; /* Halvány háttér, mint a kompakt sávé */
-      border-radius: 5px;
-      overflow: hidden;
-      margin-top: 2px; /* Kis távolság a címtől */
-      /* A távolságot az alcél listától a .subgoal-list margin-top-ja adja */
-      border: 1px solid #a5d6a7;
-    }
-
-    .subgoal-progress-fill {
-      height: 100%;
-      width: 0%; /* Ezt a style="" inline felülírja */
-      background: #00796b; /* Alap téma-zöld */
-      border-radius: 5px;
-      transition: width 0.9s ease;
-    }
-    
-    /* Ha a cél prioritásos, a sáv is legyen pirosas */
-    .goal-item.priority .subgoal-progress-container {
-        background: #ffcdd2;
-        border-color: #ef9a9a;
-    }
-    .goal-item.priority .subgoal-progress-fill {
-        background: #c62828; /* Sötét piros */
-    }
-    .subgoal-header {
-      font-size: 1.1em;
-      font-weight: bold;
-      color: #004d40;
-      /* Sötét zöld, mint a kategória címek */
-      margin-top: 15px;
-      margin-bottom: 5px;
-      padding-bottom: 2px;
-      border-bottom: 1px solid #dcedc8;
-      /* Finom vonal alatta */
-    }
-
-    .subgoal-list .subgoal-header:first-child {
-      margin-top: 5px;
-      /* Kisebb margó, ha ez az első elem */
-    }
-
-    .subgoal-separator {
-      border: none;
-      border-top: 2px dashed #b2dfdb;
-      /* Szaggatott vonal a téma színével */
-      margin: 10px 0;
-    }
-
-    .subgoal-list div {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-      text-decoration: none;
-      /* Ne húzza át az alcél szövegét */
-    }
-
-    .subgoal-list input[type="checkbox"] {
-      width: auto;
-      margin: 0 10px 0 0;
-    }
-
-    .subgoal-list span.subgoal-done {
-      text-decoration: line-through;
-      opacity: 0.7;
-    }
-
-    /* Amikor a FŐ cél kész, a FŐ cím áthúzva */
-    .goal-item.completed .item-name-main {
-      text-decoration: line-through;
-    }
-
-    /* De a sub-goal lista soha (csak a belső span) */
-    .goal-item.completed .subgoal-list {
-      text-decoration: none;
-    }
-    .log {
-      background: #f8f8f8;
-      border-radius: 10px;
-      padding: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .log-entry {
-	  background: #e8f5e9;
-      border-bottom: 1px solid #ddd;
-      padding: 6px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .log-entry span {
-      flex: 1;
-      padding-right: 10px;
-    }
-
-    .log-entry small {
-      color: #777;
-      font-size: 0.85em;
-      margin-left: 10px;
-    }
-
-    .log-entry button {
-      flex-shrink: 0;
-    }
-
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      display: none;
-      justify-content: center;
-      align-items: flex-start;
-      z-index: 1000;
-	  padding-top: 20px;
-	  overflow-y: auto;
-    }
-	
-	#editModal {
-      z-index: 2000 !important;
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      width: 90%;
-      max-width: 400px;
-	  max-height: 90vh;
-	  overflow-y: auto;
-    }
-
-    .modal-content h3 {
-      margin-top: 0;
-      color: #00796b;
-      text-align: center;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 6px;
-      margin-top: 2px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 1em;
-      box-sizing: border-box;
-      background-color: white;
-      /* Select hátérszín */
-    }
-    /* ===== GRAFIKON MODAL STÍLUSOK ===== */
-    #chartModalContent {
-      max-width: 90%;
-      width: 800px;
-    }
-
-    #progressChart {
-      width: 100%;
-      height: 400px;
-    }
-    /* ====== KÖVETÉS STÍLUSOK ====== */
-    .icon-card .content-wrapper {
-      margin-top: 15px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-    .progress-summary {
-      font-size: 0.9em;
-      font-weight: bold;
-      color: #004d40;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      height: 1.2em;
-    }
-    .input-group {
-      display: flex;
-      margin-top: 10px;
-      gap: 5px;
-    }
-    .input-group input {
-      flex: 1;
-      width: 60%;
-      margin: 0;
-      font-size: 0.9em;
-      text-align: center;
-    }
-    .input-group button {
-      flex-shrink: 0;
-      font-size: 0.85em;
-      padding: 8px 10px;
-    }
-    .progress-bar-container {
-      background: #c8e6c9;
-      border-radius: 10px;
-      height: 12px;
-      width: 100%;
-      margin-top: 10px;
-      overflow: hidden;
-      border: 1px solid #a5d6a7;
-    }
-    .progress-bar {
-      background: #00796b;
-      height: 100%;
-      width: 0%;
-      border-radius: 10px;
-      transition: width 0.5s ease;
-    }
-    /* ÚJ: A PROTEIN SÁV SZÍNE */
-    #proteinProgressBar {
-      background: #8e24aa;
-      /* Lila */
-    }
-    /* ====== ANIMÁCIÓK ====== */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeIn 0.6s ease forwards;
-    }
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    button,
-    .tab-btn {
-      transition: transform 0.15s ease, background-color 0.3s;
-    }
-
-    button:hover,
-    .tab-btn:hover {
-      transform: scale(1.03);
-    }
-    /* ====== EXPORT / RESET PANEL ====== */
-    #controlPanel {
-      text-align: center;
-      margin-top: 25px;
-    }
-
-    #controlPanel button {
-      background: #004d40;
-      margin: 5px;
-    }
-
-    #controlPanel input[type="file"] {
-      display: none;
-    }
-    /* ===== ÚJ JEGYZET STÍLUSOK ===== */
-    #noteViewModal .modal-content {
-      background: #f1f8e9;
-      max-width: 600px;
-    }
-
-    #noteViewText {
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 15px;
-      min-height: 100px;
-      max-height: 60vh;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      border: 1px solid #dcedc8;
-    }
-
-    .note-summary-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #e8f5e9;
-      padding: 12px 15px;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .note-summary-title {
-      flex: 1;
-      font-weight: bold;
-      font-size: 1.1em;
-      color: #004d40;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-
-    .note-summary-date {
-      font-size: 0.85em;
-      color: #555;
-      margin-right: 15px;
-      flex-shrink: 0;
-    }
-
-    .note-summary-actions button {
-      background: transparent;
-      color: #00796b;
-      font-size: 1.1em;
-      padding: 5px;
-    }
-
-    #editInputText {
-      height: 150px;
-      resize: vertical;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    /* ===== ÚJ KOMPAKT FŐOLDALI CÉLOK STÍLUS ===== */
-    #compactGoalsContainer {
-      display: grid;
-      /* JAVÍTÁS: Átállás Grid-re */
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
-      /* Alapértelmezett: 4 adat oszlop + 1 gomb oszlop */
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      padding: 12px 15px;
-      margin-bottom: 5px;
-      align-items: center;
-      /* JAVÍTÁS: Függőlegesen középre igazítjuk az egészet */
-      gap: 12px;
-      /* flex-wrap törölve */
-    }
-
-    .compact-goal-item {
-      min-width: 0;
-      /* Ez marad, hogy a szöveg levágódhasson (...) */
-      text-align: left;
-    }
-
-    .compact-goal-item .label {
-      font-size: 0.85em;
-      color: #00796b;
-      display: block;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .compact-goal-item .value {
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ÚJ: Felső szöveg (pl. 0.7/2.0 L) */
-    .compact-goal-item .value-top {
-      font-size: 1.0em;
-      color: #333;
-      /* Kevésbé hangsúlyos */
-      font-weight: 500;
-      margin-top: 2px;
-    }
-
-    /* ÚJ: Alsó szöveg (pl. Még 1.3 L) */
-    .compact-goal-item .value-bottom {
-      font-size: 0.9em;
-      color: #004d40;
-      font-weight: bold;
-      margin-top: 3px;
-    }
-
-    /* A Súly felső sora másképp néz ki */
-    .compact-goal-item .value-weight-top {
-      font-size: 0.9em;
-      color: #333;
-      font-weight: 500;
-    }
-
-
-    #compactBtnWrapper {
-      display: flex;
-      gap: 8px;
-      /* margin-left: auto; TÖRÖLVE */
-      /* flex-shrink: 0; TÖRÖLVE */
-      align-self: center;
-    }
-
-    #quickAddBtn,
-    #compactEditBtn,
-    #compactChartBtn {
-      flex-shrink: 0;
-      background: #004d40;
-      padding: 10px 12px;
-      font-size: 1.2em;
-      line-height: 1;
-      border-radius: 12px;
-    }
-
-    #compactEditBtn,
-    #compactChartBtn {
-      background: #00796b;
-      font-size: 1.1em;
-      padding: 11px 12px;
-    }
-
-    .compact-progress-bar-container {
-      background: #c8e6c9;
-      border-radius: 10px;
-      height: 10px;
-      width: 100%;
-      margin-top: 4px;
-      /* Közelebb a felső szöveghez */
-      overflow: hidden;
-      border: 1px solid #a5d6a7;
-    }
-
-    .compact-progress-bar {
-      background: #00796b;
-      height: 100%;
-      width: 0%;
-      border-radius: 10px;
-      transition: width 0.5s ease;
-    }
-
-    /* Protein sáv színe */
-    #compactProteinBar,
-    #compactWeightBar {
-      /* Súly is lila lesz */
-      background: #8e24aa;
-	#compactFatBar {
-      background: #f57f17; 
-    }
-    }
-
-    /* ÚJ: Reszponzív töréspont telefonra */
-    @media (max-width: 800px) {
-      #compactGoalsContainer {
-        grid-template-columns: 1fr 1fr;
-        /* 2 oszlopos elrendezés */
-        gap: 15px;
-        /* Nagyobb térköz mobilon */
-        align-items: flex-end;
-        /* Visszaállítjuk alulra igazításra */
-      }
-
-      #compactBtnWrapper {
-        /* A gombok átnyúlnak mindkét oszlopon */
-        justify-content: center;
-        /* Középre igazítja a gombokat a soron belül */
-      }
-    }
-    /* ===== ÚJ EDZÉS STÍLUSOK (NAPTÁR TÖRÖLVE) ===== */
-    .workout-adder {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .workout-adder input[type="date"] {
-      flex: 1;
-      /* A dátumválasztó töltse ki a helyet */
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 1em;
-    }
-
-    .workout-adder button {
-      flex-shrink: 0;
-      /* A gomb ne zsugorodjon */
-      padding: 10px 15px;
-      font-weight: bold;
-    }
-
-    .workout-item button .item-actions .delete-btn	{
-      background: transparent;
-      color: #c00;
-      /* Vörös a törléshez */
-      font-size: 1.2em;
-    }
-
-    /* ===== ÚJ ÉTEL PROGRESS BAR STÍLUSOK ===== */
-    .meal-progress-container {
-      margin-top: 0px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .meal-progress-wrapper {
-      display: flex;
-      align-items: center;
-      font-size: 0.85em;
-    }
-
-    .meal-progress-label {
-      width: 65px;
-      /* Szélesebb a "Kalória:" miatt */
-      font-weight: bold;
-      color: #333;
-      flex-shrink: 0;
-    }
-
-    .meal-progress-bar-bg {
-      background: #e0e0e0;
-      border-radius: 5px;
-      height: 10px;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .meal-progress-bar-fill {
-      background: #ff9800;
-      /* Kalória - narancs */
-      height: 100%;
-      border-radius: 5px;
-      transition: width 0.5s ease;
-    }
-
-    .meal-progress-bar-fill.protein {
-      background: #8e24aa;
-      /* Protein - lila */
-    }
-    /* ===== ÚJ KIEMELT EMLÉKEZTETŐ STÍLUS ===== */
-    #highlightContainer {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 5px;
-    }
-
-    .highlight-box {
-      background: #ffebee; /* Világos piros háttér */
-      border: 2px solid #e57373; /* Sötétebb piros keret */
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 4px 10px rgba(200, 0, 0, 0.1);
-    }
-
-    .highlight-box h3 {
-      margin: 0 0 8px 0;
-      color: #c62828; /* Sötét piros cím */
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.2em;
-    }
-
-    .highlight-box p {
-      margin: 0;
-      color: #444;
-      font-size: 1em;
-      font-weight: 500;
-    }
-
-    .highlight-box .highlight-time {
-      font-size: 0.9em;
-      font-weight: bold;
-      color: #c62828;
-    }
-    /* ===== ÉTEL SÁV ELRENDEZÉS MÓDOSÍTÁSA ===== */
-    /* Felülírjuk az alap sáv stílust, hogy ne flex legyen, hanem blokk */
-    .food-item {
-      display: block;
-      background: #e8f5e9;
-      /* A teljes sáv háttere */
-      padding: 0;
-      border-radius: 10px;
-      /* Ez már megvolt, de biztosítjuk */
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      /* Ez is megvolt */
-      margin-bottom: 8px;
-      /* Ez is megvolt */
-      overflow: hidden;
-      /* Ez is megvolt */
-    }
-
-    /* Ez az új div, ami az első sort (név, adatok, gombok) tartalmazza */
-    .food-item-row1 {
-      display: flex;
-      /* Ennek kell flex-nek lennie, hogy a gyerekek egy sorban legyenek */
-      align-items: stretch;
-    }
-
-    /* Felülírjuk az .item-name stílusát CSAK az ételeknél,
-       hogy ne oszlopban, hanem sorban rendezze a tartalmát (a nevet) */
-    .food-item .item-name {
-      flex-direction: row;
-      align-items: center;
-    }
-
-    /* A progress bar konténernek adunk egy kis belső teret (padding),
-       hogy szépen igazodjon a felette lévő tartalomhoz */
-    .food-item .meal-progress-container {
-      padding: 2px 5px;
-      border-top: 1px solid #dcedc8;
-      /* Finom elválasztó vonal */
-    }
-/* ===== FOGADALMAK STÍLUSAI ===== */
-    .vow-item {
-      background: #e3f2fd; /* Kék árnyalat a fogadalmaknak */
-      border-left: 5px solid #2196f3;
-      border-radius: 10px;
-      padding: 0;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: stretch;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-    }
-
-    .vow-item.completed-today {
-        background: #bbdefb;
-        opacity: 0.8;
-    }
-
-    .vow-item .item-name {
-        background: transparent; /* Felülírjuk az alap zöld hátteret */
-    }
-    
-    .vow-item .item-actions button.fail-btn {
-        color: #c62828; /* Sötét piros az X gombnak */
-        font-weight: bold;
-    }
-
-    /* ===== BÜNTETÉS CÉL STÍLUSA (Extrém kiemelés) ===== */
-    .goal-item.punishment {
-        background: #212121; /* Majdnem fekete háttér */
-        border: 2px solid #b71c1c; /* Vérvörös keret */
-        color: #ffcdd2;
-    }
-    
-    .goal-item.punishment .item-name {
-        background: #212121;
-        color: #ffcdd2;
-    }
-
-    .goal-item.punishment .item-name-main {
-        color: #ff5252;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .goal-item.punishment .item-points {
-        background: #b71c1c;
-        color: white;
-        border: none;
-    }
-
-    .goal-item.punishment .subgoal-header {
-        color: #ff8a80;
-        border-bottom: 1px solid #b71c1c;
-    }
-    
-    .goal-item.punishment .item-actions {
-        background: #424242;
-    }
-
-    /* Countdown stílus a büntetéshez */
-    .punishment-deadline {
-        display: block;
-        font-size: 0.8em;
-        color: #ff8a80;
-        margin-top: 2px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitGarden 2.0 – Fejedelem Edition 💪🌿</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔥</text></svg>">
+    <style>
+        body {
+          font-family: 'Segoe UI', sans-serif;
+          margin: 0;
+          padding: 0;
+          color: #222;
+          background: linear-gradient(
+          180deg,
+          #034c3f 0%,
+          #222 50%,
+          #034c3f 100%
+        );
+          overflow-x: hidden;
+        }
+
+        #motivationBar {
+          background: #004d40;
+          color: white;
+          padding: 8px;
+          text-align: center;
+          font-style: italic;
+          font-size: 0.95em;
+          letter-spacing: 0.3px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        main {
+          max-width: 1200px;
+          margin: 5px auto;
+          padding: 1px;
+        }
+
+        .card {
+          background: white;
+          border-radius: 18px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+          padding: 6px;
+          margin-bottom: 5px;
+        }
+
+        h2 {
+          color: #00796b;
+          margin-bottom: 5px;
+          font-size: large;
+        }
+
+        button {
+          background: #00796b;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          padding: 8px 15px;
+          font-size: 0.95em;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        button:hover {
+          background: #004d40;
+        }
+
+        .icon-box {
+          display: flex;
+          justify-content: space-around;
+          align-items: stretch;
+          gap: 15px;
+          flex-wrap: wrap;
+        }
+
+        .icon-card {
+          flex: 1;
+          min-width: 280px;
+          background: #e8f5e9;
+          border-radius: 12px;
+          text-align: center;
+          padding: 20px;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .icon-card i {
+          font-size: 2em;
+          color: #00796b;
+          display: block;
+        }
+
+        .icon-card span {
+          display: block;
+          margin-top: 5px;
+          font-weight: bold;
+          font-size: 1.1em;
+        }
+
+        .edit-btn {
+          position: absolute;
+          top: 8px;
+          right: 10px;
+          background: none;
+          color: #00796b;
+          border: none;
+          font-size: 1.1em;
+          cursor: pointer;
+        }
+
+        .hidden {
+          display: none;
+        }
+
+        #tabs {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          margin-bottom: 10px;
+          gap: 8px;
+        }
+
+        .tab-btn {
+          background: #dcedc8;
+          color: black;
+          padding: 10px 15px;
+          /* Kicsit csökkentettem a paddingot */
+          border-radius: 10px;
+          margin: 0;
+          cursor: pointer;
+          transition: 0.3s;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+          /* ÚJ RÉSZEK INNENTŐL */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          /* Távolság az ikon és a szöveg között */
+          flex-grow: 1;
+          /* Növekedhessen */
+          flex-shrink: 1;
+          /* Zsugorodjon */
+          flex-basis: 120px;
+          /* Egy alapértelmezett kiinduló szélesség */
+          box-sizing: border-box;
+          /* Ez biztosítja, hogy a padding ne rontsa el a méretezést */
+        }
+
+        .tab-btn.active {
+          background: #00796b;
+          color: white;
+          font-weight: bold;
+        }
+
+        .tab-content {
+          display: none;
+        }
+
+        .tab-content.active {
+          display: block;
+        }
+
+        /* EZT A BLOKKOT MÁSOLD BE */
+        .tab-icon {
+          font-size: 1.1em;
+          line-height: 1;
+          /* Megakadályozza a felesleges magasságot */
+        }
+
+        .tab-text {
+          white-space: nowrap;
+          /* Megakadályozza, hogy a szöveg törjön */
+        }
+        /* ===== RESPONSIVE FŐMENÜ (TAB) STÍLUSOK ===== */
+        @media (max-width: 845px) {
+          #tabs {
+            gap: 6px;
+            /* Kisebb rés a gombok között mobilon */
+          }
+
+          .tab-btn {
+            /* 33.3% - (rés / 3) -> Ez kényszeríti a 3 gombot egy sorba */
+            flex-basis: 31%;
+            padding: 10px 5px;
+            /* Kisebb padding, hogy elférjen */
+          }
+        }
+
+        @media (max-width: 420px) {
+          .tab-text {
+            display: none;
+            /* Kérésednek megfelelően a szöveg elrejtése */
+          }
+
+          .tab-btn {
+            flex-basis: 30%;
+            /* Maradhat a 3/sor elrendezés */
+            padding: 10px;
+            /* Egyenletesebb padding */
+            gap: 0;
+          }
+
+          .tab-icon {
+            font-size: 1.3em;
+            /* Ikon picit nagyobb, mert egyedül van */
+          }
+        }
+        /* ===== CÉL/JUTALOM ELRENDEZÉS ===== */
+        .flex-container {
+          display: flex;
+          gap: 25px;
+          flex-wrap: wrap;
+          align-items: flex-start;
+        }
+
+        .flex-container>.card {
+          flex: 1;
+          min-width: 300px;
+        }
+        /* ===== ÚJ PRIORITÁS CÉL STÍLUSOK (PIROS) ===== */
+        .goal-item.priority .item-name {
+          background: #ffebee; /* Világos piros */
+          color: #c62828; /* Sötét piros szöveg */
+        }
+        .goal-item.priority .item-points {
+          background: #ffcdd2; /* Közepes piros */
+          border-left: 1px solid #ef9a9a;
+          border-right: 1px solid #ef9a9a;
+          color: #b71c1c;
+        }
+        .goal-item.priority .item-actions {
+          background: #ffebee; /* Világos piros */
+        }
+        /* A kiemelt alcélok címe is legyen piros */
+        .goal-item.priority .subgoal-header {
+            color: #c62828;
+            border-bottom: 1px solid #ffcdd2;
+        }
+        /* ===== KÁRTYA FEJLÉC (CÍM + GOMB/PONTOK) STÍLUS ===== */
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .card-header h2 {
+          margin-bottom: 8px;
+        }
+
+        /* ÚJ STÍLUS A FEJLÉC ARCHÍV GOMBJÁHOZ */
+        .card-header .card-header-add-btn {
+          background: #00796b;
+          /* Világosabb zöld, mint az archív gomb */
+          font-size: 0.9em;
+          padding: 6px 12px;
+          font-weight: bold;
+        }
+
+        .card-header .new-note-btn-left {
+          margin-right: auto;
+          /* Ez tolja el a gombot balra, amennyire csak lehet */
+
+        }
+
+        .card-header .card-header-add-btn:hover {
+          background: #004d40;
+          /* Sötétebb zöld hover-re */
+        }
+        /* ===== PONTSZÁMLÁLÓ (JUTALMAK FEJLÉC) ===== */
+        .header-points-display {
+          display: flex;
+          align-items: center;
+          font-weight: bold;
+        }
+
+        .header-points-display .points-icon {
+          font-size: 1.3em;
+          margin-right: 8px;
+          color: #00796b;
+          /* Téma zöld */
+          line-height: 1;
+        }
+
+        .header-points-display .points-number {
+          color: #004d40;
+          /* Sötét zöld */
+          font-size: 1.4em;
+          /* Kiemelt szám */
+          line-height: 1;
+        }
+        .header-points-display .points-label {
+          color: #00796b;
+          /* Téma zöld */
+          margin-left: 5px;
+          font-size: 1.1em;
+          line-height: 1;
+        }
+        /* ===== ÚJ GOMB STÍLUS (KÁRTYA ALJÁN) ===== */
+        .new-item-button {
+          width: 100%;
+          /* Teljes szélesség */
+          padding: 12px;
+          /* Nagyobb, kényelmesebb gomb */
+          font-size: 1em;
+          font-weight: bold;
+          margin-top: 15px;
+          /* Távolság a listától */
+        }
+        /* ===== CÉL, JUTALOM, ÉTEL SÁV STÍLUS ===== */
+        .goal-item,
+        .reward-item,
+        .food-item,
+        .workout-item {
+          background: transparent;
+          border-radius: 10px;
+          padding: 0;
+          margin-bottom: 8px;
+          display: flex;
+          overflow: hidden;
+          align-items: stretch;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .completed {
+          text-decoration: line-through;
+          opacity: 0.7;
+        }
+        .item-name {
+          flex: 1;
+          padding: 7px 15px;
+          background: #e8f5e9;
+          /* Világos zöld */
+          display: flex;
+          flex-direction: column;
+          /* MÓDOSÍTVA */
+          align-items: flex-start;
+          /* MÓDOSÍTVA */
+        }
+        .item-points {
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          width: 78px;
+          padding: 2px;
+          background: #dcedc8;
+          /* Árnyalattal sötétebb zöld */
+          text-align: center;
+          font-weight: bold;
+          border-left: 1px solid #c8e6c9;
+          border-right: 1px solid #c8e6c9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        /* ÚJ STÍLUS AZ ÉTEL KÁRTYÁHOZ */
+        .food-item .item-details {
+          flex-shrink: 0;
+          width: 120px;
+          padding: 1px;
+          background: #dcedc8;
+          text-align: center;
+          font-weight: bold;
+          border-left: 1px solid #c8e6c9;
+          border-right: 1px solid #c8e6c9;
+          font-size: 0.9em;
+          line-height: 1.3;
+        }
+        .food-item .item-details span {
+          display: block;
+        }
+        .item-actions {
+          flex-shrink: 0;
+          padding: 7px 10px;
+          background: #e8f5e9;
+          /* Világos zöld */
+          display: flex;
+          gap: 5px;
+          justify-content: center;
+          align-items: center;
+        }
+        .item-actions button {
+          background: transparent;
+          color: #00796b;
+          font-size: 1.1em;
+          cursor: pointer;
+          padding: 1px;
+        }
+        /* ÚJ STÍLUSOK AZ ARCHIVÁLÁSHOZ */
+        .item-actions button.archive-btn {
+          color: #004d40;
+          /* Sötétzöld az archiváláshoz */
+        }
+        /* Stílus az archivált elemek gombjaihoz */
+        #archivedGoalList .item-actions button.reactivate-btn {
+          color: #00796b;
+          /* Zöld */
+        }
+        #archivedGoalList .item-actions button.delete-btn {
+          color: #c00;
+          /* Piros */
+        }
+        .category-title {
+          margin-bottom: 5px;
+          color: #004d40;
+          border-bottom: 2px solid #b2dfdb;
+          padding-bottom: 4px;
+          font-size: 1.1em;
+        }
+
+        #goalList .category-title:first-of-type {
+          margin-top: 10px;
+        }
+        /* ===== ÚJ ALCÉL (SUB-GOAL) STÍLUSOK ===== */
+        .subgoal-list {
+          margin-top: 10px;
+          padding-left: 1px;
+          font-size: 0.9em;
+          text-align: left;
+          width: 100%;
+          /* Kitölti a .item-name szélességét */
+        }
+        /* ===== ÚJ ALCÉL PROGRESS BAR STÍLUS ===== */
+        .subgoal-progress-container {
+          width: 100%;
+          height: 2px; /* Kérésnek megfelelően vékony */
+          background: #c8e6c9; /* Halvány háttér, mint a kompakt sávé */
+          border-radius: 5px;
+          overflow: hidden;
+          margin-top: 2px; /* Kis távolság a címtől */
+          /* A távolságot az alcél listától a .subgoal-list margin-top-ja adja */
+          border: 1px solid #a5d6a7;
+        }
+
+        .subgoal-progress-fill {
+          height: 100%;
+          width: 0%; /* Ezt a style="" inline felülírja */
+          background: #00796b; /* Alap téma-zöld */
+          border-radius: 5px;
+          transition: width 0.9s ease;
+        }
+
+        /* Ha a cél prioritásos, a sáv is legyen pirosas */
+        .goal-item.priority .subgoal-progress-container {
+            background: #ffcdd2;
+            border-color: #ef9a9a;
+        }
+        .goal-item.priority .subgoal-progress-fill {
+            background: #c62828; /* Sötét piros */
+        }
+        .subgoal-header {
+          font-size: 1.1em;
+          font-weight: bold;
+          color: #004d40;
+          /* Sötét zöld, mint a kategória címek */
+          margin-top: 15px;
+          margin-bottom: 5px;
+          padding-bottom: 2px;
+          border-bottom: 1px solid #dcedc8;
+          /* Finom vonal alatta */
+        }
+
+        .subgoal-list .subgoal-header:first-child {
+          margin-top: 5px;
+          /* Kisebb margó, ha ez az első elem */
+        }
+
+        .subgoal-separator {
+          border: none;
+          border-top: 2px dashed #b2dfdb;
+          /* Szaggatott vonal a téma színével */
+          margin: 10px 0;
+        }
+
+        .subgoal-list div {
+          display: flex;
+          align-items: center;
+          margin-bottom: 5px;
+          text-decoration: none;
+          /* Ne húzza át az alcél szövegét */
+        }
+
+        .subgoal-list input[type="checkbox"] {
+          width: auto;
+          margin: 0 10px 0 0;
+        }
+
+        .subgoal-list span.subgoal-done {
+          text-decoration: line-through;
+          opacity: 0.7;
+        }
+
+        /* Amikor a FŐ cél kész, a FŐ cím áthúzva */
+        .goal-item.completed .item-name-main {
+          text-decoration: line-through;
+        }
+
+        /* De a sub-goal lista soha (csak a belső span) */
+        .goal-item.completed .subgoal-list {
+          text-decoration: none;
+        }
+        .log {
+          background: #f8f8f8;
+          border-radius: 10px;
+          padding: 10px;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+
+        .log-entry {
+          background: #e8f5e9;
+          border-bottom: 1px solid #ddd;
+          padding: 6px 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .log-entry span {
+          flex: 1;
+          padding-right: 10px;
+        }
+
+        .log-entry small {
+          color: #777;
+          font-size: 0.85em;
+          margin-left: 10px;
+        }
+
+        .log-entry button {
+          flex-shrink: 0;
+        }
+
+        .modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.4);
+          display: none;
+          justify-content: center;
+          align-items: flex-start;
+          z-index: 1000;
+          padding-top: 20px;
+          overflow-y: auto;
+        }
+
+        #editModal {
+          z-index: 2000 !important;
+        }
+
+        .modal-content {
+          background: white;
+          border-radius: 15px;
+          padding: 20px;
+          width: 90%;
+          max-width: 400px;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+
+        .modal-content h3 {
+          margin-top: 0;
+          color: #00796b;
+          text-align: center;
+        }
+
+        input,
+        textarea,
+        select {
+          width: 100%;
+          padding: 6px;
+          margin-top: 2px;
+          margin-bottom: 10px;
+          border-radius: 10px;
+          border: 1px solid #ccc;
+          font-size: 1em;
+          box-sizing: border-box;
+          background-color: white;
+          /* Select hátérszín */
+        }
+        /* ===== GRAFIKON MODAL STÍLUSOK ===== */
+        #chartModalContent {
+          max-width: 90%;
+          width: 800px;
+        }
+
+        #progressChart {
+          width: 100%;
+          height: 400px;
+        }
+        /* ====== KÖVETÉS STÍLUSOK ====== */
+        .icon-card .content-wrapper {
+          margin-top: 15px;
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        }
+        .progress-summary {
+          font-size: 0.9em;
+          font-weight: bold;
+          color: #004d40;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          height: 1.2em;
+        }
+        .input-group {
+          display: flex;
+          margin-top: 10px;
+          gap: 5px;
+        }
+        .input-group input {
+          flex: 1;
+          width: 60%;
+          margin: 0;
+          font-size: 0.9em;
+          text-align: center;
+        }
+        .input-group button {
+          flex-shrink: 0;
+          font-size: 0.85em;
+          padding: 8px 10px;
+        }
+        .progress-bar-container {
+          background: #c8e6c9;
+          border-radius: 10px;
+          height: 12px;
+          width: 100%;
+          margin-top: 10px;
+          overflow: hidden;
+          border: 1px solid #a5d6a7;
+        }
+        .progress-bar {
+          background: #00796b;
+          height: 100%;
+          width: 0%;
+          border-radius: 10px;
+          transition: width 0.5s ease;
+        }
+        /* ÚJ: A PROTEIN SÁV SZÍNE */
+        #proteinProgressBar {
+          background: #8e24aa;
+          /* Lila */
+        }
+        /* ====== ANIMÁCIÓK ====== */
+        .fade-in {
+          opacity: 0;
+          transform: translateY(10px);
+          animation: fadeIn 0.6s ease forwards;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        button,
+        .tab-btn {
+          transition: transform 0.15s ease, background-color 0.3s;
+        }
+
+        button:hover,
+        .tab-btn:hover {
+          transform: scale(1.03);
+        }
+        /* ====== EXPORT / RESET PANEL ====== */
+        #controlPanel {
+          text-align: center;
+          margin-top: 25px;
+        }
+
+        #controlPanel button {
+          background: #004d40;
+          margin: 5px;
+        }
+
+        #controlPanel input[type="file"] {
+          display: none;
+        }
+        /* ===== ÚJ JEGYZET STÍLUSOK ===== */
+        #noteViewModal .modal-content {
+          background: #f1f8e9;
+          max-width: 600px;
+        }
+
+        #noteViewText {
+          background: #ffffff;
+          border-radius: 8px;
+          padding: 15px;
+          min-height: 100px;
+          max-height: 60vh;
+          overflow-y: auto;
+          white-space: pre-wrap;
+          border: 1px solid #dcedc8;
+        }
+
+        .note-summary-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: #e8f5e9;
+          padding: 12px 15px;
+          border-radius: 10px;
+          margin-bottom: 8px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .note-summary-title {
+          flex: 1;
+          font-weight: bold;
+          font-size: 1.1em;
+          color: #004d40;
+          cursor: pointer;
+          margin-right: 10px;
+        }
+
+        .note-summary-date {
+          font-size: 0.85em;
+          color: #555;
+          margin-right: 15px;
+          flex-shrink: 0;
+        }
+
+        .note-summary-actions button {
+          background: transparent;
+          color: #00796b;
+          font-size: 1.1em;
+          padding: 5px;
+        }
+
+        #editInputText {
+          height: 150px;
+          resize: vertical;
+          font-family: 'Segoe UI', sans-serif;
+        }
+        /* ===== ÚJ KOMPAKT FŐOLDALI CÉLOK STÍLUS ===== */
+        #compactGoalsContainer {
+          display: grid;
+          /* JAVÍTÁS: Átállás Grid-re */
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+          /* Alapértelmezett: 4 adat oszlop + 1 gomb oszlop */
+          background: white;
+          border-radius: 18px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+          padding: 12px 15px;
+          margin-bottom: 5px;
+          align-items: center;
+          /* JAVÍTÁS: Függőlegesen középre igazítjuk az egészet */
+          gap: 12px;
+          /* flex-wrap törölve */
+        }
+
+        .compact-goal-item {
+          min-width: 0;
+          /* Ez marad, hogy a szöveg levágódhasson (...) */
+          text-align: left;
+        }
+
+        .compact-goal-item .label {
+          font-size: 0.85em;
+          color: #00796b;
+          display: block;
+          font-weight: bold;
+          white-space: nowrap;
+        }
+
+        .compact-goal-item .value {
+          display: block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        /* ÚJ: Felső szöveg (pl. 0.7/2.0 L) */
+        .compact-goal-item .value-top {
+          font-size: 1.0em;
+          color: #333;
+          /* Kevésbé hangsúlyos */
+          font-weight: 500;
+          margin-top: 2px;
+        }
+
+        /* ÚJ: Alsó szöveg (pl. Még 1.3 L) */
+        .compact-goal-item .value-bottom {
+          font-size: 0.9em;
+          color: #004d40;
+          font-weight: bold;
+          margin-top: 3px;
+        }
+
+        /* A Súly felső sora másképp néz ki */
+        .compact-goal-item .value-weight-top {
+          font-size: 0.9em;
+          color: #333;
+          font-weight: 500;
+        }
+
+
+        #compactBtnWrapper {
+          display: flex;
+          gap: 8px;
+          /* margin-left: auto; TÖRÖLVE */
+          /* flex-shrink: 0; TÖRÖLVE */
+          align-self: center;
+        }
+
+        #quickAddBtn,
+        #compactEditBtn,
+        #compactChartBtn {
+          flex-shrink: 0;
+          background: #004d40;
+          padding: 10px 12px;
+          font-size: 1.2em;
+          line-height: 1;
+          border-radius: 12px;
+        }
+
+        #compactEditBtn,
+        #compactChartBtn {
+          background: #00796b;
+          font-size: 1.1em;
+          padding: 11px 12px;
+        }
+
+        .compact-progress-bar-container {
+          background: #c8e6c9;
+          border-radius: 10px;
+          height: 10px;
+          width: 100%;
+          margin-top: 4px;
+          /* Közelebb a felső szöveghez */
+          overflow: hidden;
+          border: 1px solid #a5d6a7;
+        }
+
+        .compact-progress-bar {
+          background: #00796b;
+          height: 100%;
+          width: 0%;
+          border-radius: 10px;
+          transition: width 0.5s ease;
+        }
+
+        /* Protein sáv színe */
+        #compactProteinBar,
+        #compactWeightBar {
+          /* Súly is lila lesz */
+          background: #8e24aa;
+        #compactFatBar {
+          background: #f57f17;
+        }
+        }
+
+        /* ÚJ: Reszponzív töréspont telefonra */
+        @media (max-width: 800px) {
+          #compactGoalsContainer {
+            grid-template-columns: 1fr 1fr;
+            /* 2 oszlopos elrendezés */
+            gap: 15px;
+            /* Nagyobb térköz mobilon */
+            align-items: flex-end;
+            /* Visszaállítjuk alulra igazításra */
+          }
+
+          #compactBtnWrapper {
+            /* A gombok átnyúlnak mindkét oszlopon */
+            justify-content: center;
+            /* Középre igazítja a gombokat a soron belül */
+          }
+        }
+        /* ===== ÚJ EDZÉS STÍLUSOK (NAPTÁR TÖRÖLVE) ===== */
+        .workout-adder {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+
+        .workout-adder input[type="date"] {
+          flex: 1;
+          /* A dátumválasztó töltse ki a helyet */
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 10px;
+          font-size: 1em;
+        }
+
+        .workout-adder button {
+          flex-shrink: 0;
+          /* A gomb ne zsugorodjon */
+          padding: 10px 15px;
+          font-weight: bold;
+        }
+
+        .workout-item button .item-actions .delete-btn	{
+          background: transparent;
+          color: #c00;
+          /* Vörös a törléshez */
+          font-size: 1.2em;
+        }
+
+        /* ===== ÚJ ÉTEL PROGRESS BAR STÍLUSOK ===== */
+        .meal-progress-container {
+          margin-top: 0px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+        }
+
+        .meal-progress-wrapper {
+          display: flex;
+          align-items: center;
+          font-size: 0.85em;
+        }
+
+        .meal-progress-label {
+          width: 65px;
+          /* Szélesebb a "Kalória:" miatt */
+          font-weight: bold;
+          color: #333;
+          flex-shrink: 0;
+        }
+
+        .meal-progress-bar-bg {
+          background: #e0e0e0;
+          border-radius: 5px;
+          height: 10px;
+          width: 100%;
+          overflow: hidden;
+        }
+
+        .meal-progress-bar-fill {
+          background: #ff9800;
+          /* Kalória - narancs */
+          height: 100%;
+          border-radius: 5px;
+          transition: width 0.5s ease;
+        }
+
+        .meal-progress-bar-fill.protein {
+          background: #8e24aa;
+          /* Protein - lila */
+        }
+        /* ===== ÚJ KIEMELT EMLÉKEZTETŐ STÍLUS ===== */
+        #highlightContainer {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-bottom: 5px;
+        }
+
+        .highlight-box {
+          background: #ffebee; /* Világos piros háttér */
+          border: 2px solid #e57373; /* Sötétebb piros keret */
+          border-radius: 12px;
+          padding: 15px;
+          box-shadow: 0 4px 10px rgba(200, 0, 0, 0.1);
+        }
+
+        .highlight-box h3 {
+          margin: 0 0 8px 0;
+          color: #c62828; /* Sötét piros cím */
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 1.2em;
+        }
+
+        .highlight-box p {
+          margin: 0;
+          color: #444;
+          font-size: 1em;
+          font-weight: 500;
+        }
+
+        .highlight-box .highlight-time {
+          font-size: 0.9em;
+          font-weight: bold;
+          color: #c62828;
+        }
+        /* ===== ÉTEL SÁV ELRENDEZÉS MÓDOSÍTÁSA ===== */
+        /* Felülírjuk az alap sáv stílust, hogy ne flex legyen, hanem blokk */
+        .food-item {
+          display: block;
+          background: #e8f5e9;
+          /* A teljes sáv háttere */
+          padding: 0;
+          border-radius: 10px;
+          /* Ez már megvolt, de biztosítjuk */
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          /* Ez is megvolt */
+          margin-bottom: 8px;
+          /* Ez is megvolt */
+          overflow: hidden;
+          /* Ez is megvolt */
+        }
+
+        /* Ez az új div, ami az első sort (név, adatok, gombok) tartalmazza */
+        .food-item-row1 {
+          display: flex;
+          /* Ennek kell flex-nek lennie, hogy a gyerekek egy sorban legyenek */
+          align-items: stretch;
+        }
+
+        /* Felülírjuk az .item-name stílusát CSAK az ételeknél,
+           hogy ne oszlopban, hanem sorban rendezze a tartalmát (a nevet) */
+        .food-item .item-name {
+          flex-direction: row;
+          align-items: center;
+        }
+
+        /* A progress bar konténernek adunk egy kis belső teret (padding),
+           hogy szépen igazodjon a felette lévő tartalomhoz */
+        .food-item .meal-progress-container {
+          padding: 2px 5px;
+          border-top: 1px solid #dcedc8;
+          /* Finom elválasztó vonal */
+        }
+    /* ===== FOGADALMAK STÍLUSAI ===== */
+        .vow-item {
+          background: #e3f2fd; /* Kék árnyalat a fogadalmaknak */
+          border-left: 5px solid #2196f3;
+          border-radius: 10px;
+          padding: 0;
+          margin-bottom: 8px;
+          display: flex;
+          align-items: stretch;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          overflow: hidden;
+        }
+
+        .vow-item.completed-today {
+            background: #bbdefb;
+            opacity: 0.8;
+        }
+
+        .vow-item .item-name {
+            background: transparent; /* Felülírjuk az alap zöld hátteret */
+        }
+
+        .vow-item .item-actions button.fail-btn {
+            color: #c62828; /* Sötét piros az X gombnak */
+            font-weight: bold;
+        }
+
+        /* ===== BÜNTETÉS CÉL STÍLUSA (Extrém kiemelés) ===== */
+        .goal-item.punishment {
+            background: #212121; /* Majdnem fekete háttér */
+            border: 2px solid #b71c1c; /* Vérvörös keret */
+            color: #ffcdd2;
+        }
+
+        .goal-item.punishment .item-name {
+            background: #212121;
+            color: #ffcdd2;
+        }
+
+        .goal-item.punishment .item-name-main {
+            color: #ff5252;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .goal-item.punishment .item-points {
+            background: #b71c1c;
+            color: white;
+            border: none;
+        }
+
+        .goal-item.punishment .subgoal-header {
+            color: #ff8a80;
+            border-bottom: 1px solid #b71c1c;
+        }
+
+        .goal-item.punishment .item-actions {
+            background: #424242;
+        }
+
+        /* Countdown stílus a büntetéshez */
+        .punishment-deadline {
+            display: block;
+            font-size: 0.8em;
+            color: #ff8a80;
+            margin-top: 2px;
+        }
+    </style>
 </head>
 
 <body>
 
-  <div id="loginContainer" style="padding: 20px; max-width: 400px; margin: 40px auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+<div id="loginContainer" style="padding: 20px; max-width: 400px; margin: 40px auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
     <h2 style="color: #00796b; text-align: center;">FitGarden 2.0</h2>
     <h3 style="text-align: center;">Belépés / Regisztráció</h3>
     <label>Email</label>
@@ -1106,254 +1106,254 @@
     <label>Jelszó</label>
     <input type="password" id="loginPassword" placeholder="min. 6 karakter">
     <div style="display: flex; gap: 10px; margin-top: 15px;">
-      <button onclick="handleLogin()" style="flex: 1;">Belépés</button>
-      <button onclick="handleSignUp()" style="flex: 1; background: #004d40;">Regisztráció</button>
+        <button onclick="handleLogin()" style="flex: 1;">Belépés</button>
+        <button onclick="handleSignUp()" style="flex: 1; background: #004d40;">Regisztráció</button>
     </div>
-	<p onclick="handlePasswordReset()" style="text-align: center; color: #00796b; cursor: pointer; margin-top: 15px; margin-bottom: 0px; font-size: 0.9em;">
-      Elfelejtett jelszó?
+    <p onclick="handlePasswordReset()" style="text-align: center; color: #00796b; cursor: pointer; margin-top: 15px; margin-bottom: 0px; font-size: 0.9em;">
+        Elfelejtett jelszó?
     </p>
     <p id="loginError" style="color: red; text-align: center; margin-top: 10px;"></p>
-  </div>
+</div>
 
-  <div id="appContainer" style="display: none;">
+<div id="appContainer" style="display: none;">
 
     <div id="motivationBar">Tipp: „A lustaság a gyengék vallása. Törj ki belőle.”</div>
 
     <main>
-      <div id="tabs">
-        <div class="tab-btn active" onclick="showTab('main')">
-          <span class="tab-icon">🏠</span>
-          <span class="tab-text">Főoldal</span>
+        <div id="tabs">
+            <div class="tab-btn active" onclick="showTab('main')">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-text">Főoldal</span>
+            </div>
+            <div class="tab-btn" onclick="showTab('notes')">
+                <span class="tab-icon">📝</span>
+                <span class="tab-text">Jegyzetek</span>
+            </div>
+            <div class="tab-btn" onclick="showTab('meals')">
+                <span class="tab-icon">🍗</span>
+                <span class="tab-text">Étkezés</span>
+            </div>
+            <div class="tab-btn" onclick="showTab('history')">
+                <span class="tab-icon">📈</span>
+                <span class="tab-text">Haladás</span>
+            </div>
+            <div class="tab-btn" onclick="showTab('workouts')">
+                <span class="tab-icon">🏋️‍♂️</span>
+                <span class="tab-text">Edzések</span>
+            </div>
         </div>
-        <div class="tab-btn" onclick="showTab('notes')">
-          <span class="tab-icon">📝</span>
-          <span class="tab-text">Jegyzetek</span>
-        </div>
-        <div class="tab-btn" onclick="showTab('meals')">
-          <span class="tab-icon">🍗</span>
-          <span class="tab-text">Étkezés</span>
-        </div>
-        <div class="tab-btn" onclick="showTab('history')">
-          <span class="tab-icon">📈</span>
-          <span class="tab-text">Haladás</span>
-        </div>
-        <div class="tab-btn" onclick="showTab('workouts')">
-          <span class="tab-icon">🏋️‍♂️</span>
-          <span class="tab-text">Edzések</span>
-        </div>
-      </div>
-      <div id="main" class="tab-content active">
-        <div id="compactGoalsContainer">
+        <div id="main" class="tab-content active">
+            <div id="compactGoalsContainer">
 
-          <div class="compact-goal-item">
-            <span class="label">Súly ⚖️</span>
-            <span class="value value-top" id="compactWeightTop">--/-- kg</span>
-            <div class="compact-progress-bar-container">
-              <div class="compact-progress-bar" id="compactWeightBar"></div>
-            </div>
-            <span class="value value-bottom" id="compactWeightBottom">Még...</span>
-          </div>
-
-          <div class="compact-goal-item">
-            <span class="label">Víz 💧</span>
-            <span class="value value-top" id="compactWaterTop">--/-- L</span>
-            <div class="compact-progress-bar-container">
-              <div class="compact-progress-bar" id="compactWaterBar"></div>
-            </div>
-            <span class="value value-bottom" id="compactWaterBottom">Még...</span>
-          </div>
-
-          <div class="compact-goal-item">
-            <span class="label">Kalória 🔥</span>
-            <span class="value value-top" id="compactCalTop">--/-- kcal</span>
-            <div class="compact-progress-bar-container">
-              <div class="compact-progress-bar" id="compactCalBar"></div>
-            </div>
-            <span class="value value-bottom" id="compactCalBottom">Még...</span>
-          </div>
-
-          <div class="compact-goal-item">
-            <span class="label">Protein 🥩</span>
-            <span class="value value-top" id="compactProteinTop">--/-- g</span>
-            <div class="compact-progress-bar-container">
-              <div class="compact-progress-bar" id="compactProteinBar"></div>
-            </div>
-            <span class="value value-bottom" id="compactProteinBottom">Még...</span>
-          </div>
-
-          <div class="compact-goal-item">
-            <span class="label">Zsír 🥑</span>
-            <span class="value value-top" id="compactFatTop">--/-- g</span>
-            <div class="compact-progress-bar-container">
-              <div class="compact-progress-bar" id="compactFatBar"></div>
-            </div>
-            <span class="value value-bottom" id="compactFatBottom">Még...</span>
-          </div>
-
-          <div id="compactBtnWrapper">
-            <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
-            <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
-            <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
-          </div>
-        </div>
-
-        <div id="highlightContainer"></div>
-
-        <div class="flex-container">
-
-          <div class="card" style="flex: 1.5;">
-            <div class="card-header">
-              <h2>✅ Célok</h2>
-              <div style="display: flex; gap: 8px;">
-                <button onclick="openArchiveModal()" class="card-header-add-btn">📥|⏳</button>
-                <button onclick="openModal('goalModal')" class="card-header-add-btn">+ Új cél</button>
-              </div>
-            </div>
-            <div id="goalList"></div>
-          </div>
-
-          <div class="card" style="flex: 1; display: flex; flex-direction: column; gap: 15px;">
-
-            <div>
-              <div class="card-header" style="margin-bottom: 5px;">
-                <h2 style="margin:0; font-size: 1.1em;">✋ Fogadalmak</h2>
-                <button onclick="openModal('vowModal')" class="card-header-add-btn" style="font-size: 0.85em;">+ Új</button>
-              </div>
-              <div id="vowList"></div>
-            </div>
-
-            <hr style="border: 0; border-top: 2px #b2dfdb; margin: 5px 0; width: 100%;">
-
-            <div>
-              <div class="card-header" style="margin-bottom: 5px;">
-                <h2 style="margin:0; font-size: 1.1em;">🎁 Jutalmak</h2>
-                <div class="header-points-display">
-                  <span class="points-icon">💎</span>
-                  <span id="totalPointsDisplay" class="points-number">0</span>
-                  <span class="points-label"> p</span>
+                <div class="compact-goal-item">
+                    <span class="label">Súly ⚖️</span>
+                    <span class="value value-top" id="compactWeightTop">--/-- kg</span>
+                    <div class="compact-progress-bar-container">
+                        <div class="compact-progress-bar" id="compactWeightBar"></div>
+                    </div>
+                    <span class="value value-bottom" id="compactWeightBottom">Még...</span>
                 </div>
-              </div>
-              <div id="rewardList"></div>
-              <button onclick="openModal('rewardModal')" class="new-item-button" style="margin-top: 10px; padding: 8px;">+ Új jutalom</button>
+
+                <div class="compact-goal-item">
+                    <span class="label">Víz 💧</span>
+                    <span class="value value-top" id="compactWaterTop">--/-- L</span>
+                    <div class="compact-progress-bar-container">
+                        <div class="compact-progress-bar" id="compactWaterBar"></div>
+                    </div>
+                    <span class="value value-bottom" id="compactWaterBottom">Még...</span>
+                </div>
+
+                <div class="compact-goal-item">
+                    <span class="label">Kalória 🔥</span>
+                    <span class="value value-top" id="compactCalTop">--/-- kcal</span>
+                    <div class="compact-progress-bar-container">
+                        <div class="compact-progress-bar" id="compactCalBar"></div>
+                    </div>
+                    <span class="value value-bottom" id="compactCalBottom">Még...</span>
+                </div>
+
+                <div class="compact-goal-item">
+                    <span class="label">Protein 🥩</span>
+                    <span class="value value-top" id="compactProteinTop">--/-- g</span>
+                    <div class="compact-progress-bar-container">
+                        <div class="compact-progress-bar" id="compactProteinBar"></div>
+                    </div>
+                    <span class="value value-bottom" id="compactProteinBottom">Még...</span>
+                </div>
+
+                <div class="compact-goal-item">
+                    <span class="label">Zsír 🥑</span>
+                    <span class="value value-top" id="compactFatTop">--/-- g</span>
+                    <div class="compact-progress-bar-container">
+                        <div class="compact-progress-bar" id="compactFatBar"></div>
+                    </div>
+                    <span class="value value-bottom" id="compactFatBottom">Még...</span>
+                </div>
+
+                <div id="compactBtnWrapper">
+                    <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
+                    <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
+                    <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
+                </div>
             </div>
 
-            <hr style="border: 0; border-top: 2px #b2dfdb; margin: 5px 0; width: 100%;">
+            <div id="highlightContainer"></div>
 
-            <div>
-              <div class="card-header" style="margin-bottom: 5px;">
-                <h2 style="margin:0; font-size: 1.1em;">🔔 Emlékeztetők</h2>
-                <button onclick="openModal('reminderModal')" class="card-header-add-btn" style="font-size: 0.85em;">+ Új</button>
-              </div>
-              <div id="reminderList" class="log" style="max-height: 300px; overflow-y: auto; border: none; background: transparent; padding: 0;">
-                <p>Nincsenek aktív emlékeztetők.</p>
-              </div>
+            <div class="flex-container">
+
+                <div class="card" style="flex: 1.5;">
+                    <div class="card-header">
+                        <h2>✅ Célok</h2>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="openArchiveModal()" class="card-header-add-btn">📥|⏳</button>
+                            <button onclick="openModal('goalModal')" class="card-header-add-btn">+ Új cél</button>
+                        </div>
+                    </div>
+                    <div id="goalList"></div>
+                </div>
+
+                <div class="card" style="flex: 1; display: flex; flex-direction: column; gap: 15px;">
+
+                    <div>
+                        <div class="card-header" style="margin-bottom: 5px;">
+                            <h2 style="margin:0; font-size: 1.1em;">✋ Fogadalmak</h2>
+                            <button onclick="openModal('vowModal')" class="card-header-add-btn" style="font-size: 0.85em;">+ Új</button>
+                        </div>
+                        <div id="vowList"></div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 2px #b2dfdb; margin: 5px 0; width: 100%;">
+
+                    <div>
+                        <div class="card-header" style="margin-bottom: 5px;">
+                            <h2 style="margin:0; font-size: 1.1em;">🎁 Jutalmak</h2>
+                            <div class="header-points-display">
+                                <span class="points-icon">💎</span>
+                                <span id="totalPointsDisplay" class="points-number">0</span>
+                                <span class="points-label"> p</span>
+                            </div>
+                        </div>
+                        <div id="rewardList"></div>
+                        <button onclick="openModal('rewardModal')" class="new-item-button" style="margin-top: 10px; padding: 8px;">+ Új jutalom</button>
+                    </div>
+
+                    <hr style="border: 0; border-top: 2px #b2dfdb; margin: 5px 0; width: 100%;">
+
+                    <div>
+                        <div class="card-header" style="margin-bottom: 5px;">
+                            <h2 style="margin:0; font-size: 1.1em;">🔔 Emlékeztetők</h2>
+                            <button onclick="openModal('reminderModal')" class="card-header-add-btn" style="font-size: 0.85em;">+ Új</button>
+                        </div>
+                        <div id="reminderList" class="log" style="max-height: 300px; overflow-y: auto; border: none; background: transparent; padding: 0;">
+                            <p>Nincsenek aktív emlékeztetők.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-	
-        </div> <div id="notes" class="tab-content">
-        <div class="card">
-          <div class="card-header">
-            <button onclick="openAddNoteModal()" class="card-header-add-btn new-note-btn-left">+ Új jegyzet</button>
-          </div>
-          <div id="notesList"></div>
-        </div>
-      </div>
-      <div id="meals" class="tab-content">
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-header">
-            <h2>Mentett ételek</h2>
-            <div style="display: flex; gap: 8px;">
-              <button onclick="openMealExportModal()" class="card-header-add-btn" style="background: #004d40;" title="Összes étel exportálása szövegként">📤 Export</button>
-              <button onclick="openMealImportModal()" class="card-header-add-btn" style="background: #004d40;" title="Ételek importálása szövegből">📥 Import</button>
-            </div>
-          </div>
-          </div>
-          <input type="text" id="mealSearchInput" placeholder="🔍 Étel keresése..." oninput="renderMeals()" style="margin-bottom: 0px;">
-          <div id="mealList">
-          </div>
-          <button onclick="openMealModal()" class="new-item-button">+ Új étel hozzáadása</button>
-        </div>
-      </div>
-
-      <div id="history" class="tab-content">
-        <div class="card">
-          <h2>📅 Adat Történet (Súly, Víz, Kalória, Protein)</h2>
-          <div id="historyList" class="log"></div>
         </div>
 
-        <div class="card">
-          <h2>💎 Pont Történet</h2>
-          <div id="pointsHistoryList" class="log"></div>
-        </div>
-        <div class="card">
-          <h2>📜 Napló</h2>
-          <div class="log" id="activityLog"></div>
-          <button style="margin-top:10px" onclick="clearAllLogs()">🧹 Napló törlése</button>
-        </div>
-
-        <div class="card fade-in" id="controlPanel">
-          <h2>🧠 Fejedelem Kontrollpanel</h2>
-          <p>Adatmentés, visszaállítás és teljes reset</p>
-          <button onclick="exportData()">💾 Exportálás</button>
-          <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
-          <input type="file" id="importFile" accept=".json" onchange="importData(event)">
-          <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
-          <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
-        </div>
-      </div>
-
-      <div id="workouts" class="tab-content">
-  <div class="card">
-    <div class="card-header">
-      <span>Edzések kategoriája:</span>
-      <select id="workoutGoalFilter" onchange="handleWorkoutFilterChange()" style="padding: 6px; border-radius: 10px; border: 1px solid #ccc; background-color: white;">
-       <option value="">-- Minden aktív cél --</option>
-      </select>
-    </div>
-        <div id="workoutGoalList" style="margin-top: 15px;">
-    </div>
+</div> <div id="notes" class="tab-content">
     <div class="card">
-    <div class="card-header">
-      <h2>🏋️‍♂️ Rögzített edzések</h2>
-      <button onclick="openWorkoutModal()" class="card-header-add-btn">+ Új edzés rögzítése</button>
+        <div class="card-header">
+            <button onclick="openAddNoteModal()" class="card-header-add-btn new-note-btn-left">+ Új jegyzet</button>
+        </div>
+        <div id="notesList"></div>
     </div>
-    <div id="workoutList">
-          </div>
-  </div>
+</div>
+<div id="meals" class="tab-content">
 
-    
-  </div>
-  
+    <div class="card">
+        <div class="card-header">
+            <div class="card-header">
+                <h2>Mentett ételek</h2>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="openMealExportModal()" class="card-header-add-btn" style="background: #004d40;" title="Összes étel exportálása szövegként">📤 Export</button>
+                    <button onclick="openMealImportModal()" class="card-header-add-btn" style="background: #004d40;" title="Ételek importálása szövegből">📥 Import</button>
+                </div>
+            </div>
+        </div>
+        <input type="text" id="mealSearchInput" placeholder="🔍 Étel keresése..." oninput="renderMeals()" style="margin-bottom: 0px;">
+        <div id="mealList">
+        </div>
+        <button onclick="openMealModal()" class="new-item-button">+ Új étel hozzáadása</button>
+    </div>
 </div>
 
-    </main>
-    <div class="modal" id="noteViewModal">
-      <div class="modal-content">
-        <h3 id="noteViewTitle">Jegyzet címe</h3>
-        <div id="noteViewText">
-          Jegyzet tartalma...
-        </div>
-        <div style="text-align:center;margin-top:15px;">
-          <button style="background:#ccc;color:black;" onclick="closeModal('noteViewModal')">Bezárás</button>
-        </div>
-      </div>
+<div id="history" class="tab-content">
+    <div class="card">
+        <h2>📅 Adat Történet (Súly, Víz, Kalória, Protein)</h2>
+        <div id="historyList" class="log"></div>
     </div>
 
-    <div class="modal" id="chartModal">
-      <div class="modal-content" id="chartModalContent">
+    <div class="card">
+        <h2>💎 Pont Történet</h2>
+        <div id="pointsHistoryList" class="log"></div>
+    </div>
+    <div class="card">
+        <h2>📜 Napló</h2>
+        <div class="log" id="activityLog"></div>
+        <button style="margin-top:10px" onclick="clearAllLogs()">🧹 Napló törlése</button>
+    </div>
+
+    <div class="card fade-in" id="controlPanel">
+        <h2>🧠 Fejedelem Kontrollpanel</h2>
+        <p>Adatmentés, visszaállítás és teljes reset</p>
+        <button onclick="exportData()">💾 Exportálás</button>
+        <button onclick="document.getElementById('importFile').click()">📂 Importálás</button>
+        <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+        <button style="background:#b71c1c" onclick="resetAll()">⚠️ Teljes reset</button>
+        <button onclick="handleLogout()" style="background:#555">🚪 Kijelentkezés</button>
+    </div>
+</div>
+
+<div id="workouts" class="tab-content">
+    <div class="card">
+        <div class="card-header">
+            <span>Edzések kategoriája:</span>
+            <select id="workoutGoalFilter" onchange="handleWorkoutFilterChange()" style="padding: 6px; border-radius: 10px; border: 1px solid #ccc; background-color: white;">
+                <option value="">-- Minden aktív cél --</option>
+            </select>
+        </div>
+        <div id="workoutGoalList" style="margin-top: 15px;">
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>🏋️‍♂️ Rögzített edzések</h2>
+                <button onclick="openWorkoutModal()" class="card-header-add-btn">+ Új edzés rögzítése</button>
+            </div>
+            <div id="workoutList">
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+</main>
+<div class="modal" id="noteViewModal">
+    <div class="modal-content">
+        <h3 id="noteViewTitle">Jegyzet címe</h3>
+        <div id="noteViewText">
+            Jegyzet tartalma...
+        </div>
+        <div style="text-align:center;margin-top:15px;">
+            <button style="background:#ccc;color:black;" onclick="closeModal('noteViewModal')">Bezárás</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="chartModal">
+    <div class="modal-content" id="chartModalContent">
         <h3>📈 Súly Grafikon</h3>
         <canvas id="progressChart"></canvas>
         <div style="text-align:center;margin-top:15px;">
-          <button style="background:#ccc;color:black;" onclick="closeModal('chartModal')">Bezárás</button>
+            <button style="background:#ccc;color:black;" onclick="closeModal('chartModal')">Bezárás</button>
         </div>
-      </div>
     </div>
-    <div class="modal" id="noteModal">
-      <div class="modal-content">
+</div>
+<div class="modal" id="noteModal">
+    <div class="modal-content">
         <h3>📝 Új jegyzet</h3>
         <label for="noteTitleInput">Cím</label>
         <input id="noteTitleInput" type="text" placeholder="Jegyzet címe...">
@@ -1366,13 +1366,13 @@
         <textarea id="noteTextInput" rows="6" placeholder="Írj ide valamit..."></textarea>
 
         <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveNote()">✅ Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('noteModal')">Mégse</button>
+            <button onclick="saveNote()">✅ Mentés</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('noteModal')">Mégse</button>
         </div>
-      </div>
     </div>
-    <div class="modal" id="goalSetupModal">
-      <div class="modal-content">
+</div>
+<div class="modal" id="goalSetupModal">
+    <div class="modal-content">
         <h3>🎯 Célok beállítása</h3>
         <label>Ideális súly (kg)</label>
         <input id="goalWeightInput" type="number" placeholder="pl. 75">
@@ -1382,123 +1382,138 @@
         <input id="goalCalInput" type="number" placeholder="pl. 2200">
         <label>Napi protein cél (gramm)</label>
         <input id="goalProteinInput" type="number" placeholder="pl. 120">
-		<label>Napi zsír cél (gramm)</label>
+        <label>Napi zsír cél (gramm)</label>
         <input id="goalFatInput" type="number" placeholder="pl. 60">
 
         <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveGoalSettings()">💾 Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalSetupModal')">Mégse</button>
+            <button onclick="saveGoalSettings()">💾 Mentés</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalSetupModal')">Mégse</button>
         </div>
-      </div>
     </div>
+</div>
+<div class="modal" id="rewardModal">
+    <div class="modal-content">
+        <h3>🎁 Új Jutalom</h3>
+        <label>Jutalom neve</label>
+        <input id="rewardNameInput" type="text" placeholder="pl. Egy szelet süti">
+
+        <label>Ár (Pont)</label>
+        <input id="rewardCostInput" type="number" placeholder="pl. 50">
+
+        <div style="text-align:center;margin-top:15px;">
+            <button onclick="saveReward()">💾 Mentés</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
+        </div>
+    </div>
+</div>
 <div class="modal" id="vowModal">
     <div class="modal-content">
-      <h3>✋ Új Fogadalom</h3>
-      <label>Mit fogadsz meg? (pl. Nincs kávé 12:00 után)</label>
-      <input id="vowNameInput" type="text" placeholder="A fogadalom tárgya...">
-      
-      <label>Időtartam</label>
-      <select id="vowDurationInput" style="margin-bottom: 10px;">
-          <option value="weekly">Erre a hétre</option>
-          <option value="monthly">Erre a hónapra</option>
-      </select>
+        <h3>✋ Új Fogadalom</h3>
+        <label>Mit fogadsz meg? (pl. Nincs kávé 12:00 után)</label>
+        <input id="vowNameInput" type="text" placeholder="A fogadalom tárgya...">
 
-      <label>Napi jutalom (Pont)</label>
-      <input id="vowPointsInput" type="number" placeholder="pl. 15">
+        <label>Időtartam</label>
+        <select id="vowDurationInput" style="margin-bottom: 10px;">
+            <option value="weekly">Erre a hétre</option>
+            <option value="monthly">Erre a hónapra</option>
+        </select>
 
-      <div style="background: #ffebee; padding: 10px; border-radius: 8px; border: 1px solid #ef9a9a; margin-top: 10px;">
-          <h4 style="margin-top:0; color: #c62828;">⚠️ Következmény (Opcionális)</h4>
-          <label>Büntetés feladat (pl. 100 fekvőtámasz)</label>
-          <input id="vowPenaltyInput" type="text" placeholder="Ha megszeged...">
-          
-          <label>Levonás ha nem teljesíted a büntetést (Pont)</label>
-          <input id="vowPenaltyPointsInput" type="number" placeholder="pl. 50">
-      </div>
+        <label>Napi jutalom (Pont)</label>
+        <input id="vowPointsInput" type="number" placeholder="pl. 15">
 
-      <label style="margin-top: 10px;">Alcélok (opcionális)</label>
-      <textarea id="vowSubGoalsInput" rows="3" placeholder="Minden sor egy alcél..."></textarea>
+        <div style="background: #ffebee; padding: 10px; border-radius: 8px; border: 1px solid #ef9a9a; margin-top: 10px;">
+            <h4 style="margin-top:0; color: #c62828;">⚠️ Következmény (Opcionális)</h4>
+            <label>Büntetés feladat (pl. 100 fekvőtámasz)</label>
+            <input id="vowPenaltyInput" type="text" placeholder="Ha megszeged...">
 
-      <div style="text-align:center;margin-top:15px;">
-        <button onclick="saveVow()">✅ Fogadalom Tétel</button>
-        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('vowModal')">Mégse</button>
-      </div>
+            <label>Levonás ha nem teljesíted a büntetést (Pont)</label>
+            <input id="vowPenaltyPointsInput" type="number" placeholder="pl. 50">
+        </div>
+
+        <label style="margin-top: 10px;">Alcélok (opcionális)</label>
+        <textarea id="vowSubGoalsInput" rows="3" placeholder="Minden sor egy alcél..."></textarea>
+
+        <div style="text-align:center;margin-top:15px;">
+            <button onclick="saveVow()">✅ Fogadalom Tétel</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('vowModal')">Mégse</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div class="modal" id="goalModal">
+<div class="modal" id="goalModal">
     <div class="modal-content">
-      <h3>🎯 Új Cél</h3>
-      <input id="goalNameInput" type="text" placeholder="Cél neve pl. 10.000 lépés">
-      <input id="goalPointsInput" type="number" placeholder="Pont érték pl. 10 (0 is lehet)">
-      <input id="goalCategoryInput" type="text" placeholder="Kategória (válassz vagy írj be újat,opcionális)" list="categoryDatalist">
-      <datalist id="categoryDatalist">
-      </datalist>
-      <textarea id="goalSubGoalsInput" rows="7" placeholder="&#10;Alcélok (opcionális, minden sor egy alcél)&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására&#10;*** → Opcionális cél jelölése"></textarea>
-      <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-        <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
-        <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
-      </div>
-
-      <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <label for="goalIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
-          <input type="checkbox" id="goalIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
-        </div>
-      </div>
-
-      <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
-          <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+        <h3>🎯 Új Cél</h3>
+        <input id="goalNameInput" type="text" placeholder="Cél neve pl. 10.000 lépés">
+        <input id="goalPointsInput" type="number" placeholder="Pont érték pl. 10 (0 is lehet)">
+        <input id="goalCategoryInput" type="text" placeholder="Kategória (válassz vagy írj be újat,opcionális)" list="categoryDatalist">
+        <datalist id="categoryDatalist">
+        </datalist>
+        <textarea id="goalSubGoalsInput" rows="7" placeholder="&#10;Alcélok (opcionális, minden sor egy alcél)&#10;Jel nélküli sorok automatikusan pipálhatók.&#10;Formázási jelek az alcélokhoz::&#10;# → Címsor (csak szöveg, nem pipálható)&#10;--- → Elválasztó, részek szétválasztására&#10;*** → Opcionális cél jelölése"></textarea>
+        <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+            <label for="goalStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
+            <input type="date" id="goalStartDateInput" style="margin-bottom: 0;">
         </div>
 
-        <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
-          <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-            <label style="margin: 0;">Minden</label>
-            <input type="number" id="goalRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
-            <select id="goalRecurrenceFrequency" style="flex: 1; margin: 0;">
-              <option value="daily">Nap</option>
-              <option value="weekly">Hét</option>
-              <option value="monthly">Hónap</option>
-              <option value="yearly">Év</option>
-            </select>
-          </div>
-
-          <div style="margin-top: 10px; margin-bottom: 15px;">
-            <label for="goalRecurrenceStartDateInput" style="margin-bottom: 5px;">Ismétlődés kezdete (opcionális)</label>
-            <input type="date" id="goalRecurrenceStartDateInput" style="margin: 0; width: 100%;">
-          </div>
-
-          <label style="margin-top: 10px; margin-bottom: 5px;">Befejezés</label>
-          <div style="padding-left: 15px;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-              <input type="radio" name="goalEndCondition" id="goalEndNever" value="never" checked style="width: auto; margin: 0;">
-              <label for="goalEndNever" style="margin: 0; width: 100%;">Soha</label>
+        <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label for="goalIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
+                <input type="checkbox" id="goalIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
             </div>
-
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-              <input type="radio" name="goalEndCondition" id="goalEndCount" value="count" style="width: auto; margin: 0;">
-              <label for="goalEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
-              <input type="number" id="goalEndCountInput" value="5" style="width: 60px; margin: 0;">
-              <span style="flex-shrink: 0;">előfordulás</span>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <input type="radio" name="goalEndCondition" id="goalEndDate" value="date" style="width: auto; margin: 0;">
-              <label for="goalEndDate" style="margin: 0;">Ekkor:</label>
-              <input type="date" id="goalEndDateInput" style="width: 100%; margin: 0;">
-            </div>
-          </div>
         </div>
-      </div>
-      <div style="text-align:center;margin-top:15px;">
-        <button onclick="saveGoal()">✅ Mentés</button>
-        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
-      </div>
+
+        <div style="margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label for="goalIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
+                <input type="checkbox" id="goalIsRecurringInput" onchange="document.getElementById('goalRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+            </div>
+
+            <div id="goalRecurrenceOptions" style="display: none; margin-top: 10px;">
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                    <label style="margin: 0;">Minden</label>
+                    <input type="number" id="goalRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
+                    <select id="goalRecurrenceFrequency" style="flex: 1; margin: 0;">
+                        <option value="daily">Nap</option>
+                        <option value="weekly">Hét</option>
+                        <option value="monthly">Hónap</option>
+                        <option value="yearly">Év</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 10px; margin-bottom: 15px;">
+                    <label for="goalRecurrenceStartDateInput" style="margin-bottom: 5px;">Ismétlődés kezdete (opcionális)</label>
+                    <input type="date" id="goalRecurrenceStartDateInput" style="margin: 0; width: 100%;">
+                </div>
+
+                <label style="margin-top: 10px; margin-bottom: 5px;">Befejezés</label>
+                <div style="padding-left: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <input type="radio" name="goalEndCondition" id="goalEndNever" value="never" checked style="width: auto; margin: 0;">
+                        <label for="goalEndNever" style="margin: 0; width: 100%;">Soha</label>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <input type="radio" name="goalEndCondition" id="goalEndCount" value="count" style="width: auto; margin: 0;">
+                        <label for="goalEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
+                        <input type="number" id="goalEndCountInput" value="5" style="width: 60px; margin: 0;">
+                        <span style="flex-shrink: 0;">előfordulás</span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="radio" name="goalEndCondition" id="goalEndDate" value="date" style="width: auto; margin: 0;">
+                        <label for="goalEndDate" style="margin: 0;">Ekkor:</label>
+                        <input type="date" id="goalEndDateInput" style="width: 100%; margin: 0;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;margin-top:15px;">
+            <button onclick="saveGoal()">✅ Mentés</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('goalModal')">Mégse</button>
+        </div>
     </div>
-  </div>
-    <div class="modal" id="editModal" style="z-index: 2000;">
-      <div class="modal-content">
+</div>
+<div class="modal" id="editModal" style="z-index: 2000;">
+    <div class="modal-content">
         <h3 id="editTitle">✏️ Szerkesztés</h3>
 
         <label id="editLabel1"></label>
@@ -1514,97 +1529,97 @@
 
         <label id="editLabelText" style="display:none;">Szöveg</label>
         <textarea id="editInputText" style="display:none;"></textarea>
-		
+
         <div id="editPriorityField" style="display: none; margin-top: 10px; padding: 5px; background: #f1f8e9; border-radius: 8px;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="editIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
-            <input type="checkbox" id="editIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
-          </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label for="editIsPriorityInput" style="margin: 0; cursor: pointer; font-weight: bold; color: #c62828;">Fontos cél? (Kiemelés)</label>
+                <input type="checkbox" id="editIsPriorityInput" style="width: auto; margin: 0; transform: scale(1.3);">
+            </div>
         </div>
         <div id="editStartDateField" style="display: none; margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <label for="editStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
-          <input type="date" id="editStartDateInput" style="margin-bottom: 0;"> 
-		  </div>
-        
+            <label for="editStartDateInput" style="margin-bottom: 5px;">Megjelenés dátuma (opcionális)</label>
+            <input type="date" id="editStartDateInput" style="margin-bottom: 0;">
+        </div>
+
         <div id="editRecurringFields" style="display: none; margin-top: 10px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <label for="editIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
-            <input type="checkbox" id="editIsRecurringInput" onchange="document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
-          </div>
-          
-          <div id="editRecurrenceOptions" style="display: none; margin-top: 10px;">
-				
-				<div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-					<label style="margin: 0;">Minden</label>
-					<input type="number" id="editRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
-					<select id="editRecurrenceFrequency" style="flex: 1; margin: 0;">
-						<option value="daily">Nap</option>
-						<option value="weekly">Hét</option>
-						<option value="monthly">Hónap</option>
-						<option value="yearly">Év</option>
-					</select>
-				</div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label for="editIsRecurringInput" style="margin: 0; cursor: pointer;">Ismétlődő cél?</label>
+                <input type="checkbox" id="editIsRecurringInput" onchange="document.getElementById('editRecurrenceOptions').style.display = this.checked ? 'block' : 'none'" style="width: auto; margin: 0; transform: scale(1.3);">
+            </div>
 
-				<div style="margin-top: 10px; margin-bottom: 15px;">
-					<label for="editRecurrenceStartDateInput" style="margin-bottom: 5px;">Ismétlődés kezdete (opcionális)</label>
-					<input type="date" id="editRecurrenceStartDateInput" style="margin: 0; width: 100%;">
-				</div>
-				<label>Ismétlődés befejezés:</label>
-				<div style="padding-left: 15px;">
-					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-						<input type="radio" name="editEndCondition" id="editEndNever" value="never" checked style="width: auto; margin: 0;">
-						<label for="editEndNever" style="margin: 0; width: 100%;">Soha</label>
-					</div>
-					
-					<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-						<input type="radio" name="editEndCondition" id="editEndCount" value="count" style="width: auto; margin: 0;">
-						<label for="editEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
-						<input type="number" id="editEndCountInput" value="5" style="width: 60px; margin: 0;">
-						<span style="flex-shrink: 0;">előfordulás</span>
-					</div>
+            <div id="editRecurrenceOptions" style="display: none; margin-top: 10px;">
 
-					<div style="display: flex; align-items: center; gap: 10px;">
-						<input type="radio" name="editEndCondition" id="editEndDate" value="date" style="width: auto; margin: 0;">
-						<label for="editEndDate" style="margin: 0;">Ekkor:</label>
-						<input type="date" id="editEndDateInput" style="width: 100%; margin: 0;">
-					</div>
-				</div>
-			</div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                    <label style="margin: 0;">Minden</label>
+                    <input type="number" id="editRecurrenceInterval" value="1" style="width: 60px; margin: 0;">
+                    <select id="editRecurrenceFrequency" style="flex: 1; margin: 0;">
+                        <option value="daily">Nap</option>
+                        <option value="weekly">Hét</option>
+                        <option value="monthly">Hónap</option>
+                        <option value="yearly">Év</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 10px; margin-bottom: 15px;">
+                    <label for="editRecurrenceStartDateInput" style="margin-bottom: 5px;">Ismétlődés kezdete (opcionális)</label>
+                    <input type="date" id="editRecurrenceStartDateInput" style="margin: 0; width: 100%;">
+                </div>
+                <label>Ismétlődés befejezés:</label>
+                <div style="padding-left: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <input type="radio" name="editEndCondition" id="editEndNever" value="never" checked style="width: auto; margin: 0;">
+                        <label for="editEndNever" style="margin: 0; width: 100%;">Soha</label>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <input type="radio" name="editEndCondition" id="editEndCount" value="count" style="width: auto; margin: 0;">
+                        <label for="editEndCount" style="margin: 0; width: 100%;">Ennyi után:</label>
+                        <input type="number" id="editEndCountInput" value="5" style="width: 60px; margin: 0;">
+                        <span style="flex-shrink: 0;">előfordulás</span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="radio" name="editEndCondition" id="editEndDate" value="date" style="width: auto; margin: 0;">
+                        <label for="editEndDate" style="margin: 0;">Ekkor:</label>
+                        <input type="date" id="editEndDateInput" style="width: 100%; margin: 0;">
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="editMealFields" style="display: none;">
-          <label for="editMealType">Típus</label>
-          <select id="editMealType">
-            <option value="unit">Darab alapú</option>
-            <option value="weight">Súly alapú (100g)</option>
-          </select>
-          <label for="editMealKcal">Kalória (kcal)</label>
-          <input id="editMealKcal" type="number" placeholder="pl. 150">
-          <label for="editMealProtein">Fehérje (g)</label>
-          <input id="editMealProtein" type="number" placeholder="pl. 12">
-		  <label for="editMealFat">Zsír (g)</label>
-          <input id="editMealFat" type="number" placeholder="pl. 8">
+            <label for="editMealType">Típus</label>
+            <select id="editMealType">
+                <option value="unit">Darab alapú</option>
+                <option value="weight">Súly alapú (100g)</option>
+            </select>
+            <label for="editMealKcal">Kalória (kcal)</label>
+            <input id="editMealKcal" type="number" placeholder="pl. 150">
+            <label for="editMealProtein">Fehérje (g)</label>
+            <input id="editMealProtein" type="number" placeholder="pl. 12">
+            <label for="editMealFat">Zsír (g)</label>
+            <input id="editMealFat" type="number" placeholder="pl. 8">
         </div>
 
         <div style="text-align:center;margin-top:15px;">
-          <button onclick="confirmEdit()">💾 Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('editModal')">Mégse</button>
+            <button onclick="confirmEdit()">💾 Mentés</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('editModal')">Mégse</button>
         </div>
-      </div>
     </div>
+</div>
 
-    <div class="modal" id="archiveModal">
-      <div class="modal-content" style="max-width: 600px;">
+<div class="modal" id="archiveModal">
+    <div class="modal-content" style="max-width: 600px;">
         <h3>📥|⏳ Archivált vagy időzített célok</h3>
         <div id="archivedGoalList" style="max-height: 400px; overflow-y: auto;">
         </div>
         <div style="text-align:center;margin-top:15px;">
-          <button style="background:#ccc;color:black;" onclick="closeModal('archiveModal')">Bezárás</button>
+            <button style="background:#ccc;color:black;" onclick="closeModal('archiveModal')">Bezárás</button>
         </div>
-      </div>
     </div>
+</div>
 
-    <div class="modal" id="mealModal">
-      <div class="modal-content">
+<div class="modal" id="mealModal">
+    <div class="modal-content">
         <h3>Új étel hozzáadása</h3>
         <label for="mealNameInput">Étel neve</label>
         <input id="mealNameInput" type="text" placeholder="pl. Főtt tojás">
@@ -1615,8 +1630,8 @@
 
         <label for="mealTypeSelect">Számolás típusa</label>
         <select id="mealTypeSelect" onchange="updateMealModalLabels()">
-          <option value="unit">Darab alapú</option>
-          <option value="weight">Súly alapú (100g)</option>
+            <option value="unit">Darab alapú</option>
+            <option value="weight">Súly alapú (100g)</option>
         </select>
 
         <label id="mealKcalLabel" for="mealKcalInput">Kalória (kcal/darab)</label>
@@ -1624,19 +1639,19 @@
 
         <label id="mealProteinLabel" for="mealProteinInput">Fehérje (g/darab)</label>
         <input id="mealProteinInput" type="number" placeholder="pl. 6">
-		<label id="mealFatLabel" for="mealFatInput">Zsír (g/darab)</label>
+        <label id="mealFatLabel" for="mealFatInput">Zsír (g/darab)</label>
         <input id="mealFatInput" type="number" placeholder="pl. 4">
         <label for="mealNoteInput">Jegyzet (opcionális)</label>
         <textarea id="mealNoteInput" rows="4" placeholder="Recept, elkészítési javaslat, link..."></textarea>
         <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveMeal()">✅ Mentés</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealModal')">Mégse</button>
+            <button onclick="saveMeal()">✅ Mentés</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealModal')">Mégse</button>
         </div>
-      </div>
     </div>
+</div>
 
-    <div class="modal" id="consumeModal">
-      <div class="modal-content">
+<div class="modal" id="consumeModal">
+    <div class="modal-content">
         <h3 id="consumeMealTitle">Étel fogyasztása</h3>
         <p style="text-align: center; font-weight: bold;" id="consumeMealDetails"></p>
 
@@ -1644,14 +1659,14 @@
         <input id="consumeAmountInput" type="number" placeholder="pl. 2">
 
         <div style="text-align:center;margin-top:15px;">
-          <button onclick="confirmConsume()">🍽️ Fogyasztás</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('consumeModal')">Mégse</button>
+            <button onclick="confirmConsume()">🍽️ Fogyasztás</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('consumeModal')">Mégse</button>
         </div>
-      </div>
     </div>
-	
-    <div class="modal" id="quickAddModal">
-      <div class="modal-content">
+</div>
+
+<div class="modal" id="quickAddModal">
+    <div class="modal-content">
         <h3>⚡ Gyors Bejegyzés</h3>
         <p style="text-align: center; margin-top: -10px; margin-bottom: 15px;">Add meg a mai napi adatokat.</p>
 
@@ -1666,19 +1681,19 @@
 
         <label>Protein hozzáadása (gramm)</label>
         <input id="quickProteinInput" type="number" placeholder="pl. 30">
-		
-		<label>Zsír hozzáadása (gramm)</label>
+
+        <label>Zsír hozzáadása (gramm)</label>
         <input id="quickFatInput" type="number" placeholder="pl. 15">
 
         <div style="text-align:center;margin-top:15px;">
-          <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('quickAddModal')">Mégse</button>
+            <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('quickAddModal')">Mégse</button>
         </div>
-      </div>
     </div>
-	<div class="modal" id="reminderModal">
-	
-      <div class="modal-content">
+</div>
+<div class="modal" id="reminderModal">
+
+    <div class="modal-content">
         <h3>🔔 Új emlékeztető</h3>
         <p>Kapj értesítést a böngésződtől a megadott időpontban. A funkció használatához engedélyezned kell az értesítéseket, ha a böngésző rákérdez.</p>
         <label for="reminderTextInput">Emlékeztető szövege</label>
@@ -1686,52 +1701,52 @@
         <label for="reminderTimeInput">Időpont</label>
         <input type="datetime-local" id="reminderTimeInput">
         <div style="margin-top: 15px; padding: 10px; background: #f1f8e9; border-radius: 8px;">
-          <label for="reminderHighlightCheck" style="display:inline; margin-right: 10px; cursor: pointer;">Kiemelés a főoldalon?(ettől a naptól látszik)</label>
-          <input type="checkbox" id="reminderHighlightCheck" style="width: auto; margin: 0; transform: scale(1.3);">
-          <input type="date" id="reminderHighlightDateInput" style="margin-top: 5px;">
+            <label for="reminderHighlightCheck" style="display:inline; margin-right: 10px; cursor: pointer;">Kiemelés a főoldalon?(ettől a naptól látszik)</label>
+            <input type="checkbox" id="reminderHighlightCheck" style="width: auto; margin: 0; transform: scale(1.3);">
+            <input type="date" id="reminderHighlightDateInput" style="margin-top: 5px;">
         </div>
         <div style="text-align:center;margin-top:15px;">
-          <button onclick="addReminder()">💾 Emlékeztető Mentése</button>
-          <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('reminderModal')">Mégse</button>
+            <button onclick="addReminder()">💾 Emlékeztető Mentése</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('reminderModal')">Mégse</button>
         </div>
-      </div>
     </div>
-	<div class="modal" id="rewardModal">
+</div>
+<div class="modal" id="rewardModal">
     <div class="modal-content">
-      <h3>🎁 Új Jutalom</h3>
-      <label>Jutalom neve</label>
-      <input id="rewardNameInput" type="text" placeholder="pl. Egy szelet süti">
+        <h3>🎁 Új Jutalom</h3>
+        <label>Jutalom neve</label>
+        <input id="rewardNameInput" type="text" placeholder="pl. Egy szelet süti">
 
-      <label>Ár (Pont)</label>
-      <input id="rewardCostInput" type="number" placeholder="pl. 50">
+        <label>Ár (Pont)</label>
+        <input id="rewardCostInput" type="number" placeholder="pl. 50">
 
-      <div style="text-align:center;margin-top:15px;">
-        <button onclick="saveReward()">💾 Mentés</button>
-        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
-      </div>
+        <div style="text-align:center;margin-top:15px;">
+            <button onclick="saveReward()">💾 Mentés</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
+        </div>
     </div>
-  </div>
-	<div class="modal" id="workoutModal">
-	  <div class="modal-content">
-		<h3>📅 Új edzés rögzítése</h3>
-		<p style="text-align: center; margin-top: -10px; margin-bottom: 15px;">Válaszd ki a napot.</p>
+</div>
+<div class="modal" id="workoutModal">
+    <div class="modal-content">
+        <h3>📅 Új edzés rögzítése</h3>
+        <p style="text-align: center; margin-top: -10px; margin-bottom: 15px;">Válaszd ki a napot.</p>
 
-		<label for="workoutDateInput">Edzés napja</label>
-		<input type="date" id="workoutDateInput"> 
+        <label for="workoutDateInput">Edzés napja</label>
+        <input type="date" id="workoutDateInput">
 
-		<div style="text-align:center;margin-top:15px;">
-		  <button onclick="addWorkout()">🏋️‍♂️ Edzés rögzítése</button>
-		  <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('workoutModal')">Mégse</button>
-		</div>
-	  </div>
-	</div>
-	<div class="modal" id="mealImportModal">
-	  <div class="modal-content" style="max-width: 600px;">
-		<h3>📥 Ételek Tömeges Importálása</h3>
-		<p>Illeszd be a szöveget a megadott séma alapján. Az ételeket "---" (három kötőjel) sorral válaszd el.</p>
-		
-		<label for="mealImportText">Importálandó ételek:</label>
-		<textarea id="mealImportText" rows="10" placeholder="Étel neve: Csirkemell
+        <div style="text-align:center;margin-top:15px;">
+            <button onclick="addWorkout()">🏋️‍♂️ Edzés rögzítése</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('workoutModal')">Mégse</button>
+        </div>
+    </div>
+</div>
+<div class="modal" id="mealImportModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <h3>📥 Ételek Tömeges Importálása</h3>
+        <p>Illeszd be a szöveget a megadott séma alapján. Az ételeket "---" (három kötőjel) sorral válaszd el.</p>
+
+        <label for="mealImportText">Importálandó ételek:</label>
+        <textarea id="mealImportText" rows="10" placeholder="Étel neve: Csirkemell
 Kategória: Húsok
 Típus: weight
 Kalória (kcal): 165
@@ -1746,29 +1761,29 @@ Fehérje (g) 6
 Zsír (g) 5
 "></textarea>
 
-		<div style="text-align:center;margin-top:15px;">
-		  <button onclick="processMealImport()">✅ Importálás</button>
-		  <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealImportModal')">Mégse</button>
-		</div>
-	  </div>
-	</div>
+        <div style="text-align:center;margin-top:15px;">
+            <button onclick="processMealImport()">✅ Importálás</button>
+            <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('mealImportModal')">Mégse</button>
+        </div>
+    </div>
+</div>
 
-	<div class="modal" id="mealExportModal">
-	  <div class="modal-content" style="max-width: 600px;">
-		<h3>📤 Ételek Tömeges Exportálása</h3>
-		<p>Az alábbi szöveg tartalmazza az összes mentett ételedet. Másold ki és mentsd el egy szöveges fájlba.</p>
-		<textarea id="mealExportText" rows="10" readonly style="background: #f4f4f4; color: #333; font-family: monospace;"></textarea>
-		<div style="text-align:center;margin-top:15px;">
-		  <button style="background:#ccc;color:black;" onclick="closeModal('mealExportModal')">Bezárás</button>
-		</div>
-	  </div>
-	</div>
-	</div>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+<div class="modal" id="mealExportModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <h3>📤 Ételek Tömeges Exportálása</h3>
+        <p>Az alábbi szöveg tartalmazza az összes mentett ételedet. Másold ki és mentsd el egy szöveges fájlba.</p>
+        <textarea id="mealExportText" rows="10" readonly style="background: #f4f4f4; color: #333; font-family: monospace;"></textarea>
+        <div style="text-align:center;margin-top:15px;">
+            <button style="background:#ccc;color:black;" onclick="closeModal('mealExportModal')">Bezárás</button>
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
 
-  <script>
+<script>
     // Your web app's Firebase configuration
 	const firebaseConfig = {
       apiKey: "AIzaSyCZJLWZFJFEFWQqZYmAcZjgqoc88FDfPwQ",
@@ -1792,10 +1807,10 @@ Zsír (g) 5
 
     console.log("Firebase is connected!");
 	loadSavedTheme();
-  </script>
+</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
     // ===== ÚJ FUNKCIÓ: JEGYZET KATEGÓRIA LISTA LÉTREHOZÁSA =====
     function populateNoteCategoryDatalist() {
       const datalist = document.getElementById('noteCategoryDatalist');
@@ -1888,14 +1903,14 @@ async function processMealImport() {
       const category = block.match(/Kategória\s*:(.*)/i)?.[1].trim(); // EZ VOLT A HIÁNYZÓ SOR
       const type = block.match(/Típus\s*:(.*)/i)?.[1].trim().toLowerCase();
       const kcal = block.match(/Kalória \(kcal\)\s*:(.*)/i)?.[1].trim();
-      const protein = block.match(/Fehérje \(g\)\s*:?\s*(.*)/i)?.[1].trim(); 
+      const protein = block.match(/Fehérje \(g\)\s*:?\s*(.*)/i)?.[1].trim();
       const fat = block.match(/Zsír \(g\)\s*:?\s*(.*)/i)?.[1].trim();
 
       // 4. Adatellenőrzés
       if (!name || !type || !kcal || !protein || !fat) {
         throw new Error("Hiányzó kötelező mező (Név, Típus, Kcal, Fehérje, Zsír).");
       }
-      
+
       const kcalNum = parseFloat(kcal);
       const proteinNum = parseFloat(protein);
       const fatNum = parseFloat(fat);
@@ -1929,7 +1944,7 @@ async function processMealImport() {
 
   // 7. Visszajelzés és frissítés
   closeModal('mealImportModal');
-  
+
   if (successCount > 0) {
     renderMeals(); // Lista frissítése
     await logActivity(`📥 ${successCount} étel sikeresen importálva.`);
@@ -1937,11 +1952,11 @@ async function processMealImport() {
 
   alert(`Importálás befejezve!\n\nSikeres: ${successCount}\nHibás: ${failedCount}`);
 }
-  
+
 // ===== ÚJ FUNKCIÓ: ÉTEL EXPORT MEGNYITÁSA ÉS GENERÁLÁSA =====
 function openMealExportModal() {
   const textarea = document.getElementById("mealExportText");
-  
+
   if (!meals || meals.length === 0) {
     textarea.value = "Nincsenek mentett ételek, amiket exportálni lehetne.";
     openModal('mealExportModal');
@@ -1949,22 +1964,22 @@ function openMealExportModal() {
   }
 
   let exportedTextBlocks = [];
-  
+
   // Végigmegyünk az összes ételen
   meals.forEach(meal => {
     let block = [];
     block.push(`Étel neve: ${meal.name}`);
     block.push(`Kategória: ${meal.category || ''}`);
-    
+
     // --- INNEN TÖRÖLTÜK A JEGYZET SOROKAT ---
-    
+
     block.push(`Típus: ${meal.type}`);
     block.push(`Kalória (kcal): ${meal.kcal}`);
-    
+
     // --- MÓDOSÍTVA: Hozzáadtuk a kettőspontot a séma szerint ---
     block.push(`Fehérje (g): ${meal.protein}`);
     block.push(`Zsír (g): ${meal.fat}`);
-    
+
     exportedTextBlocks.push(block.join('\n'));
   });
 
@@ -2015,7 +2030,7 @@ function openMealExportModal() {
 		document.getElementById("editPriorityField").style.display = "none"; // ÚJ
 		// ÚJ: Ismétlődő mezők elrejtése
         document.getElementById("editRecurringFields").style.display = "none";
-        
+
         // ===== INNEN ILLESZD BE A 4 SORT =====
         // Típusok visszaállítása az emlékeztető szerkesztés után
         document.getElementById("editInput2").type = "number";
@@ -2129,12 +2144,12 @@ function openMealExportModal() {
     function renderHighlights() {
       const container = document.getElementById("highlightContainer");
       // Csak akkor fuss, ha a főoldali container létezik (tehát a Főoldal fülön vagyunk)
-      if (!container) return; 
+      if (!container) return;
 
       container.innerHTML = "";
       const now = new Date();
 
-      const highlightsToShow = reminders.filter(r => 
+      const highlightsToShow = reminders.filter(r =>
         r.highlight &&             // 1. Kérve van a kiemelés
         !r.triggered &&            // 2. Még nem járt le az emlékeztető
         new Date(r.highlightDate) <= now // 3. Elérkezett a kiemelés kezdő dátuma
@@ -2149,19 +2164,19 @@ function openMealExportModal() {
 
         const reminderTime = new Date(r.time);
         // Dátum formázása (pl. "2025. 11. 27. 17:00")
-        const displayTime = reminderTime.toLocaleString('hu-HU', { 
-          year: 'numeric', 
-          month: 'numeric', 
-          day: 'numeric', 
-          hour: '2-digit', 
-          minute: '2-digit' 
+        const displayTime = reminderTime.toLocaleString('hu-HU', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
         });
-        
+
         // Visszaszámláló logika
         const diffMs = reminderTime - now;
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
         const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        
+
         let countdownText = "";
         if (diffDays > 0) {
           countdownText = ` (még ${diffDays} nap, ${diffHours} óra)`;
@@ -2519,7 +2534,7 @@ function renderWorkoutGoals() {
           case 'separator': subGoalsHTML += `<hr class="subgoal-separator">`; break;
           case 'task': default:
             hasTasks = true;
-            
+
             if (g.isPunishment && isExpired) {
                 subGoalsHTML += `
                   <div style="opacity: 0.6;">
@@ -2567,7 +2582,7 @@ function renderWorkoutGoals() {
     let showCheckBtn = false;
     const tasks = (g.subGoals || []).filter(sg => (sg.type || 'task') === 'task');
     const mandatoryTasks = tasks.filter(t => !t.isOptional);
-    
+
     if (tasks.length === 0) {
        showCheckBtn = true;
     } else {
@@ -2645,7 +2660,7 @@ function handleWorkoutFilterChange() {
           document.getElementById('loginError').innerText = "Hiba: A jelszó vagy email cím hibás." + error.message;
         });
     }
-	
+
 	function handlePasswordReset() {
     const email = document.getElementById('loginEmail').value;
     const errorElement = document.getElementById('loginError');
@@ -2803,7 +2818,7 @@ function handleWorkoutFilterChange() {
         // ==================================
 
         renderAll();
-		loadSavedTheme(); 
+		loadSavedTheme();
         startReminderEngine();
 
         startReminderEngine(); // ÚJ EMLÉKEZTETŐ MOTOR INDÍTÁSA
@@ -3029,7 +3044,7 @@ function isWorkoutLoggedToday() {
  */
 async function logWorkoutForToday() {
   const todayISO = toDateInputString(new Date());
-  
+
   // Dupla ellenőrzés, hátha időközben hozzáadták
   if (isWorkoutLoggedToday()) {
     console.warn("Már van edzés rögzítve a mai napra, a logWorkoutForToday() hívás leállt.");
@@ -3041,11 +3056,11 @@ async function logWorkoutForToday() {
     date: todayISO,
     note: "" // Üres jegyzet, amit később szerkeszthet
   });
-  
+
   // 2. Mentés és naplózás
   await saveWorkouts(); // Ez már a saveDataToFirestore-t hívja
   await logActivity(`🏋️‍♂️ Edzés rögzítve (cél teljesítéséből): ${todayISO}`);
-  
+
   // 3. UI frissítése
   renderWorkouts();
 }
@@ -3121,7 +3136,7 @@ async function checkPunishments() {
     // Visszafelé iterálunk, hogy biztonságosan törölhessünk a tömbből
     for (let i = goals.length - 1; i >= 0; i--) {
         const g = goals[i];
-        
+
         // Csak az aktív (nem kész) büntetéseket nézünk
         if (g.isPunishment && !g.done) {
             // Ha van deadline, azt használjuk, ha nincs (régi adat), akkor startDate + 24h
@@ -3130,14 +3145,14 @@ async function checkPunishments() {
             if (now > deadline) {
                 // --- IDŐ LEJÁRT ---
                 console.log(`Büntetés lejárt: ${g.name}`);
-                
+
                 // 1. Pontlevonás (ha van beállítva büntetőpont)
                 const penalty = g.penaltyPointsIfDeleted || 0;
                 if (penalty > 0) {
                     totalPoints -= penalty;
                     addPointsLogEntry(-penalty, `⌛ LEJÁRT BÜNTETÉS: ${g.name}`);
                 }
-                
+
                 // 2. Naplózás
                 await logActivity(`⌛ Büntetés lejárt (nem teljesítetted): ${g.name} (-${penalty} pont)`);
 
@@ -3154,7 +3169,7 @@ async function checkPunishments() {
         renderGoals(); // Azonnal eltünteti a felületről
         await saveDataToFirestore();
     }
-    
+
     // Minden percben újra kell rajzolni a listát a visszaszámláló frissítése miatt,
     // de csak ha nem történt most törlés (mert akkor fentebb már rendereltünk)
     if (!hasExpired && document.getElementById("main").classList.contains("active")) {
@@ -3290,7 +3305,7 @@ function getNextDueDate(lastCompletedISO, recurrence) {
 
     const interval = recurrence.interval || 1;
     const frequency = recurrence.frequency || 'daily';
-    
+
     switch (frequency) {
         case 'daily':
             lastDate.setDate(lastDate.getDate() + interval);
@@ -3331,9 +3346,9 @@ async function checkRecurringGoals() {
     // 2. Teljesítve lettek (done: true)
     // 3. Van rögzített utolsó teljesítési idejük
     if (goal.isRecurring && goal.done && goal.lastCompleted) {
-      
+
       let recurrenceData = goal.recurrence;
-      
+
       // --- Visszafelé kompatibilitás: Régi string adatok átalakítása ---
       if (typeof recurrenceData === 'string') {
         const oldRecurrence = recurrenceData;
@@ -3381,14 +3396,14 @@ async function checkRecurringGoals() {
 
       // 2. ÚJRAAKTIVÁLÁS ELLENŐRZÉSE
       const nextDueDate = getNextDueDate(goal.lastCompleted, recurrenceData);
-      
+
       if (today.getTime() >= nextDueDate.getTime()) {
         console.log(`Ismétlődő cél reaktiválása: ${goal.name}`);
 
         // 1. Cél állapotának visszaállítása
         goal.done = false;
         goal.lastCompleted = null;
-		goal.startDate = null; 
+		goal.startDate = null;
 
         // 2. Alcélok állapotának visszaállítása
         if (goal.subGoals && goal.subGoals.length > 0) {
@@ -3429,11 +3444,11 @@ async function checkPendingGoals() {
   // Visszafelé iterálunk, mert módosítjuk a tömböt (splice)
   for (let i = archivedGoals.length - 1; i >= 0; i--) {
     const goal = archivedGoals[i];
-    
+
     // A cél akkor aktiválódik, ha NINCS 'done: true' állapota (azaz nem teljesített)
     if (!goal.done) {
         // ===== MÓDOSÍTOTT LOGIKA KEZDETE =====
-        
+
         // 1. Ellenőrizzük a "Megjelenés dátumát"
         const startDate = goal.startDate;
         // Akkor OK, ha nincs megadva, VAGY ha a mai nap, vagy korábbi
@@ -3450,11 +3465,11 @@ async function checkPendingGoals() {
         // 3. Döntés: A cél akkor aktiválódik, ha MINDKÉT feltétel teljesül
         if (isStartDateOK && isRecurrenceDateOK) {
           console.log(`Időzített cél aktiválása: ${goal.name}`);
-    
+
           // Áthelyezzük az archívumból az aktív célok listájára
           const goalToActivate = archivedGoals.splice(i, 1)[0];
           goals.push(goalToActivate);
-    
+
           goalsWereActivated = true;
         }
         // ===== MÓDOSÍTOTT LOGIKA VÉGE =====
@@ -3734,16 +3749,16 @@ async function saveGoal() { // Make async
           return { type: 'separator', text: '---' };
         } else if (rawText.startsWith('@')) {
           // OPCIONÁLIS ALCÉL FELISMERÉSE (@ jel)
-          return { 
-            type: 'task', 
-            text: rawText.substring(1).trim(), 
-            done: false, 
+          return {
+            type: 'task',
+            text: rawText.substring(1).trim(),
+            done: false,
             isOptional: true // ÚJ TULAJDONSÁG
           };
         } else {
-          return { 
-            type: 'task', 
-            text: rawText, 
+          return {
+            type: 'task',
+            text: rawText,
             done: false,
             isOptional: false // KÖTELEZŐ
           };
@@ -3770,11 +3785,11 @@ async function saveGoal() { // Make async
 
 if (isRecurring) {
     newGoal.isRecurring = true;
-    
+
     // 1. Beolvassuk az intervallumot és a frekvenciát
     const frequency = document.getElementById("goalRecurrenceFrequency").value;
     const interval = parseInt(document.getElementById("goalRecurrenceInterval").value) || 1;
-    
+
     // 2. Beolvassuk a befejezési feltételt
     const endCondition = document.querySelector('input[name="goalEndCondition"]:checked').value;
     const endCount = parseInt(document.getElementById("goalEndCountInput").value) || 5;
@@ -3784,16 +3799,16 @@ if (isRecurring) {
     newGoal.recurrence = {
       frequency: frequency, // 'daily', 'weekly', 'monthly', 'yearly'
       interval: interval,
-      
+
       recurrenceStartDate: recurrenceStartDate, // Használjuk a korábban beolvasott változót
-      
+
       endCondition: endCondition, // 'never', 'count', 'date'
       endDate: (endCondition === 'date' && endDate) ? endDate : null,
       endCount: (endCondition === 'count') ? endCount : null,
-      
+
       currentCount: 0 // A számláló nulláról indul
     };
-    
+
     newGoal.lastCompleted = null; // Kezdetben nincs teljesítve
   }
 
@@ -3827,9 +3842,9 @@ if (isRecurring) {
   document.getElementById("goalNameInput").value = "";
   document.getElementById("goalPointsInput").value = "";
   document.getElementById("goalCategoryInput").value = "";
-  document.getElementById("goalSubGoalsInput").value = ""; 
+  document.getElementById("goalSubGoalsInput").value = "";
   document.getElementById("goalIsPriorityInput").checked = false;
-  document.getElementById("goalStartDateInput").value = ""; 
+  document.getElementById("goalStartDateInput").value = "";
 
   closeModal('goalModal');
   renderGoals(); // A renderGoals frissíti a fő listát
@@ -3866,7 +3881,7 @@ async function toggleGoal(i) { // Make async
   // Csak a teljesítés érdekel (amikor 'done' false-ról true-ra vált)
   if (!goal.done) {
     goal.done = true;
-    
+
     totalPoints += calculatedPoints;
     animatePoints(totalPoints);
 
@@ -3883,18 +3898,23 @@ async function toggleGoal(i) { // Make async
             goal.isRecurring = false;
         }
       }
-      
+
       // Használjuk a calculatedPoints-ot a naplózáshoz
       addPointsLogEntry(calculatedPoints, `✅ Ismétlődő cél: ${goal.name}`);
       await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${calculatedPoints} pont)`);
-      
+
       const goalToArchive = goals.splice(i, 1)[0];
       archivedGoals.unshift(goalToArchive);
+
+      // !!! EZ A SOR HIÁNYZOTT !!!
+      renderGoals();
+      // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     } else {
       // --- NEM ISMÉTLŐDŐ CÉL TELJESÍTVE ---
       addPointsLogEntry(calculatedPoints, `✅ Cél teljesítve: ${goal.name}`);
       await logActivity(`✅ Cél teljesítve: ${goal.name} (+${calculatedPoints} pont)`);
-      renderGoals(); 
+      renderGoals();
     }
     checkAndAskForWorkoutLog();
     await saveDataToFirestore();
@@ -3906,15 +3926,14 @@ async function toggleGoal(i) { // Make async
       // Itt is a calculatedPoints-ot vonjuk le
       totalPoints -= calculatedPoints;
       animatePoints(totalPoints);
-      
+
       addPointsLogEntry(-calculatedPoints, `❌ Cél visszavonva: ${goal.name}`);
       await logActivity(`❌ Cél visszavonva: ${goal.name} (-${calculatedPoints} pont)`);
-      
+
       await saveDataToFirestore();
       renderGoals();
     }
-    // Edzés fül frissítése...
-	// Edzés fül frissítése, ha az aktív
+    // Edzés fül frissítése, ha az aktív
   if (document.getElementById('workouts').classList.contains('active')) {
     populateWorkoutCategoryFilter();
     renderWorkoutGoals();
@@ -3935,7 +3954,7 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
   const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
   const mandatoryTasks = taskSubGoals.filter(sg => !sg.isOptional);
   const hasOptional = taskSubGoals.some(sg => sg.isOptional);
-  
+
   // Akkor tekintjük "késznek" az automatikus pipáláshoz, ha:
   // 1. Minden kötelező kész
   // 2. ÉS NINCS opcionális feladat (mert ha van, kézzel kell pipálni a bónusz miatt)
@@ -3944,31 +3963,31 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
 
   // 3. Fő cél frissítése
   if (shouldAutoComplete) {
-    
+
     if (goal.isPunishment) {
         // --- HA EZ EGY BÜNTETÉS ---
         // Azonnal kivesszük a listából, mert teljesítetted ("letudtad")
         goals.splice(goalIndex, 1);
-        
+
         // Naplózzuk pozitívan (büntetés elkerülve)
         await logActivity(`✅ Büntetés teljesítve/kiváltva: ${goal.name}`);
         // Nem adunk pontot és nem is vonunk le (ez a jutalom: megúsztad)
-        
+
         // Mentés és Renderelés
         renderGoals();
         await saveDataToFirestore();
         return; // Kilépünk, mert a cél már nem létezik a tömbben
-    } 
-    
+    }
+
     // --- HA NORMÁL CÉL ---
     else if (!goal.done) {
         goal.done = true;
         totalPoints += goal.points;
         animatePoints(totalPoints);
-        
+
         if (goal.isRecurring) {
              goal.lastCompleted = new Date().toISOString();
-             
+
              // Ismétlődés számláló logika
              const recurrence = goal.recurrence;
              if (recurrence && typeof recurrence === 'object') {
@@ -3977,11 +3996,11 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
                     goal.isRecurring = false;
                 }
              }
-             
+
              // JAVÍTVA: goal.points használata pointsToAdd helyett
              addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
              await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
-             
+
              // Áthelyezés az archívumba (JAVÍTVA: goalIndex használata i helyett)
              const goalToArchive = goals.splice(goalIndex, 1)[0];
              archivedGoals.unshift(goalToArchive);
@@ -3990,7 +4009,7 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
              addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
              await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
         }
-        
+
         checkAndAskForWorkoutLog();
     }
   } else {
@@ -3999,7 +4018,7 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
         goal.done = false;
         totalPoints -= goal.points;
         animatePoints(totalPoints);
-        
+
         if (goal.isRecurring) {
             goal.lastCompleted = null;
         }
@@ -4050,7 +4069,7 @@ function editGoal(i) {
       }
       // Ha opcionális, tegyük vissza a @-ot
       if (sg.isOptional) {
-        return `@ ${sg.text}`; 
+        return `@ ${sg.text}`;
       }
       return sg.text; // Sima task
     })
@@ -4081,7 +4100,7 @@ function editGoal(i) {
       // --- ÚJ, OBJEKTUM ALAPÚ ADAT BETÖLTÉSE ---
       document.getElementById("editRecurrenceInterval").value = recurrence.interval || 1;
       document.getElementById("editRecurrenceFrequency").value = recurrence.frequency || "daily";
-      
+
       // Befejezési feltétel beállítása
       const endCondition = recurrence.endCondition || 'never';
       document.getElementById(`editEnd${endCondition.charAt(0).toUpperCase() + endCondition.slice(1)}`).checked = true;
@@ -4091,12 +4110,12 @@ function editGoal(i) {
       } else if (endCondition === 'date') {
         document.getElementById("editEndDateInput").value = recurrence.endDate || "";
       }
-      
+
     } else if (typeof recurrence === 'string') {
       // --- RÉGI, STRING ALAPÚ ADAT KEZELÉSE (VISSZAALAKÍTÁS) ---
       // Ez a rész kezeli a régi mentéseket, pl. "weekly" vagy "2days"
       document.getElementById("editEndNever").checked = true; // A régiek sosem értek véget
-      
+
       if (recurrence === 'daily') {
         document.getElementById("editRecurrenceInterval").value = 1;
         document.getElementById("editRecurrenceFrequency").value = "daily";
@@ -4151,7 +4170,7 @@ async function deleteGoal(i) { // Make async
   // ELLENŐRZÉS: Ha ez egy büntetés és NINCS kész, akkor levonás!
   if (goalToDelete.isPunishment && !goalToDelete.done && goalToDelete.penaltyPointsIfDeleted) {
       if(!confirm(`FIGYELEM! Ez egy büntetés. Ha törlöd teljesítés nélkül, ${goalToDelete.penaltyPointsIfDeleted} pont levonásra kerül! Folytatod?`)) return;
-      
+
       totalPoints -= goalToDelete.penaltyPointsIfDeleted;
       animatePoints(totalPoints);
       addPointsLogEntry(-goalToDelete.penaltyPointsIfDeleted, `⚠️ Büntetés elkerülve (törölve): ${goalToDelete.name}`);
@@ -4182,7 +4201,7 @@ function renderGoals() {
 
   // === Dátum alapú szűrés ===
   const today = new Date();
-  today.setHours(0, 0, 0, 0); 
+  today.setHours(0, 0, 0, 0);
   const todayISO = toDateInputString(new Date().toISOString());
 
   const visibleGoals = goals
@@ -4190,7 +4209,7 @@ function renderGoals() {
     .filter(g => {
       // Ha az Edzés fülön szűrünk kategóriára, itt ne jelenjen meg
       if (workoutCategory !== "" && g.category === workoutCategory) return false;
-      
+
       if (g.startDate) {
          return g.startDate <= todayISO;
       }
@@ -4221,7 +4240,7 @@ function renderGoals() {
     let classList = "goal-item";
     if (g.done) classList += " completed";
     if (g.isPriority) classList += " priority";
-    if (g.isPunishment) classList += " punishment"; 
+    if (g.isPunishment) classList += " punishment";
     div.className = classList;
 
     // === VISSZASZÁMLÁLÁS ÉS LEJÁRAT ELLENŐRZÉS ===
@@ -4249,7 +4268,7 @@ function renderGoals() {
 
     let subGoalsHTML = "";
     let hasSubGoals = g.subGoals && g.subGoals.length > 0;
-    let hasTasks = false; 
+    let hasTasks = false;
 
     if (hasSubGoals) {
       subGoalsHTML = '<div class="subgoal-list">';
@@ -4259,7 +4278,7 @@ function renderGoals() {
           case 'header': subGoalsHTML += `<h4 class="subgoal-header">${sg.text}</h4>`; break;
           case 'separator': subGoalsHTML += `<hr class="subgoal-separator">`; break;
           case 'task': default:
-            hasTasks = true; 
+            hasTasks = true;
             // ITT A VÁLTOZTATÁS: Ha lejárt (isExpired), nem renderelünk checkboxot, csak szöveget!
             if (g.isPunishment && isExpired) {
                 subGoalsHTML += `
@@ -4273,7 +4292,7 @@ function renderGoals() {
                 // Kötelező (fő): Pirosas (#ffebee), Opcionális: Kékes (#e1f5fe)
                 // Betűszín: Fekete marad, padding és lekerekítés a szép megjelenésért
                 const bgStyle = sg.isOptional ? 'background-color: #e1f5fe;' : 'background-color: #ffebee;';
-                
+
                 subGoalsHTML += `
                   <div style="margin-bottom: 2px;">
                     <input type="checkbox" onchange="toggleSubGoal(${i}, ${subIndex})" ${sg.done ? 'checked' : ''}>
@@ -4295,12 +4314,12 @@ function renderGoals() {
       let progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
       progressBarHTML = `<div class="subgoal-progress-container"><div class="subgoal-progress-fill" style="width: ${progressPercent}%;"></div></div>`;
     }
-	
+
 	// === ÚJ GOMB LOGIKA: Kötelezők készenléte esetén gomb megjelenítése ===
     let showCheckBtn = false;
     const tasks = (g.subGoals || []).filter(sg => (sg.type || 'task') === 'task');
     const mandatoryTasks = tasks.filter(t => !t.isOptional);
-    
+
     if (tasks.length === 0) {
        showCheckBtn = true; // Nincs alcél, kell a gomb
     } else {
@@ -4312,7 +4331,7 @@ function renderGoals() {
 
     // Visszavonás gomb (X) mindig kell, ha kész van
     if (g.done) showCheckBtn = true;
-	
+
     const priorityIcon = g.isPriority ? '📌 ' : '';
     const recurringIcon = g.isRecurring ? ' 🔄' : '';
 
@@ -4341,12 +4360,12 @@ function renderGoals() {
       <div class="item-actions">
         ${(g.isPunishment && isExpired) ? '' : `<button class="archive-btn" title="Archiválás" onclick="archiveGoal(${i})">📥</button>`}
         ${(g.isPunishment && isExpired) ? '' : `<button onclick="editGoal(${i})" title="Szerkesztés">✏️</button>`}
-        
+
         <button onclick="deleteGoal(${i})" title="Törlés">🗑️</button>
-        
-        ${showCheckBtn && !(g.isPunishment && isExpired) ? ( 
-          g.done ? 
-          `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>` : 
+
+        ${showCheckBtn && !(g.isPunishment && isExpired) ? (
+          g.done ?
+          `<button onclick="toggleGoal(${i})" title="Visszavonás">❌</button>` :
           `<button onclick="toggleGoal(${i})" title="Teljesít (+Bónusz)">✅</button>`
         ) : '' }
       </div>
@@ -4359,7 +4378,7 @@ function renderGoals() {
     const title = document.createElement("h3");
     title.className = "category-title";
     title.textContent = "🔥 BÜNTETÉSEK (24h)";
-    title.style.color = "#b71c1c"; 
+    title.style.color = "#b71c1c";
     title.style.borderColor = "#b71c1c";
     list.appendChild(title);
     punishmentGoals.forEach(item => renderItem(item, item.originalIndex));
@@ -4371,7 +4390,7 @@ function renderGoals() {
     title.className = "category-title";
     title.textContent = "📌 Fontos Célok";
     title.style.color = "#c62828";
-    title.style.borderColor = "#e57373"; 
+    title.style.borderColor = "#e57373";
     list.appendChild(title);
     priorityGoals.forEach(item => renderItem(item, item.originalIndex));
   }
@@ -4388,7 +4407,7 @@ function renderGoals() {
 
   // 3. Egyéb
   if (uncategorized.length > 0) {
-    if (categoryNames.length > 0 || priorityGoals.length > 0 || punishmentGoals.length > 0) { 
+    if (categoryNames.length > 0 || priorityGoals.length > 0 || punishmentGoals.length > 0) {
       const title = document.createElement("h3");
       title.className = "category-title";
       title.textContent = "Egyéb";
@@ -4407,7 +4426,7 @@ async function saveVow() {
     const points = parseInt(document.getElementById("vowPointsInput").value);
     const penalty = document.getElementById("vowPenaltyInput").value.trim();
     const penaltyPoints = parseInt(document.getElementById("vowPenaltyPointsInput").value) || 0;
-    
+
     const subGoalsText = document.getElementById("vowSubGoalsInput").value;
     let subGoals = [];
     if (subGoalsText.trim() !== "") {
@@ -4427,7 +4446,7 @@ async function saveVow() {
         penaltyPoints: penaltyPoints,
         subGoals: subGoals,
     });
-    
+
     document.getElementById("vowNameInput").value = "";
     document.getElementById("vowPointsInput").value = "";
     document.getElementById("vowPenaltyInput").value = "";
@@ -4443,7 +4462,7 @@ function renderVows() {
     if (!list) return;
     list.innerHTML = "";
     const todayISO = new Date().toISOString().slice(0, 10);
-    
+
     if (vows.length === 0) {
         list.innerHTML = "<p style='text-align:center; padding: 10px;'>Még nincsenek aktív fogadalmaid.</p>";
         return;
@@ -4453,11 +4472,11 @@ function renderVows() {
         const div = document.createElement("div");
         const isCompletedToday = vow.lastCompletedDate === todayISO;
         div.className = `vow-item fade-in ${isCompletedToday ? 'completed-today' : ''}`;
-        
+
         const totalTasks = vow.subGoals ? vow.subGoals.filter(sg => sg.type === 'task').length : 0;
         const completedTasks = vow.subGoals ? vow.subGoals.filter(sg => sg.type === 'task' && sg.done).length : 0;
         const progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-        
+
         let progressBarHTML = totalTasks > 0 ? `<div class="subgoal-progress-container" style="height: 3px; background: #90caf9; border-color: #64b5f6; margin-top: 5px;"><div class="subgoal-progress-fill" style="width: ${progressPercent}%; background: #2196f3; border-radius: 5px;"></div></div>` : "";
         let endText = vow.duration === 'weekly' ? "(Heti)" : "(Havi)";
 
@@ -4525,7 +4544,7 @@ async function failVowToday(i) {
         subGoals: [{ type: 'task', text: vow.penalty, done: false }]
     };
     goals.unshift(penaltyGoal);
-    
+
     if (vow.lastCompletedDate === new Date().toISOString().slice(0, 10)) {
         vow.lastCompletedDate = null;
         totalPoints -= vow.points;
@@ -4554,7 +4573,7 @@ async function archiveGoal(index) {
   const goalToArchive = goals.splice(index, 1)[0];
 
   if (goalToArchive) {
-    
+
     // --- ÚJ LOGIKA: Ha ismétlődő, állítsuk be a következő dátumot ---
     if (goalToArchive.isRecurring && goalToArchive.recurrence) {
         const today = new Date();
@@ -4564,22 +4583,22 @@ async function archiveGoal(index) {
 
         // Kiszámoljuk a következő dátumot a gyakoriság alapján
         switch(rec.frequency) {
-            case 'daily': 
-                nextDate.setDate(today.getDate() + interval); 
+            case 'daily':
+                nextDate.setDate(today.getDate() + interval);
                 break;
-            case 'weekly': 
-                nextDate.setDate(today.getDate() + (interval * 7)); 
+            case 'weekly':
+                nextDate.setDate(today.getDate() + (interval * 7));
                 break;
-            case 'monthly': 
-                nextDate.setMonth(today.getMonth() + interval); 
+            case 'monthly':
+                nextDate.setMonth(today.getMonth() + interval);
                 break;
-            case 'yearly': 
-                nextDate.setFullYear(today.getFullYear() + interval); 
+            case 'yearly':
+                nextDate.setFullYear(today.getFullYear() + interval);
                 break;
-            default: 
+            default:
                 nextDate.setDate(today.getDate() + 1); // Alapértelmezett: holnap
         }
-        
+
         // Biztosítjuk, hogy a dátum formátuma megfelelő legyen (YYYY-MM-DD)
         // Ehhez felhasználjuk a létező toDateInputString logikáját, de helyben generáljuk
         const y = nextDate.getFullYear();
@@ -4589,20 +4608,20 @@ async function archiveGoal(index) {
 
         // Beállítjuk az új dátumot az objektumba
         goalToArchive.recurrence.recurrenceStartDate = formattedNextDate;
-        
+
         console.log(`Cél archiválva a következő dátumig: ${formattedNextDate}`);
     }
     // ----------------------------------------------------------------------
 
     archivedGoals.unshift(goalToArchive);
     renderGoals();
-    
+
     // Edzés fül frissítése, ha az aktív
     if (document.getElementById('workouts').classList.contains('active')) {
       populateWorkoutCategoryFilter();
       renderWorkoutGoals();
     }
-    
+
     await logActivity(`📥 Cél archiválva (következő: ${goalToArchive.isRecurring ? goalToArchive.recurrence.recurrenceStartDate : 'manuális'}): ${goalToArchive.name}`);
   }
 }
@@ -4619,7 +4638,7 @@ function renderArchivedGoals() {
   archivedGoals.forEach((goal, index) => {
     // ÚJ, MÓDOSÍTOTT RÉSZ
     const div = document.createElement("div");
-    
+
     // Ellenőrizzük, hogy a cél várakozó (pending) vagy már teljesített (done)
     const todayISO = toDateInputString(new Date().toISOString());
 
@@ -4627,13 +4646,13 @@ function renderArchivedGoals() {
 
     // 1. Általános "Megjelenés dátuma" (nem ismétlődő, vagy ismétlődő de a fő dátumot használva)
     const isPendingOnStartDate = goal.startDate && goal.startDate > todayISO && !goal.done;
-    
+
     // 2. Kifejezetten "Ismétlődés kezdete" dátumra vár
     const isPendingOnRecurrence = goal.isRecurring && !goal.done && goal.recurrence && goal.recurrence.recurrenceStartDate && goal.recurrence.recurrenceStartDate > todayISO;
-    
+
     // 3. Már teljesített, és a következő ismétlődésre vár
     const isCompletedRecurring = goal.isRecurring && goal.done && goal.lastCompleted && goal.recurrence && typeof goal.recurrence === 'object';
-    
+
     // === LOGIKA VÉGE ===
 
     // Csak akkor húzzuk át, ha 'done' (teljesített)
@@ -4657,8 +4676,8 @@ function renderArchivedGoals() {
             displayDate = new Date(goal.startDate.split('-')[0], goal.startDate.split('-')[1] - 1, goal.startDate.split('-')[2]).toLocaleDateString('hu-HU');
           } catch(e) {}
           statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Indul: ${displayDate})</small>`;
-        
-        } else if (isPendingOnRecurrence) { 
+
+        } else if (isPendingOnRecurrence) {
           // JÖVŐBEN INDULÓ (ISMÉTLŐDÉS DÁTUMA) - EZ AZ ÚJ BLOKK
           let displayDate = goal.recurrence.recurrenceStartDate;
            try {
@@ -4671,7 +4690,7 @@ function renderArchivedGoals() {
           const recurrence = goal.recurrence;
           const nextDate = getNextDueDate(goal.lastCompleted, recurrence);
           const displayDate = nextDate.toLocaleDateString('hu-HU');
-          
+
           let remainingText = "";
           if (recurrence.endCondition === 'count') {
             const remaining = (recurrence.endCount || 0) - (recurrence.currentCount || 0);
@@ -4682,7 +4701,7 @@ function renderArchivedGoals() {
           } else {
             remainingText = "(nincs korlát)";
         }
-          
+
           statusTextHTML = `<small style="font-weight:bold; color:#004d40;">(Aktív: ${displayDate} ${remainingText})</small>`;
         }
 
@@ -4820,7 +4839,7 @@ function editArchivedGoal(index) {
       } else if (endCondition === 'date') {
         document.getElementById("editEndDateInput").value = recurrence.endDate || "";
       }
-      
+
     } else if (typeof recurrence === 'string') {
       document.getElementById("editEndNever").checked = true;
       if (recurrence === 'daily') {
@@ -4838,14 +4857,14 @@ function editArchivedGoal(index) {
       }
     }
   }
-  
+
   const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
   document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
-  
+
   const isPriority = goal.isPriority || false;
   document.getElementById("editPriorityField").style.display = "block";
   document.getElementById("editIsPriorityInput").checked = isPriority;
-  
+
   const startDateField = document.getElementById("editStartDateField");
   const startDateInput = document.getElementById("editStartDateInput");
   startDateField.style.display = "block";
@@ -4929,7 +4948,7 @@ function editArchivedGoal(index) {
       } else if (endCondition === 'date') {
         document.getElementById("editEndDateInput").value = recurrence.endDate || "";
       }
-      
+
     } else if (typeof recurrence === 'string') {
       document.getElementById("editEndNever").checked = true;
       if (recurrence === 'daily') {
@@ -4947,14 +4966,14 @@ function editArchivedGoal(index) {
       }
     }
   }
-  
+
   const recStartDate = (recurrence && recurrence.recurrenceStartDate) ? recurrence.recurrenceStartDate : "";
   document.getElementById("editRecurrenceStartDateInput").value = toDateInputString(recStartDate);
-  
+
   const isPriority = goal.isPriority || false;
   document.getElementById("editPriorityField").style.display = "block";
   document.getElementById("editIsPriorityInput").checked = isPriority;
-  
+
   const startDateField = document.getElementById("editStartDateField");
   const startDateInput = document.getElementById("editStartDateInput");
   startDateField.style.display = "block";
@@ -4990,9 +5009,9 @@ async function toggleRecurrenceInArchive(index) {
   await logActivity(`🔄 Ismétlődés kikapcsolva: ${goal.name}`);
   // A logActivity már magában foglalja a saveDataToFirestore() hívást
 }
- 
+
 // ===== ÚJ SZÖVEGFORMÁZÓ SEGÉDFÜGGVÉNYEK =====
- 
+
 
 /**
  * Szövegtömbbé alakítja a sima szöveget (# és --- alapján).
@@ -5052,7 +5071,7 @@ function renderStructuredArrayToHTML(arrayOrString) {
     if (!arrayOrString || (Array.isArray(arrayOrString) && arrayOrString.length === 0)) {
          return "<p style='color: #777; font-style: italic;'>Nincs jegyzet...</p>";
     }
-    
+
     // Régi adatok kezelése (ha még sima string)
     if (typeof arrayOrString === 'string') {
         // Alap cserék: sortörések (<br>) és linkek (ha vannak)
@@ -5088,7 +5107,7 @@ function renderStructuredArrayToHTML(arrayOrString) {
     return html;
 }
 // ===== JUTALMAK (REFACTORED) =====
- 
+
 async function saveReward() { // Make async
   const name = document.getElementById("rewardNameInput").value.trim();
   const cost = parseInt(document.getElementById("rewardCostInput").value);
@@ -5330,7 +5349,7 @@ function renderMeals() {
 
     // === VÉGLEGES JAVÍTÁS KEZDETE ===
     // 1. JAVÍTÁS: Helyesen ellenőrizzük, hogy a 'meal.note' tömb nem üres-e
-    const hasNote = (Array.isArray(meal.note) && meal.note.length > 0) || 
+    const hasNote = (Array.isArray(meal.note) && meal.note.length > 0) ||
                 (typeof meal.note === 'string' && meal.note.trim() !== "");
     // 2. JAVÍTÁS: Az ikont szóköz nélkül definiáljuk
     const noteIcon = hasNote ? '🗒️' : '';
@@ -5589,7 +5608,7 @@ async function confirmEdit() { // Make async
           // 2. Megkeressük az ELSŐ elérhető, AZONOS TÍPUSÚ ÉS SZÖVEGŰ régi alcélt
           // JAVÍTÁS: Most már az isOptional tulajdonságot is figyeljük az egyezésnél
           const existingIndex = availableOldSubGoals.findIndex(
-            sg => (sg.type || 'task') === (newItem.type || 'task') 
+            sg => (sg.type || 'task') === (newItem.type || 'task')
                && sg.text === newItem.text
                && !!sg.isOptional === !!newItem.isOptional
           );
@@ -5606,20 +5625,20 @@ async function confirmEdit() { // Make async
     }
     // ===== MÓDOSÍTOTT ALCÉL FELDOLGOZÁS VÉGE =====
     goals[editTarget.index].subGoals = newSubGoals;
-    
+
 	// ÚJ: Prioritás frissítése (EZ A HELYES HELY)
     const isPriority = document.getElementById("editIsPriorityInput").checked;
     goals[editTarget.index].isPriority = isPriority;
-    
+
     // ===== ÚJ, BŐVÍTETT ISMÉTLŐDÉS MENTÉSE =====
     const isRecurring = document.getElementById("editIsRecurringInput").checked;
     if (isRecurring) {
       goals[editTarget.index].isRecurring = true;
-      
+
       // 1. Beolvassuk az intervallumot és a frekvenciát
       const frequency = document.getElementById("editRecurrenceFrequency").value;
       const interval = parseInt(document.getElementById("editRecurrenceInterval").value) || 1;
-      
+
       // 2. Beolvassuk a befejezési feltételt
       const endCondition = document.querySelector('input[name="editEndCondition"]:checked').value;
       const endCount = parseInt(document.getElementById("editEndCountInput").value) || 5;
@@ -5628,10 +5647,10 @@ async function confirmEdit() { // Make async
 
       // 3. Összeállítjuk az új recurrence objektumot
       // Megtartjuk a 'currentCount'-ot, ha már létezett, különben 0-ról indul
-      const currentCount = (goals[editTarget.index].recurrence && typeof goals[editTarget.index].recurrence === 'object') 
-        ? (goals[editTarget.index].recurrence.currentCount || 0) 
+      const currentCount = (goals[editTarget.index].recurrence && typeof goals[editTarget.index].recurrence === 'object')
+        ? (goals[editTarget.index].recurrence.currentCount || 0)
         : 0;
-      
+
       goals[editTarget.index].recurrence = {
         frequency: frequency,
         interval: interval,
@@ -5641,9 +5660,9 @@ async function confirmEdit() { // Make async
         endCount: (endCondition === 'count') ? endCount : null,
         currentCount: currentCount
       };
-      
+
       // lastCompleted-et nem bántjuk, az a teljesítéskor frissül
-      
+
     } else {
       // Ha a felhasználó KIKAPCSOLTA az ismétlődést
       delete goals[editTarget.index].isRecurring;
@@ -5684,7 +5703,7 @@ async function confirmEdit() { // Make async
       console.log(`Cél áthelyezése az archívumba (időzítés): ${editedGoal.name}`);
       const goalToArchive = goals.splice(editTarget.index, 1)[0];
       archivedGoals.unshift(goalToArchive);
-      
+
       // Mivel áthelyeztük, az archívum nézetet is frissíteni kell, ha nyitva van
       if (document.getElementById('archiveModal').style.display === 'flex') {
         renderArchivedGoals();
@@ -5699,13 +5718,13 @@ async function confirmEdit() { // Make async
     await logActivity(`✏️ Cél szerkesztve: ${v1}`);
   } else if (editTarget.type === 'reward') {
     const v2 = parseInt(document.getElementById("editInput2").value); // Ár
-    
+
     if (!v1) return alert("A jutalomnak nevet kell adni!");
     if (isNaN(v2) || v2 < 0) return alert("Érvénytelen pont ár! A 0 vagy nagyobb érték megengedett.");
 
     rewards[editTarget.index].name = v1;
     rewards[editTarget.index].cost = v2;
-    
+
     renderRewards(); // Ez a fontos: a jutalmakat rajzolja újra
     await logActivity(`✏️ Jutalom szerkesztve: ${v1}`);
 
@@ -5743,7 +5762,7 @@ async function confirmEdit() { // Make async
          if (rawText.startsWith('#')) newItem = { type: 'header', text: rawText.substring(1).trim() };
          else if (rawText === '---') newItem = { type: 'separator', text: '---' };
          else newItem = { type: 'task', text: rawText, done: false };
-         
+
          const existingIndex = availableOldSubGoals.findIndex(sg => (sg.type || 'task') === (newItem.type || 'task') && sg.text === newItem.text);
          if (existingIndex > -1) return availableOldSubGoals.splice(existingIndex, 1)[0];
          else return newItem;
@@ -5761,9 +5780,9 @@ async function confirmEdit() { // Make async
       const endCount = parseInt(document.getElementById("editEndCountInput").value) || 5;
       const endDate = document.getElementById("editEndDateInput").value || null;
       const recurrenceStartDate = document.getElementById("editRecurrenceStartDateInput").value || null;
-      
+
       const currentCount = (goalToEdit.recurrence && typeof goalToEdit.recurrence === 'object') ? (goalToEdit.recurrence.currentCount || 0) : 0;
-      
+
       goalToEdit.recurrence = {
         frequency, interval, recurrenceStartDate, endCondition,
         endDate: (endCondition === 'date' && endDate) ? endDate : null,
@@ -5863,9 +5882,9 @@ async function confirmEdit() { // Make async
     reminder.time = reminderTime.toISOString();
     reminder.highlight = highlight;
     reminder.highlightDate = highlight ? new Date(highlightDate).toISOString() : null;
-    
+
     // Visszaállítjuk 'triggered' állapotra, hogy újra elsülhessen
-    reminder.triggered = false; 
+    reminder.triggered = false;
 
     renderAll(); // Újrarajzol mindent (emlékeztető lista, főoldali kiemelés)
     await logActivity(`✏️ Emlékeztető szerkesztve: ${text}`);
@@ -6133,7 +6152,7 @@ function updateHistory() {
   });
 }
 // ===== EXPORT / IMPORT / RESET (REFACTORED) =====
- 
+
 function exportData() {
   const allData = {
     goals,
@@ -6275,14 +6294,14 @@ function checkNotificationPermission() {
     async function addReminder() {
       const textInput = document.getElementById("reminderTextInput");
       const timeInput = document.getElementById("reminderTimeInput");
-      
+
       // === ÚJ VÁLTOZÓK BEOLVASÁSA ===
       const highlightCheck = document.getElementById("reminderHighlightCheck");
       const highlightDateInput = document.getElementById("reminderHighlightDateInput");
 
       const text = textInput.value.trim();
       const time = timeInput.value;
-      
+
       // === ÚJ VÁLTOZÓK BEOLVASÁSA ===
       const highlight = highlightCheck.checked;
       const highlightDate = highlightDateInput.value;
@@ -6301,13 +6320,13 @@ function checkNotificationPermission() {
         alert("Az emlékeztető időpontjának a jövőben kell lennie!");
         return;
       }
-      
+
       // === ÚJ ELLENŐRZÉS ===
       if (highlight && !highlightDate) {
         alert("Ha kiemelést kérsz, meg kell adnod a kiemelés kezdő dátumát!");
         return;
       }
-      
+
       // === ÚJ ELLENŐRZÉS ===
       if (highlight && new Date(highlightDate) > reminderTime) {
         alert("A kiemelés kezdete nem lehet később, mint az emlékeztető időpontja!");
@@ -6332,7 +6351,7 @@ function checkNotificationPermission() {
 
       // === RENDERALL HÍVÁSA ===
       // renderReminders(); helyett renderAll(), hogy a főoldal is frissüljön
-      renderAll(); 
+      renderAll();
       await saveDataToFirestore();
     }
 // ===== Kirajzolja az aktív emlékeztetők listáját.
@@ -6340,14 +6359,14 @@ async function deleteReminder(id) {
       if (!confirm("Biztosan törlöd ezt az emlékeztetőt?")) {
         return;
       }
-    
+
       reminders = reminders.filter(r => r.id !== id);
-    
+
       // Frissítünk mindent (a főoldalt is)
       renderAll();
       await saveDataToFirestore();
     }
-	
+
 function renderReminders() {
   const list = document.getElementById("reminderList");
   if (!list) return; // Ha a fül még nem aktív, ne csináljon semmit
