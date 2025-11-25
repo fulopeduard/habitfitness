@@ -1696,6 +1696,21 @@
         </div>
       </div>
     </div>
+	<div class="modal" id="rewardModal">
+    <div class="modal-content">
+      <h3>🎁 Új Jutalom</h3>
+      <label>Jutalom neve</label>
+      <input id="rewardNameInput" type="text" placeholder="pl. Egy szelet süti">
+
+      <label>Ár (Pont)</label>
+      <input id="rewardCostInput" type="number" placeholder="pl. 50">
+
+      <div style="text-align:center;margin-top:15px;">
+        <button onclick="saveReward()">💾 Mentés</button>
+        <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('rewardModal')">Mégse</button>
+      </div>
+    </div>
+  </div>
 	<div class="modal" id="workoutModal">
 	  <div class="modal-content">
 		<h3>📅 Új edzés rögzítése</h3>
