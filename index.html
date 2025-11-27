@@ -6330,39 +6330,47 @@ async function importData(event) { // Make async
       goalProteinSetting = data.goalProtein || "";
       goalFatSetting = data.goalFat || "";
 
-      // 2. JAVÍTÁS: Dátumok konvertálása (String -> Date Object)
-      // Ez oldja meg az "Invalid Date" hibát a Jegyzeteknél és Haladásnál
+      // 2. JAVÍTÁS: Dátum konvertáló segédfüggvény
+      // Ez kezeli a {seconds: ...} objektumokat ÉS a sima szöveges dátumokat is
+      const parseDate = (dateData) => {
+          if (!dateData) return null;
+          // Ha ez egy Firestore objektum (van 'seconds' tulajdonsága)
+          if (dateData.seconds !== undefined) {
+              return new Date(dateData.seconds * 1000);
+          }
+          // Ha sima szöveg vagy már Date
+          return new Date(dateData);
+      };
 
+      // 3. Konvertálás alkalmazása minden listára
       if (Array.isArray(notes)) {
-          notes.forEach(n => {
-              if (n.date) n.date = new Date(n.date);
-          });
+          notes.forEach(n => { if (n.date) n.date = parseDate(n.date); });
       }
 
       if (Array.isArray(transactions)) {
-          transactions.forEach(t => {
-              if (t.date) t.date = new Date(t.date);
-          });
+          transactions.forEach(t => { if (t.date) t.date = parseDate(t.date); });
       }
 
       if (Array.isArray(logs)) {
-          logs.forEach(l => {
-              if (l.time) l.time = new Date(l.time);
-          });
+          logs.forEach(l => { if (l.time) l.time = parseDate(l.time); });
       }
 
       if (Array.isArray(pointsLog)) {
-          pointsLog.forEach(pl => {
-              if (pl.time) pl.time = new Date(pl.time);
-          });
+          pointsLog.forEach(pl => { if (pl.time) pl.time = parseDate(pl.time); });
       }
 
-      // 3. Mentés és Megjelenítés
+      // Edzések dátumai (ezek általában stringek, de biztos ami biztos)
+      if (Array.isArray(workouts)) {
+           // A workouts tömb néha objektum, néha string, itt nem nyúlunk hozzá,
+           // mert ott a 'date' mező eleve YYYY-MM-DD string szokott lenni.
+      }
+
+      // 4. Mentés és Megjelenítés
       await saveDataToFirestore();
 
       renderAll();
-      logActivity("📂 Adatok importálva");
-      alert("Sikeres importálás! Minden adat frissítve ✅");
+      logActivity("📂 Adatok importálva (Dátumok javítva)");
+      alert("Sikeres importálás! Minden adat és dátum helyreállítva ✅");
     } catch (err) {
       console.error(err);
       alert("❌ Hiba: a fájl nem megfelelő formátumú vagy sérült!");
