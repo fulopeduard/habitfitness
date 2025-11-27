@@ -6284,13 +6284,14 @@ function exportData() {
     totalPoints,
     workouts,
     meals,
-    reminders, // ÚJ
+    reminders,
     archivedGoals,
+    pointsLog, // <--- EZT ADTAM HOZZÁ, EZ HIÁNYZOTT!
     goalWeight: goalWeightSetting,
     goalWater: goalWaterSetting,
     goalCalories: goalCaloriesSetting,
     goalProtein: goalProteinSetting,
-	goalFat: goalFatSetting,
+    goalFat: goalFatSetting,
   };
   const blob = new Blob([JSON.stringify(allData, null, 2)], {
     type: "application/json"
@@ -6322,6 +6323,8 @@ async function importData(event) { // Make async
       reminders = data.reminders || [];
       archivedGoals = data.archivedGoals || [];
       totalPoints = data.totalPoints || 0;
+
+      // ITT TÖLTJÜK BE A PONT TÖRTÉNETET
       pointsLog = data.pointsLog || [];
 
       goalWeightSetting = data.goalWeight || "";
@@ -6330,12 +6333,11 @@ async function importData(event) { // Make async
       goalProteinSetting = data.goalProtein || "";
       goalFatSetting = data.goalFat || "";
 
-      // 2. JAVÍTÁS: Dátum konvertáló segédfüggvény
-      // Ez kezeli a {seconds: ...} objektumokat ÉS a sima szöveges dátumokat is
+      // 2. Dátum konvertáló segédfüggvény (Invalid Date javítás)
       const parseDate = (dateData) => {
           if (!dateData) return null;
           // Ha ez egy Firestore objektum (van 'seconds' tulajdonsága)
-          if (dateData.seconds !== undefined) {
+          if (dateData && typeof dateData === 'object' && dateData.seconds !== undefined) {
               return new Date(dateData.seconds * 1000);
           }
           // Ha sima szöveg vagy már Date
@@ -6355,22 +6357,17 @@ async function importData(event) { // Make async
           logs.forEach(l => { if (l.time) l.time = parseDate(l.time); });
       }
 
+      // PONT TÖRTÉNET DÁTUMAINAK JAVÍTÁSA
       if (Array.isArray(pointsLog)) {
           pointsLog.forEach(pl => { if (pl.time) pl.time = parseDate(pl.time); });
-      }
-
-      // Edzések dátumai (ezek általában stringek, de biztos ami biztos)
-      if (Array.isArray(workouts)) {
-           // A workouts tömb néha objektum, néha string, itt nem nyúlunk hozzá,
-           // mert ott a 'date' mező eleve YYYY-MM-DD string szokott lenni.
       }
 
       // 4. Mentés és Megjelenítés
       await saveDataToFirestore();
 
       renderAll();
-      logActivity("📂 Adatok importálva (Dátumok javítva)");
-      alert("Sikeres importálás! Minden adat és dátum helyreállítva ✅");
+      logActivity("📂 Adatok importálva (Ponttörténettel)");
+      alert("Sikeres importálás! Minden adat (beleértve a ponttörténetet) frissítve ✅");
     } catch (err) {
       console.error(err);
       alert("❌ Hiba: a fájl nem megfelelő formátumú vagy sérült!");
