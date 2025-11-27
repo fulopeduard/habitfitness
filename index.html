@@ -1101,10 +1101,20 @@
 <div id="loginContainer" style="padding: 20px; max-width: 400px; margin: 40px auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
     <h2 style="color: #00796b; text-align: center;">FitGarden 2.0</h2>
     <h3 style="text-align: center;">Belépés / Regisztráció</h3>
+
     <label>Email</label>
     <input type="email" id="loginEmail" placeholder="email@cim.com">
+
     <label>Jelszó</label>
     <input type="password" id="loginPassword" placeholder="min. 6 karakter">
+
+    <div style="margin-top: 15px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.9em;">
+        <input type="checkbox" id="privacyCheck" style="width: auto; margin-top: 3px;">
+        <label for="privacyCheck" style="margin: 0; line-height: 1.4;">
+            Elolvastam és elfogadom az <span onclick="openModal('privacyModal')" style="color: #00796b; text-decoration: underline; cursor: pointer; font-weight: bold;">Adatkezelési Tájékoztatót</span>, és hozzájárulok egészségügyi adataim (súly, táplálkozás) kezeléséhez.
+        </label>
+    </div>
+
     <div style="display: flex; gap: 10px; margin-top: 15px;">
         <button onclick="handleLogin()" style="flex: 1;">Belépés</button>
         <button onclick="handleSignUp()" style="flex: 1; background: #004d40;">Regisztráció</button>
@@ -1142,61 +1152,60 @@
                 <span class="tab-text">Edzések</span>
             </div>
         </div>
-        <div id="main" class="tab-content active">
-            <div id="compactGoalsContainer">
 
-                <div class="compact-goal-item">
-                    <span class="label">Súly ⚖️</span>
-                    <span class="value value-top" id="compactWeightTop">--/-- kg</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactWeightBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactWeightBottom">Még...</span>
+        <div id="compactGoalsContainer">
+            <div class="compact-goal-item">
+                <span class="label">Súly ⚖️</span>
+                <span class="value value-top" id="compactWeightTop">--/-- kg</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactWeightBar"></div>
                 </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Víz 💧</span>
-                    <span class="value value-top" id="compactWaterTop">--/-- L</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactWaterBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactWaterBottom">Még...</span>
-                </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Kalória 🔥</span>
-                    <span class="value value-top" id="compactCalTop">--/-- kcal</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactCalBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactCalBottom">Még...</span>
-                </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Protein 🥩</span>
-                    <span class="value value-top" id="compactProteinTop">--/-- g</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactProteinBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactProteinBottom">Még...</span>
-                </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Zsír 🥑</span>
-                    <span class="value value-top" id="compactFatTop">--/-- g</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactFatBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactFatBottom">Még...</span>
-                </div>
-
-                <div id="compactBtnWrapper">
-                    <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
-                    <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
-                    <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
-                </div>
+                <span class="value value-bottom" id="compactWeightBottom">Még...</span>
             </div>
 
+            <div class="compact-goal-item">
+                <span class="label">Víz 💧</span>
+                <span class="value value-top" id="compactWaterTop">--/-- L</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactWaterBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactWaterBottom">Még...</span>
+            </div>
+
+            <div class="compact-goal-item">
+                <span class="label">Kalória 🔥</span>
+                <span class="value value-top" id="compactCalTop">--/-- kcal</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactCalBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactCalBottom">Még...</span>
+            </div>
+
+            <div class="compact-goal-item">
+                <span class="label">Protein 🥩</span>
+                <span class="value value-top" id="compactProteinTop">--/-- g</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactProteinBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactProteinBottom">Még...</span>
+            </div>
+
+            <div class="compact-goal-item">
+                <span class="label">Zsír 🥑</span>
+                <span class="value value-top" id="compactFatTop">--/-- g</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactFatBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactFatBottom">Még...</span>
+            </div>
+
+            <div id="compactBtnWrapper">
+                <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
+                <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
+                <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
+            </div>
+        </div>
+        <div id="main" class="tab-content active">
             <div id="highlightContainer"></div>
 
             <div class="flex-container">
@@ -1688,6 +1697,61 @@
         <div style="text-align:center;margin-top:15px;">
             <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
             <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('quickAddModal')">Mégse</button>
+        </div>
+    </div>
+</div>
+<div class="modal" id="privacyModal" style="z-index: 3000;">
+    <div class="modal-content" style="max-width: 700px; max-height: 85vh; overflow-y: auto;">
+        <h3>🔒 Adatkezelési Tájékoztató</h3>
+        <div style="text-align: left; font-size: 0.9em; line-height: 1.5; color: #333;">
+            <p><strong>Utolsó frissítés:</strong> 2023. [Aktuális Dátum]</p>
+
+            <h4>1. Bevezetés</h4>
+            <p>Üdvözlünk a FitGarden 2.0 alkalmazásban ("Szolgáltatás"). Jelen Adatkezelési Tájékoztató célja, hogy részletesen ismertesse, milyen adatokat gyűjtünk, hogyan használjuk azokat, és milyen jogai vannak Önnek ("Felhasználó") a GDPR (Általános Adatvédelmi Rendelet) értelmében.</p>
+
+            <h4>2. Az Adatkezelő</h4>
+            <p>A Szolgáltatás üzemeltetője és az adatok kezelője: [IDE ÍRD A NEVED VAGY CÉGED NEVÉT].<br>
+                Kapcsolat: [IDE ÍRD AZ EMAIL CÍMEDET]</p>
+
+            <h4>3. A kezelt adatok köre</h4>
+            <p>A Szolgáltatás használata során az alábbi adatokat gyűjtjük és tároljuk:</p>
+            <ul>
+                <li><strong>Azonosító adatok:</strong> Email cím, Felhasználói azonosító (UID).</li>
+                <li><strong>Egészségügyi és fitnesz adatok (Különleges adat):</strong> Testsúly, vízfogyasztás, kalóriabevitel, makrotápanyagok (fehérje, zsír), edzések időpontjai és jegyzetei.</li>
+                <li><strong>Szokások és Célok:</strong> Kitűzött célok, fogadalmak, jutalmak, elvégzett feladatok, személyes jegyzetek.</li>
+                <li><strong>Technikai adatok:</strong> Naplózott aktivitások (logs), böngésző értesítési beállítások.</li>
+            </ul>
+
+            <h4>4. Az adatkezelés célja és jogalapja</h4>
+            <p>Az adatkezelés elsődleges célja a Szolgáltatás nyújtása: az Ön fejlődésének nyomon követése, statisztikák megjelenítése és emlékeztetők küldése.</p>
+            <p><strong>Jogalap:</strong> Az Ön kifejezett, önkéntes hozzájárulása (GDPR 6. cikk (1) a) pont), amelyet a regisztrációkor a jelölőnégyzet bepipálásával ad meg. Mivel egészségügyi adatokat is kezelünk, a hozzájárulás kiterjed a GDPR 9. cikk (2) a) pontjára is.</p>
+
+            <h4>5. Adattárolás és Biztonság (Harmadik felek)</h4>
+            <p>A Szolgáltatás nem rendelkezik saját szerverrel, az adatok tárolása felhőalapú szolgáltatón keresztül történik:</p>
+            <ul>
+                <li><strong>Google Firebase (USA/EU):</strong> Az autentikációt (belépés) és az adatbázist (Firestore) a Google Firebase szolgáltatja. A Google megfelel a nemzetközi adatbiztonsági szabványoknak. Az adatok titkosított formában kerülnek továbbításra (HTTPS).</li>
+            </ul>
+            <p>Az Üzemeltető mindent megtesz az adatok védelme érdekében, de az internetes adattovábbítás nem lehet 100%-osan biztonságos.</p>
+
+            <h4>6. Az Ön jogai</h4>
+            <p>Önt az alábbi jogok illetik meg:</p>
+            <ul>
+                <li><strong>Hozzáférési jog:</strong> Bármikor megtekintheti mentett adatait az alkalmazáson belül.</li>
+                <li><strong>Helyesbítés joga:</strong> Adatait bármikor módosíthatja vagy javíthatja.</li>
+                <li><strong>Törléshez való jog ("Elfeledtetés"):</strong> A "Teljes reset" gombbal vagy a fiók törlésének kérésével véglegesen törölheti adatait az adatbázisból.</li>
+                <li><strong>Adathordozhatóság:</strong> Az "Exportálás" gombbal JSON formátumban letöltheti minden tárolt adatát.</li>
+            </ul>
+
+            <h4>7. Felelősségkizárás (Medical Disclaimer)</h4>
+            <p style="color: #c62828; font-weight: bold;">A FitGarden 2.0 nem orvosi eszköz.</p>
+            <p>Az alkalmazásban megjelenő tippek, motivációs üzenetek és számítások nem minősülnek orvosi tanácsadásnak, diagnózisnak vagy kezelésnek. Bármilyen étrend vagy edzésprogram megkezdése előtt konzultáljon szakorvossal. Az Üzemeltető nem vállal felelősséget a Szolgáltatás használatából eredő egészségügyi problémákért vagy sérülésekért.</p>
+
+            <h4>8. Sütik (Cookies) és Helyi tárolás</h4>
+            <p>Az alkalmazás a Google Firebase révén technikai sütiket és helyi tárolót (Local Storage) használ a bejelentkezési munkamenet fenntartása érdekében.</p>
+
+            <div style="text-align:center; margin-top: 20px;">
+                <button onclick="closeModal('privacyModal')" style="background: #00796b; color: white; padding: 10px 20px;">Bezárás</button>
+            </div>
         </div>
     </div>
 </div>
@@ -2646,18 +2710,45 @@ function handleWorkoutFilterChange() {
     function handleLogin() {
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
-      document.getElementById('loginError').innerText = "";
+      const errorElement = document.getElementById('loginError');
+      errorElement.innerText = "";
 
       auth.signInWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-          // Sign-in successful, onAuthStateChanged will handle the rest
-          console.log("User logged in:", userCredential.user.uid);
+          const user = userCredential.user;
+
+          // ELLENŐRZÉS: Visszaigazolta az emailt?
+          if (user.emailVerified) {
+             // IGEN -> Mehet tovább (az onAuthStateChanged majd kezeli a beléptetést)
+             console.log("User logged in and verified:", user.uid);
+          } else {
+             // NEM -> Ez a régi felhasználók esete, vagy aki nem kapta meg
+             // Mivel a jelszó jó volt, a 'user' objektum él, így tudunk emailt küldeni!
+
+             user.sendEmailVerification().then(function() {
+                // Sikerült elküldeni
+                alert("⚠️ Fiók nincs aktiválva!\n\nMivel ez egy korábbi regisztráció vagy nem igazoltad vissza, most küldtünk egy ÚJ aktiváló linket a(z) " + user.email + " címre.\n\nKérlek kattints a linkre az emailben, majd jelentkezz be újra!");
+
+                // Csak az email küldés után dobjuk ki
+                auth.signOut();
+             }).catch(function(error) {
+                // Hiba (pl. túl sok kérés)
+                console.error("Email küldési hiba:", error);
+                alert("A fiók nincs aktiválva, de nem tudtunk új emailt küldeni (túl sok próbálkozás?). Kérlek várj egy kicsit.");
+                auth.signOut();
+             });
+
+             errorElement.style.color = "red";
+             errorElement.innerText = "Hiba: Az email cím nincs megerősítve. Küldtünk egy új linket!";
+          }
         })
         .catch((error) => {
-		  const errorElement = document.getElementById('loginError');
           errorElement.style.color = "red";
           errorElement.innerText = "Hiba: " + error.message;
-          document.getElementById('loginError').innerText = "Hiba: A jelszó vagy email cím hibás." + error.message;
+          // Magyarosított hibaüzenetek
+          if(error.code === 'auth/wrong-password') errorElement.innerText = "Hiba: Hibás jelszó.";
+          if(error.code === 'auth/user-not-found') errorElement.innerText = "Hiba: Nincs ilyen felhasználó.";
+          if(error.code === 'auth/too-many-requests') errorElement.innerText = "Hiba: Túl sok sikertelen próbálkozás. Próbáld újra később.";
         });
     }
 
@@ -2694,18 +2785,40 @@ function handleWorkoutFilterChange() {
     function handleSignUp() {
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
-      document.getElementById('loginError').innerText = "";
+      const privacyChecked = document.getElementById('privacyCheck').checked;
+      const errorElement = document.getElementById('loginError');
 
+      errorElement.innerText = "";
+
+      // 1. Adatvédelmi ellenőrzés
+      if (!privacyChecked) {
+        errorElement.style.color = "red";
+        errorElement.innerText = "A regisztrációhoz el kell fogadnod az Adatkezelési Tájékoztatót!";
+        return;
+      }
+
+      // 2. Firebase regisztráció
       auth.createUserWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-          // Sign-up successful, onAuthStateChanged will handle the rest
-          console.log("User created:", userCredential.user.uid);
+          // SIKERES REGISZTRÁCIÓ -> EMAIL KÜLDÉS
+          const user = userCredential.user;
+
+          user.sendEmailVerification().then(function() {
+            // Email elküldve
+            alert("Sikeres regisztráció! ✉️\n\nEgy megerősítő emailt küldtünk a(z) " + email + " címre.\nKérlek, kattints a benne lévő linkre a fiókod aktiválásához, majd jelentkezz be újra.");
+
+            // Fontos: Azonnal kijelentkeztetjük, hogy ne lépjen be az appba
+            auth.signOut();
+          }).catch(function(error) {
+            // Hiba az email küldésnél
+            console.error("Hiba az email küldésekor:", error);
+            alert("A regisztráció sikerült, de a megerősítő emailt nem tudtuk elküldeni. Kérlek, próbálj meg belépni és kérj újat.");
+            auth.signOut();
+          });
         })
         .catch((error) => {
-		  const errorElement = document.getElementById('loginError');
-          errorElement.style.color = "red"; // Ezt add hozzá
+          errorElement.style.color = "red";
           errorElement.innerText = "Hiba: " + error.message;
-          document.getElementById('loginError').innerText = "Hiba: " + error.message;
         });
     }
 
@@ -2801,24 +2914,37 @@ function handleWorkoutFilterChange() {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         // === USER IS LOGGED IN ===
+
+        // BIZTONSÁGI ELLENŐRZÉS: Email verifikáció
+        if (!user.emailVerified) {
+            console.log("User is logged in but NOT verified. Signing out.");
+            // Ha nincs megerősítve, nem töltjük be az adatokat, hanem kiléptetjük
+            auth.signOut();
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            return; // Megállítjuk a futást
+        }
+
+        // Ha idáig eljutott, akkor verifikált felhasználó
         currentUser = user;
         console.log("Auth state changed: Logged in as", user.uid);
 
         document.getElementById('appContainer').style.display = 'block';
         document.getElementById('loginContainer').style.display = 'none';
 
+        // Innentől jön a régi kódod az adatok betöltésével...
         await loadDataFromFirestore();
-        await checkRecurringGoals(); // ÚJ: Ismétlődő célok ellenőrzése
-		await checkRecurringGoals(); // Ez ellenőrzi a *teljesített* ismétlődőket
-        await checkPendingGoals(); // EZ AZ ÚJ SOR (ellenőrzi a várakozókat)
+        await checkRecurringGoals();
+        await checkRecurringGoals();
+        await checkPendingGoals();
         calculateDailyProgress();
         calculateDailyProgress();
         loadMotivation();
         populateWorkoutCategoryFilter();
-        // ==================================
 
         renderAll();
-		loadSavedTheme();
+        loadSavedTheme();
+        startReminderEngine();
         startReminderEngine();
 
         startReminderEngine(); // ÚJ EMLÉKEZTETŐ MOTOR INDÍTÁSA
@@ -3863,35 +3989,42 @@ async function toggleGoal(i) { // Make async
 
    const goal = goals[i];
 
-  // === BÓNUSZ PONT SZÁMÍTÁSI LOGIKA (KÖZÖS) ===
-  // Ezt használjuk teljesítéskor és visszavonáskor is
-  let calculatedPoints = goal.points;
-  if (goal.subGoals && goal.subGoals.length > 0) {
-      const tasks = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
-      const mandatoryCount = tasks.filter(sg => !sg.isOptional).length;
-      // Figyelem: visszavonásnál a 'done' true, tehát a pipák még bent vannak,
-      // így a doneCount helyes lesz mindkét esetben.
-      const doneCount = tasks.filter(sg => sg.done).length;
+  // === PONT SZÁMÍTÁSI LOGIKA ===
+  // Kiszámoljuk, mennyi pont jár a "Fő cél" pipájáért.
+  // Ez = Teljes Pont - (Már kiosztott opcionális pontok)
 
-      if (mandatoryCount > 0 && doneCount > mandatoryCount) {
-           calculatedPoints = Math.round(goal.points * (doneCount / mandatoryCount));
-      }
+  let mainCompletionPoints = goal.points;
+
+  const tasks = (goal.subGoals || []).filter(sg => (sg.type || 'task') === 'task');
+  const totalCount = tasks.length;
+  const optionalCount = tasks.filter(sg => sg.isOptional).length;
+
+  if (totalCount > 0 && goal.points > 0) {
+      const pointsPerTask = Math.round(goal.points / totalCount);
+      // A fő cél teljesítése a kötelezők értékét adja
+      // Matek: Teljes - (Egység * Opcionálisok száma) = Ami a kötelezőkre marad
+      // Így a kerekítési hibák sem okoznak gondot, a végösszeg stimmelni fog.
+      mainCompletionPoints = goal.points - (pointsPerTask * optionalCount);
+
+      // Ha negatív lenne (matek hiba miatt), legyen 0
+      if (mainCompletionPoints < 0) mainCompletionPoints = 0;
   }
 
-  // Csak a teljesítés érdekel (amikor 'done' false-ról true-ra vált)
+  // Csak a teljesítés érdekli a rendszert
   if (!goal.done) {
     goal.done = true;
 
-    totalPoints += calculatedPoints;
-    animatePoints(totalPoints);
+    // Csak akkor adunk pontot, ha van mit (a kötelezők része)
+    if (mainCompletionPoints > 0) {
+        totalPoints += mainCompletionPoints;
+        animatePoints(totalPoints);
+    }
 
     if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
       goal.lastCompleted = new Date().toISOString();
 
-      let logMessage = `✅ Ismétlődő cél archiválva: ${goal.name}`;
       const recurrence = goal.recurrence;
-
       if (recurrence && typeof recurrence === 'object') {
         recurrence.currentCount = (recurrence.currentCount || 0) + 1;
         if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
@@ -3899,45 +4032,49 @@ async function toggleGoal(i) { // Make async
         }
       }
 
-      // Használjuk a calculatedPoints-ot a naplózáshoz
-      addPointsLogEntry(calculatedPoints, `✅ Ismétlődő cél: ${goal.name}`);
-      await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${calculatedPoints} pont)`);
+      // Naplózás
+      const logPointsStr = mainCompletionPoints > 0 ? `(+${mainCompletionPoints} pont a kötelezőkért)` : `(részletekben)`;
+      addPointsLogEntry(mainCompletionPoints, `✅ Ismétlődő cél kész: ${goal.name}`);
+      await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} ${logPointsStr}`);
 
       const goalToArchive = goals.splice(i, 1)[0];
       archivedGoals.unshift(goalToArchive);
 
-      // !!! EZ A SOR HIÁNYZOTT !!!
       renderGoals();
-      // !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     } else {
       // --- NEM ISMÉTLŐDŐ CÉL TELJESÍTVE ---
-      addPointsLogEntry(calculatedPoints, `✅ Cél teljesítve: ${goal.name}`);
-      await logActivity(`✅ Cél teljesítve: ${goal.name} (+${calculatedPoints} pont)`);
+      const logPointsStr = mainCompletionPoints > 0 ? `(+${mainCompletionPoints} pont a kötelezőkért)` : `(részletekben)`;
+      addPointsLogEntry(mainCompletionPoints, `✅ Cél teljesítve: ${goal.name}`);
+      await logActivity(`✅ Cél teljesítve: ${goal.name} ${logPointsStr}`);
       renderGoals();
     }
     checkAndAskForWorkoutLog();
     await saveDataToFirestore();
 
   } else {
-    // --- TELJESÍTÉS VISSZAVONÁSA (Csak nem ismétlődő céloknál lehetséges) ---
+    // --- TELJESÍTÉS VISSZAVONÁSA ---
     if (!goal.isRecurring) {
       goal.done = false;
-      // Itt is a calculatedPoints-ot vonjuk le
-      totalPoints -= calculatedPoints;
-      animatePoints(totalPoints);
 
-      addPointsLogEntry(-calculatedPoints, `❌ Cél visszavonva: ${goal.name}`);
-      await logActivity(`❌ Cél visszavonva: ${goal.name} (-${calculatedPoints} pont)`);
+      // Levonjuk a "Fő cél" pontjait (a kötelezők értékét)
+      // Az opcionálisok pipái maradnak, és a pontjuk is nálad marad!
+      if (mainCompletionPoints > 0) {
+          totalPoints -= mainCompletionPoints;
+          animatePoints(totalPoints);
+      }
+
+      addPointsLogEntry(-mainCompletionPoints, `❌ Cél visszavonva: ${goal.name}`);
+      await logActivity(`❌ Cél visszavonva: ${goal.name} (-${mainCompletionPoints} pont)`);
 
       await saveDataToFirestore();
       renderGoals();
     }
     // Edzés fül frissítése, ha az aktív
-  if (document.getElementById('workouts').classList.contains('active')) {
-    populateWorkoutCategoryFilter();
-    renderWorkoutGoals();
-  }
+    if (document.getElementById('workouts').classList.contains('active')) {
+      populateWorkoutCategoryFilter();
+      renderWorkoutGoals();
+    }
   }
 }
 
@@ -3948,91 +4085,70 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
 
   // 1. Alcél állapotának váltása
   const subGoal = goal.subGoals[subGoalIndex];
-  subGoal.done = !subGoal.done;
+  const isChecking = !subGoal.done; // Éppen most pipáljuk be, vagy vesszük ki?
+  subGoal.done = isChecking;
 
-  // 2. Ellenőrzés: Minden KÖTELEZŐ feladat kész van-e?
-  const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
-  const mandatoryTasks = taskSubGoals.filter(sg => !sg.isOptional);
-  const hasOptional = taskSubGoals.some(sg => sg.isOptional);
-
-  // Akkor tekintjük "késznek" az automatikus pipáláshoz, ha:
-  // 1. Minden kötelező kész
-  // 2. ÉS NINCS opcionális feladat (mert ha van, kézzel kell pipálni a bónusz miatt)
-  const allMandatoryDone = mandatoryTasks.every(sg => sg.done);
-  const shouldAutoComplete = allMandatoryDone && !hasOptional;
-
-  // 3. Fő cél frissítése
-  if (shouldAutoComplete) {
-
-    if (goal.isPunishment) {
-        // --- HA EZ EGY BÜNTETÉS ---
-        // Azonnal kivesszük a listából, mert teljesítetted ("letudtad")
-        goals.splice(goalIndex, 1);
-
-        // Naplózzuk pozitívan (büntetés elkerülve)
-        await logActivity(`✅ Büntetés teljesítve/kiváltva: ${goal.name}`);
-        // Nem adunk pontot és nem is vonunk le (ez a jutalom: megúsztad)
-
-        // Mentés és Renderelés
-        renderGoals();
-        await saveDataToFirestore();
-        return; // Kilépünk, mert a cél már nem létezik a tömbben
-    }
-
-    // --- HA NORMÁL CÉL ---
-    else if (!goal.done) {
-        goal.done = true;
-        totalPoints += goal.points;
-        animatePoints(totalPoints);
-
-        if (goal.isRecurring) {
-             goal.lastCompleted = new Date().toISOString();
-
-             // Ismétlődés számláló logika
-             const recurrence = goal.recurrence;
-             if (recurrence && typeof recurrence === 'object') {
-                recurrence.currentCount = (recurrence.currentCount || 0) + 1;
-                if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
-                    goal.isRecurring = false;
-                }
-             }
-
-             // JAVÍTVA: goal.points használata pointsToAdd helyett
-             addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
-             await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
-
-             // Áthelyezés az archívumba (JAVÍTVA: goalIndex használata i helyett)
-             const goalToArchive = goals.splice(goalIndex, 1)[0];
-             archivedGoals.unshift(goalToArchive);
-        } else {
-             // JAVÍTVA: goal.points használata pointsToAdd helyett
-             addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
-             await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
-        }
-
-        checkAndAskForWorkoutLog();
-    }
-  } else {
-    // Ha visszavontad a pipát (és normál cél volt), akkor 'done = false'
-    if (goal.done && !goal.isPunishment) {
-        goal.done = false;
-        totalPoints -= goal.points;
-        animatePoints(totalPoints);
-
-        if (goal.isRecurring) {
-            goal.lastCompleted = null;
-        }
-        addPointsLogEntry(-goal.points, `❌ Cél visszavonva: ${goal.name}`);
-        await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
-    }
+  // 2. Pontszámítási egység (Unit) meghatározása
+  // Minden feladat (akár opcionális, akár kötelező) egyenlő részét képezi a pontnak
+  const totalTasksCount = goal.subGoals.filter(sg => (sg.type || 'task') === 'task').length;
+  let pointsPerTask = 0;
+  if (totalTasksCount > 0 && goal.points > 0) {
+      pointsPerTask = Math.round(goal.points / totalTasksCount);
   }
 
-  await saveDataToFirestore();
-  renderGoals();
-  // Edzés fül frissítése, ha az aktív
-  if (document.getElementById('workouts').classList.contains('active')) {
-    populateWorkoutCategoryFilter();
-    renderWorkoutGoals();
+  // 3. AZONNALI PONTOZÁS - CSAK OPCIONÁLIS ALCÉLOKNÁL
+  if (subGoal.isOptional) {
+      if (isChecking) {
+          // Pipa bekerült -> Azonnali pont
+          totalPoints += pointsPerTask;
+          addPointsLogEntry(pointsPerTask, `✅ Opcionális extra: ${subGoal.text}`);
+      } else {
+          // Pipa kikerült -> Azonnali levonás
+          totalPoints -= pointsPerTask;
+          addPointsLogEntry(-pointsPerTask, `❌ Opcionális visszavonva: ${subGoal.text}`);
+      }
+      animatePoints(totalPoints);
+      await saveDataToFirestore();
+  }
+
+  // 4. Automatikus teljesítés figyelése (A kötelezők alapján)
+  const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
+  const mandatoryTasks = taskSubGoals.filter(sg => !sg.isOptional);
+
+  // Minden kötelező kész van?
+  const allMandatoryDone = mandatoryTasks.length > 0 && mandatoryTasks.every(sg => sg.done);
+
+  // Speciális eset: Ha NINCS kötelező, akkor akkor van kész a fő cél, ha MINDEN opcionális kész
+  const allTasksDone = taskSubGoals.every(sg => sg.done);
+  const isPureOptionalList = (mandatoryTasks.length === 0);
+
+  const shouldAutoComplete = (allMandatoryDone) || (isPureOptionalList && allTasksDone);
+
+  // 5. Fő cél frissítése
+  if (shouldAutoComplete) {
+    if (goal.isPunishment) {
+        goals.splice(goalIndex, 1);
+        await logActivity(`✅ Büntetés teljesítve/kiváltva: ${goal.name}`);
+        renderGoals();
+        await saveDataToFirestore();
+        return;
+    }
+    // Ha még nincs kész a fő cél, akkor most készre állítjuk
+    else if (!goal.done) {
+        // Meghívjuk a toggleGoalt, ami kiosztja a MARADÉK (kötelező) pontokat
+        await toggleGoal(goalIndex);
+    }
+  } else {
+    // Ha visszavontad a pipát egy olyan célról, ami már kész volt
+    // (pl. kivettél egy kötelezőt)
+    if (goal.done && !goal.isPunishment) {
+        // A toggleGoal visszavonja a kötelezők pontjait
+        await toggleGoal(goalIndex);
+    } else {
+        // Csak mentés és frissítés
+        await saveDataToFirestore();
+        renderGoals();
+    }
   }
 }
 // ===== JAVÍTOTT CÉLKEZELŐ FÜGGVÉNYEK VÉGE =====
