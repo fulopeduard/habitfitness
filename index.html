@@ -2722,19 +2722,33 @@ function handleWorkoutFilterChange() {
              // IGEN -> Mehet tovább (az onAuthStateChanged majd kezeli a beléptetést)
              console.log("User logged in and verified:", user.uid);
           } else {
-             // NEM -> Hibaüzenet és kijelentkeztetés
-             auth.signOut(); // Kidobjuk
+             // NEM -> Ez a régi felhasználók esete, vagy aki nem kapta meg
+             // Mivel a jelszó jó volt, a 'user' objektum él, így tudunk emailt küldeni!
+
+             user.sendEmailVerification().then(function() {
+                // Sikerült elküldeni
+                alert("⚠️ Fiók nincs aktiválva!\n\nMivel ez egy korábbi regisztráció vagy nem igazoltad vissza, most küldtünk egy ÚJ aktiváló linket a(z) " + user.email + " címre.\n\nKérlek kattints a linkre az emailben, majd jelentkezz be újra!");
+
+                // Csak az email küldés után dobjuk ki
+                auth.signOut();
+             }).catch(function(error) {
+                // Hiba (pl. túl sok kérés)
+                console.error("Email küldési hiba:", error);
+                alert("A fiók nincs aktiválva, de nem tudtunk új emailt küldeni (túl sok próbálkozás?). Kérlek várj egy kicsit.");
+                auth.signOut();
+             });
+
              errorElement.style.color = "red";
-             errorElement.innerText = "Hiba: Az email címed még nincs megerősítve! Kérlek ellenőrizd a postafiókodat.";
-             // Opcionális: Újraküldés lehetőségét itt lehetne felajánlani, de az egyszerűség kedvéért most csak jelezzük.
+             errorElement.innerText = "Hiba: Az email cím nincs megerősítve. Küldtünk egy új linket!";
           }
         })
         .catch((error) => {
           errorElement.style.color = "red";
           errorElement.innerText = "Hiba: " + error.message;
-          // Magyarosított hibaüzenetek (opcionális)
+          // Magyarosított hibaüzenetek
           if(error.code === 'auth/wrong-password') errorElement.innerText = "Hiba: Hibás jelszó.";
           if(error.code === 'auth/user-not-found') errorElement.innerText = "Hiba: Nincs ilyen felhasználó.";
+          if(error.code === 'auth/too-many-requests') errorElement.innerText = "Hiba: Túl sok sikertelen próbálkozás. Próbáld újra később.";
         });
     }
 
