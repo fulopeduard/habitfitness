@@ -3975,35 +3975,42 @@ async function toggleGoal(i) { // Make async
 
    const goal = goals[i];
 
-  // === BÓNUSZ PONT SZÁMÍTÁSI LOGIKA (KÖZÖS) ===
-  // Ezt használjuk teljesítéskor és visszavonáskor is
-  let calculatedPoints = goal.points;
-  if (goal.subGoals && goal.subGoals.length > 0) {
-      const tasks = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
-      const mandatoryCount = tasks.filter(sg => !sg.isOptional).length;
-      // Figyelem: visszavonásnál a 'done' true, tehát a pipák még bent vannak,
-      // így a doneCount helyes lesz mindkét esetben.
-      const doneCount = tasks.filter(sg => sg.done).length;
+  // === PONT SZÁMÍTÁSI LOGIKA ===
+  // Kiszámoljuk, mennyi pont jár a "Fő cél" pipájáért.
+  // Ez = Teljes Pont - (Már kiosztott opcionális pontok)
 
-      if (mandatoryCount > 0 && doneCount > mandatoryCount) {
-           calculatedPoints = Math.round(goal.points * (doneCount / mandatoryCount));
-      }
+  let mainCompletionPoints = goal.points;
+
+  const tasks = (goal.subGoals || []).filter(sg => (sg.type || 'task') === 'task');
+  const totalCount = tasks.length;
+  const optionalCount = tasks.filter(sg => sg.isOptional).length;
+
+  if (totalCount > 0 && goal.points > 0) {
+      const pointsPerTask = Math.round(goal.points / totalCount);
+      // A fő cél teljesítése a kötelezők értékét adja
+      // Matek: Teljes - (Egység * Opcionálisok száma) = Ami a kötelezőkre marad
+      // Így a kerekítési hibák sem okoznak gondot, a végösszeg stimmelni fog.
+      mainCompletionPoints = goal.points - (pointsPerTask * optionalCount);
+
+      // Ha negatív lenne (matek hiba miatt), legyen 0
+      if (mainCompletionPoints < 0) mainCompletionPoints = 0;
   }
 
-  // Csak a teljesítés érdekel (amikor 'done' false-ról true-ra vált)
+  // Csak a teljesítés érdekli a rendszert
   if (!goal.done) {
     goal.done = true;
 
-    totalPoints += calculatedPoints;
-    animatePoints(totalPoints);
+    // Csak akkor adunk pontot, ha van mit (a kötelezők része)
+    if (mainCompletionPoints > 0) {
+        totalPoints += mainCompletionPoints;
+        animatePoints(totalPoints);
+    }
 
     if (goal.isRecurring) {
       // --- ISMÉTLŐDŐ CÉL TELJESÍTVE ---
       goal.lastCompleted = new Date().toISOString();
 
-      let logMessage = `✅ Ismétlődő cél archiválva: ${goal.name}`;
       const recurrence = goal.recurrence;
-
       if (recurrence && typeof recurrence === 'object') {
         recurrence.currentCount = (recurrence.currentCount || 0) + 1;
         if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
@@ -4011,45 +4018,49 @@ async function toggleGoal(i) { // Make async
         }
       }
 
-      // Használjuk a calculatedPoints-ot a naplózáshoz
-      addPointsLogEntry(calculatedPoints, `✅ Ismétlődő cél: ${goal.name}`);
-      await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${calculatedPoints} pont)`);
+      // Naplózás
+      const logPointsStr = mainCompletionPoints > 0 ? `(+${mainCompletionPoints} pont a kötelezőkért)` : `(részletekben)`;
+      addPointsLogEntry(mainCompletionPoints, `✅ Ismétlődő cél kész: ${goal.name}`);
+      await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} ${logPointsStr}`);
 
       const goalToArchive = goals.splice(i, 1)[0];
       archivedGoals.unshift(goalToArchive);
 
-      // !!! EZ A SOR HIÁNYZOTT !!!
       renderGoals();
-      // !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     } else {
       // --- NEM ISMÉTLŐDŐ CÉL TELJESÍTVE ---
-      addPointsLogEntry(calculatedPoints, `✅ Cél teljesítve: ${goal.name}`);
-      await logActivity(`✅ Cél teljesítve: ${goal.name} (+${calculatedPoints} pont)`);
+      const logPointsStr = mainCompletionPoints > 0 ? `(+${mainCompletionPoints} pont a kötelezőkért)` : `(részletekben)`;
+      addPointsLogEntry(mainCompletionPoints, `✅ Cél teljesítve: ${goal.name}`);
+      await logActivity(`✅ Cél teljesítve: ${goal.name} ${logPointsStr}`);
       renderGoals();
     }
     checkAndAskForWorkoutLog();
     await saveDataToFirestore();
 
   } else {
-    // --- TELJESÍTÉS VISSZAVONÁSA (Csak nem ismétlődő céloknál lehetséges) ---
+    // --- TELJESÍTÉS VISSZAVONÁSA ---
     if (!goal.isRecurring) {
       goal.done = false;
-      // Itt is a calculatedPoints-ot vonjuk le
-      totalPoints -= calculatedPoints;
-      animatePoints(totalPoints);
 
-      addPointsLogEntry(-calculatedPoints, `❌ Cél visszavonva: ${goal.name}`);
-      await logActivity(`❌ Cél visszavonva: ${goal.name} (-${calculatedPoints} pont)`);
+      // Levonjuk a "Fő cél" pontjait (a kötelezők értékét)
+      // Az opcionálisok pipái maradnak, és a pontjuk is nálad marad!
+      if (mainCompletionPoints > 0) {
+          totalPoints -= mainCompletionPoints;
+          animatePoints(totalPoints);
+      }
+
+      addPointsLogEntry(-mainCompletionPoints, `❌ Cél visszavonva: ${goal.name}`);
+      await logActivity(`❌ Cél visszavonva: ${goal.name} (-${mainCompletionPoints} pont)`);
 
       await saveDataToFirestore();
       renderGoals();
     }
     // Edzés fül frissítése, ha az aktív
-  if (document.getElementById('workouts').classList.contains('active')) {
-    populateWorkoutCategoryFilter();
-    renderWorkoutGoals();
-  }
+    if (document.getElementById('workouts').classList.contains('active')) {
+      populateWorkoutCategoryFilter();
+      renderWorkoutGoals();
+    }
   }
 }
 
@@ -4060,91 +4071,70 @@ async function toggleSubGoal(goalIndex, subGoalIndex) {
 
   // 1. Alcél állapotának váltása
   const subGoal = goal.subGoals[subGoalIndex];
-  subGoal.done = !subGoal.done;
+  const isChecking = !subGoal.done; // Éppen most pipáljuk be, vagy vesszük ki?
+  subGoal.done = isChecking;
 
-  // 2. Ellenőrzés: Minden KÖTELEZŐ feladat kész van-e?
-  const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
-  const mandatoryTasks = taskSubGoals.filter(sg => !sg.isOptional);
-  const hasOptional = taskSubGoals.some(sg => sg.isOptional);
-
-  // Akkor tekintjük "késznek" az automatikus pipáláshoz, ha:
-  // 1. Minden kötelező kész
-  // 2. ÉS NINCS opcionális feladat (mert ha van, kézzel kell pipálni a bónusz miatt)
-  const allMandatoryDone = mandatoryTasks.every(sg => sg.done);
-  const shouldAutoComplete = allMandatoryDone && !hasOptional;
-
-  // 3. Fő cél frissítése
-  if (shouldAutoComplete) {
-
-    if (goal.isPunishment) {
-        // --- HA EZ EGY BÜNTETÉS ---
-        // Azonnal kivesszük a listából, mert teljesítetted ("letudtad")
-        goals.splice(goalIndex, 1);
-
-        // Naplózzuk pozitívan (büntetés elkerülve)
-        await logActivity(`✅ Büntetés teljesítve/kiváltva: ${goal.name}`);
-        // Nem adunk pontot és nem is vonunk le (ez a jutalom: megúsztad)
-
-        // Mentés és Renderelés
-        renderGoals();
-        await saveDataToFirestore();
-        return; // Kilépünk, mert a cél már nem létezik a tömbben
-    }
-
-    // --- HA NORMÁL CÉL ---
-    else if (!goal.done) {
-        goal.done = true;
-        totalPoints += goal.points;
-        animatePoints(totalPoints);
-
-        if (goal.isRecurring) {
-             goal.lastCompleted = new Date().toISOString();
-
-             // Ismétlődés számláló logika
-             const recurrence = goal.recurrence;
-             if (recurrence && typeof recurrence === 'object') {
-                recurrence.currentCount = (recurrence.currentCount || 0) + 1;
-                if (recurrence.endCondition === 'count' && recurrence.currentCount >= recurrence.endCount) {
-                    goal.isRecurring = false;
-                }
-             }
-
-             // JAVÍTVA: goal.points használata pointsToAdd helyett
-             addPointsLogEntry(goal.points, `✅ Ismétlődő cél: ${goal.name}`);
-             await logActivity(`✅ Ismétlődő cél archiválva: ${goal.name} (+${goal.points} pont)`);
-
-             // Áthelyezés az archívumba (JAVÍTVA: goalIndex használata i helyett)
-             const goalToArchive = goals.splice(goalIndex, 1)[0];
-             archivedGoals.unshift(goalToArchive);
-        } else {
-             // JAVÍTVA: goal.points használata pointsToAdd helyett
-             addPointsLogEntry(goal.points, `✅ Cél teljesítve: ${goal.name}`);
-             await logActivity(`✅ Cél teljesítve: ${goal.name} (+${goal.points} pont)`);
-        }
-
-        checkAndAskForWorkoutLog();
-    }
-  } else {
-    // Ha visszavontad a pipát (és normál cél volt), akkor 'done = false'
-    if (goal.done && !goal.isPunishment) {
-        goal.done = false;
-        totalPoints -= goal.points;
-        animatePoints(totalPoints);
-
-        if (goal.isRecurring) {
-            goal.lastCompleted = null;
-        }
-        addPointsLogEntry(-goal.points, `❌ Cél visszavonva: ${goal.name}`);
-        await logActivity(`❌ Cél visszavonva: ${goal.name} (-${goal.points} pont)`);
-    }
+  // 2. Pontszámítási egység (Unit) meghatározása
+  // Minden feladat (akár opcionális, akár kötelező) egyenlő részét képezi a pontnak
+  const totalTasksCount = goal.subGoals.filter(sg => (sg.type || 'task') === 'task').length;
+  let pointsPerTask = 0;
+  if (totalTasksCount > 0 && goal.points > 0) {
+      pointsPerTask = Math.round(goal.points / totalTasksCount);
   }
 
-  await saveDataToFirestore();
-  renderGoals();
-  // Edzés fül frissítése, ha az aktív
-  if (document.getElementById('workouts').classList.contains('active')) {
-    populateWorkoutCategoryFilter();
-    renderWorkoutGoals();
+  // 3. AZONNALI PONTOZÁS - CSAK OPCIONÁLIS ALCÉLOKNÁL
+  if (subGoal.isOptional) {
+      if (isChecking) {
+          // Pipa bekerült -> Azonnali pont
+          totalPoints += pointsPerTask;
+          addPointsLogEntry(pointsPerTask, `✅ Opcionális extra: ${subGoal.text}`);
+      } else {
+          // Pipa kikerült -> Azonnali levonás
+          totalPoints -= pointsPerTask;
+          addPointsLogEntry(-pointsPerTask, `❌ Opcionális visszavonva: ${subGoal.text}`);
+      }
+      animatePoints(totalPoints);
+      await saveDataToFirestore();
+  }
+
+  // 4. Automatikus teljesítés figyelése (A kötelezők alapján)
+  const taskSubGoals = goal.subGoals.filter(sg => (sg.type || 'task') === 'task');
+  const mandatoryTasks = taskSubGoals.filter(sg => !sg.isOptional);
+
+  // Minden kötelező kész van?
+  const allMandatoryDone = mandatoryTasks.length > 0 && mandatoryTasks.every(sg => sg.done);
+
+  // Speciális eset: Ha NINCS kötelező, akkor akkor van kész a fő cél, ha MINDEN opcionális kész
+  const allTasksDone = taskSubGoals.every(sg => sg.done);
+  const isPureOptionalList = (mandatoryTasks.length === 0);
+
+  const shouldAutoComplete = (allMandatoryDone) || (isPureOptionalList && allTasksDone);
+
+  // 5. Fő cél frissítése
+  if (shouldAutoComplete) {
+    if (goal.isPunishment) {
+        goals.splice(goalIndex, 1);
+        await logActivity(`✅ Büntetés teljesítve/kiváltva: ${goal.name}`);
+        renderGoals();
+        await saveDataToFirestore();
+        return;
+    }
+    // Ha még nincs kész a fő cél, akkor most készre állítjuk
+    else if (!goal.done) {
+        // Meghívjuk a toggleGoalt, ami kiosztja a MARADÉK (kötelező) pontokat
+        await toggleGoal(goalIndex);
+    }
+  } else {
+    // Ha visszavontad a pipát egy olyan célról, ami már kész volt
+    // (pl. kivettél egy kötelezőt)
+    if (goal.done && !goal.isPunishment) {
+        // A toggleGoal visszavonja a kötelezők pontjait
+        await toggleGoal(goalIndex);
+    } else {
+        // Csak mentés és frissítés
+        await saveDataToFirestore();
+        renderGoals();
+    }
   }
 }
 // ===== JAVÍTOTT CÉLKEZELŐ FÜGGVÉNYEK VÉGE =====
