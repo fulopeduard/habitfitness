@@ -2823,7 +2823,12 @@ function handleWorkoutFilterChange() {
     }
 
     function handleLogout() {
-      auth.signOut();
+      auth.signOut().then(() => {
+        // Kijelentkezés után újratöltjük az oldalt, hogy minden memória és időzítő törlődjön
+        window.location.reload();
+      }).catch((error) => {
+        console.error("Hiba kijelentkezéskor:", error);
+      });
     }
     // ===== DATA SYNC (NEW FUNCTIONS) =====
     // A function to get all data from Firestore
