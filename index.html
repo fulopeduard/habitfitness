@@ -6309,30 +6309,63 @@ async function importData(event) { // Make async
   reader.onload = async e => { // Make async
     try {
       const data = JSON.parse(e.target.result);
+
+      // 1. Adatok betöltése változókba
       goals = data.goals || [];
+      vows = data.vows || [];
       rewards = data.rewards || [];
       notes = data.notes || [];
       transactions = data.transactions || [];
       logs = data.logs || [];
       workouts = data.workouts || [];
       meals = data.meals || [];
-      reminders = data.reminders || []; // ÚJ
+      reminders = data.reminders || [];
       archivedGoals = data.archivedGoals || [];
       totalPoints = data.totalPoints || 0;
+      pointsLog = data.pointsLog || [];
 
       goalWeightSetting = data.goalWeight || "";
       goalWaterSetting = data.goalWater || "";
       goalCaloriesSetting = data.goalCalories || "";
       goalProteinSetting = data.goalProtein || "";
-	  goalFatSetting = data.goalFat || "";
+      goalFatSetting = data.goalFat || "";
 
+      // 2. JAVÍTÁS: Dátumok konvertálása (String -> Date Object)
+      // Ez oldja meg az "Invalid Date" hibát a Jegyzeteknél és Haladásnál
+
+      if (Array.isArray(notes)) {
+          notes.forEach(n => {
+              if (n.date) n.date = new Date(n.date);
+          });
+      }
+
+      if (Array.isArray(transactions)) {
+          transactions.forEach(t => {
+              if (t.date) t.date = new Date(t.date);
+          });
+      }
+
+      if (Array.isArray(logs)) {
+          logs.forEach(l => {
+              if (l.time) l.time = new Date(l.time);
+          });
+      }
+
+      if (Array.isArray(pointsLog)) {
+          pointsLog.forEach(pl => {
+              if (pl.time) pl.time = new Date(pl.time);
+          });
+      }
+
+      // 3. Mentés és Megjelenítés
       await saveDataToFirestore();
 
       renderAll();
       logActivity("📂 Adatok importálva");
       alert("Sikeres importálás! Minden adat frissítve ✅");
-    } catch {
-      alert("❌ Hiba: a fájl nem megfelelő formátumú!");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Hiba: a fájl nem megfelelő formátumú vagy sérült!");
     }
   };
   reader.readAsText(file);
