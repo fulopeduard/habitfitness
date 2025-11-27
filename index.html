@@ -1101,10 +1101,20 @@
 <div id="loginContainer" style="padding: 20px; max-width: 400px; margin: 40px auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
     <h2 style="color: #00796b; text-align: center;">FitGarden 2.0</h2>
     <h3 style="text-align: center;">Belépés / Regisztráció</h3>
+
     <label>Email</label>
     <input type="email" id="loginEmail" placeholder="email@cim.com">
+
     <label>Jelszó</label>
     <input type="password" id="loginPassword" placeholder="min. 6 karakter">
+
+    <div style="margin-top: 15px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.9em;">
+        <input type="checkbox" id="privacyCheck" style="width: auto; margin-top: 3px;">
+        <label for="privacyCheck" style="margin: 0; line-height: 1.4;">
+            Elolvastam és elfogadom az <span onclick="openModal('privacyModal')" style="color: #00796b; text-decoration: underline; cursor: pointer; font-weight: bold;">Adatkezelési Tájékoztatót</span>, és hozzájárulok egészségügyi adataim (súly, táplálkozás) kezeléséhez.
+        </label>
+    </div>
+
     <div style="display: flex; gap: 10px; margin-top: 15px;">
         <button onclick="handleLogin()" style="flex: 1;">Belépés</button>
         <button onclick="handleSignUp()" style="flex: 1; background: #004d40;">Regisztráció</button>
@@ -1142,61 +1152,60 @@
                 <span class="tab-text">Edzések</span>
             </div>
         </div>
-        <div id="main" class="tab-content active">
-            <div id="compactGoalsContainer">
 
-                <div class="compact-goal-item">
-                    <span class="label">Súly ⚖️</span>
-                    <span class="value value-top" id="compactWeightTop">--/-- kg</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactWeightBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactWeightBottom">Még...</span>
+        <div id="compactGoalsContainer">
+            <div class="compact-goal-item">
+                <span class="label">Súly ⚖️</span>
+                <span class="value value-top" id="compactWeightTop">--/-- kg</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactWeightBar"></div>
                 </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Víz 💧</span>
-                    <span class="value value-top" id="compactWaterTop">--/-- L</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactWaterBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactWaterBottom">Még...</span>
-                </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Kalória 🔥</span>
-                    <span class="value value-top" id="compactCalTop">--/-- kcal</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactCalBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactCalBottom">Még...</span>
-                </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Protein 🥩</span>
-                    <span class="value value-top" id="compactProteinTop">--/-- g</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactProteinBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactProteinBottom">Még...</span>
-                </div>
-
-                <div class="compact-goal-item">
-                    <span class="label">Zsír 🥑</span>
-                    <span class="value value-top" id="compactFatTop">--/-- g</span>
-                    <div class="compact-progress-bar-container">
-                        <div class="compact-progress-bar" id="compactFatBar"></div>
-                    </div>
-                    <span class="value value-bottom" id="compactFatBottom">Még...</span>
-                </div>
-
-                <div id="compactBtnWrapper">
-                    <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
-                    <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
-                    <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
-                </div>
+                <span class="value value-bottom" id="compactWeightBottom">Még...</span>
             </div>
 
+            <div class="compact-goal-item">
+                <span class="label">Víz 💧</span>
+                <span class="value value-top" id="compactWaterTop">--/-- L</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactWaterBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactWaterBottom">Még...</span>
+            </div>
+
+            <div class="compact-goal-item">
+                <span class="label">Kalória 🔥</span>
+                <span class="value value-top" id="compactCalTop">--/-- kcal</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactCalBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactCalBottom">Még...</span>
+            </div>
+
+            <div class="compact-goal-item">
+                <span class="label">Protein 🥩</span>
+                <span class="value value-top" id="compactProteinTop">--/-- g</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactProteinBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactProteinBottom">Még...</span>
+            </div>
+
+            <div class="compact-goal-item">
+                <span class="label">Zsír 🥑</span>
+                <span class="value value-top" id="compactFatTop">--/-- g</span>
+                <div class="compact-progress-bar-container">
+                    <div class="compact-progress-bar" id="compactFatBar"></div>
+                </div>
+                <span class="value value-bottom" id="compactFatBottom">Még...</span>
+            </div>
+
+            <div id="compactBtnWrapper">
+                <button id="compactChartBtn" onclick="openChartModal()" title="Súly Grafikon">📈</button>
+                <button id="compactEditBtn" onclick="editGoals()" title="Célok Beállítása">✏️</button>
+                <button id="quickAddBtn" onclick="openQuickAddModal()" title="Gyors Bejegyzés">+</button>
+            </div>
+        </div>
+        <div id="main" class="tab-content active">
             <div id="highlightContainer"></div>
 
             <div class="flex-container">
@@ -1688,6 +1697,61 @@
         <div style="text-align:center;margin-top:15px;">
             <button onclick="saveQuickAdd()">💾 Mentés és Bezárás</button>
             <button style="background:#ccc;color:black;margin-left:8px;" onclick="closeModal('quickAddModal')">Mégse</button>
+        </div>
+    </div>
+</div>
+<div class="modal" id="privacyModal" style="z-index: 3000;">
+    <div class="modal-content" style="max-width: 700px; max-height: 85vh; overflow-y: auto;">
+        <h3>🔒 Adatkezelési Tájékoztató</h3>
+        <div style="text-align: left; font-size: 0.9em; line-height: 1.5; color: #333;">
+            <p><strong>Utolsó frissítés:</strong> 2023. [Aktuális Dátum]</p>
+
+            <h4>1. Bevezetés</h4>
+            <p>Üdvözlünk a FitGarden 2.0 alkalmazásban ("Szolgáltatás"). Jelen Adatkezelési Tájékoztató célja, hogy részletesen ismertesse, milyen adatokat gyűjtünk, hogyan használjuk azokat, és milyen jogai vannak Önnek ("Felhasználó") a GDPR (Általános Adatvédelmi Rendelet) értelmében.</p>
+
+            <h4>2. Az Adatkezelő</h4>
+            <p>A Szolgáltatás üzemeltetője és az adatok kezelője: [IDE ÍRD A NEVED VAGY CÉGED NEVÉT].<br>
+                Kapcsolat: [IDE ÍRD AZ EMAIL CÍMEDET]</p>
+
+            <h4>3. A kezelt adatok köre</h4>
+            <p>A Szolgáltatás használata során az alábbi adatokat gyűjtjük és tároljuk:</p>
+            <ul>
+                <li><strong>Azonosító adatok:</strong> Email cím, Felhasználói azonosító (UID).</li>
+                <li><strong>Egészségügyi és fitnesz adatok (Különleges adat):</strong> Testsúly, vízfogyasztás, kalóriabevitel, makrotápanyagok (fehérje, zsír), edzések időpontjai és jegyzetei.</li>
+                <li><strong>Szokások és Célok:</strong> Kitűzött célok, fogadalmak, jutalmak, elvégzett feladatok, személyes jegyzetek.</li>
+                <li><strong>Technikai adatok:</strong> Naplózott aktivitások (logs), böngésző értesítési beállítások.</li>
+            </ul>
+
+            <h4>4. Az adatkezelés célja és jogalapja</h4>
+            <p>Az adatkezelés elsődleges célja a Szolgáltatás nyújtása: az Ön fejlődésének nyomon követése, statisztikák megjelenítése és emlékeztetők küldése.</p>
+            <p><strong>Jogalap:</strong> Az Ön kifejezett, önkéntes hozzájárulása (GDPR 6. cikk (1) a) pont), amelyet a regisztrációkor a jelölőnégyzet bepipálásával ad meg. Mivel egészségügyi adatokat is kezelünk, a hozzájárulás kiterjed a GDPR 9. cikk (2) a) pontjára is.</p>
+
+            <h4>5. Adattárolás és Biztonság (Harmadik felek)</h4>
+            <p>A Szolgáltatás nem rendelkezik saját szerverrel, az adatok tárolása felhőalapú szolgáltatón keresztül történik:</p>
+            <ul>
+                <li><strong>Google Firebase (USA/EU):</strong> Az autentikációt (belépés) és az adatbázist (Firestore) a Google Firebase szolgáltatja. A Google megfelel a nemzetközi adatbiztonsági szabványoknak. Az adatok titkosított formában kerülnek továbbításra (HTTPS).</li>
+            </ul>
+            <p>Az Üzemeltető mindent megtesz az adatok védelme érdekében, de az internetes adattovábbítás nem lehet 100%-osan biztonságos.</p>
+
+            <h4>6. Az Ön jogai</h4>
+            <p>Önt az alábbi jogok illetik meg:</p>
+            <ul>
+                <li><strong>Hozzáférési jog:</strong> Bármikor megtekintheti mentett adatait az alkalmazáson belül.</li>
+                <li><strong>Helyesbítés joga:</strong> Adatait bármikor módosíthatja vagy javíthatja.</li>
+                <li><strong>Törléshez való jog ("Elfeledtetés"):</strong> A "Teljes reset" gombbal vagy a fiók törlésének kérésével véglegesen törölheti adatait az adatbázisból.</li>
+                <li><strong>Adathordozhatóság:</strong> Az "Exportálás" gombbal JSON formátumban letöltheti minden tárolt adatát.</li>
+            </ul>
+
+            <h4>7. Felelősségkizárás (Medical Disclaimer)</h4>
+            <p style="color: #c62828; font-weight: bold;">A FitGarden 2.0 nem orvosi eszköz.</p>
+            <p>Az alkalmazásban megjelenő tippek, motivációs üzenetek és számítások nem minősülnek orvosi tanácsadásnak, diagnózisnak vagy kezelésnek. Bármilyen étrend vagy edzésprogram megkezdése előtt konzultáljon szakorvossal. Az Üzemeltető nem vállal felelősséget a Szolgáltatás használatából eredő egészségügyi problémákért vagy sérülésekért.</p>
+
+            <h4>8. Sütik (Cookies) és Helyi tárolás</h4>
+            <p>Az alkalmazás a Google Firebase révén technikai sütiket és helyi tárolót (Local Storage) használ a bejelentkezési munkamenet fenntartása érdekében.</p>
+
+            <div style="text-align:center; margin-top: 20px;">
+                <button onclick="closeModal('privacyModal')" style="background: #00796b; color: white; padding: 10px 20px;">Bezárás</button>
+            </div>
         </div>
     </div>
 </div>
@@ -2646,18 +2710,31 @@ function handleWorkoutFilterChange() {
     function handleLogin() {
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
-      document.getElementById('loginError').innerText = "";
+      const errorElement = document.getElementById('loginError');
+      errorElement.innerText = "";
 
       auth.signInWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-          // Sign-in successful, onAuthStateChanged will handle the rest
-          console.log("User logged in:", userCredential.user.uid);
+          const user = userCredential.user;
+
+          // ELLENŐRZÉS: Visszaigazolta az emailt?
+          if (user.emailVerified) {
+             // IGEN -> Mehet tovább (az onAuthStateChanged majd kezeli a beléptetést)
+             console.log("User logged in and verified:", user.uid);
+          } else {
+             // NEM -> Hibaüzenet és kijelentkeztetés
+             auth.signOut(); // Kidobjuk
+             errorElement.style.color = "red";
+             errorElement.innerText = "Hiba: Az email címed még nincs megerősítve! Kérlek ellenőrizd a postafiókodat.";
+             // Opcionális: Újraküldés lehetőségét itt lehetne felajánlani, de az egyszerűség kedvéért most csak jelezzük.
+          }
         })
         .catch((error) => {
-		  const errorElement = document.getElementById('loginError');
           errorElement.style.color = "red";
           errorElement.innerText = "Hiba: " + error.message;
-          document.getElementById('loginError').innerText = "Hiba: A jelszó vagy email cím hibás." + error.message;
+          // Magyarosított hibaüzenetek (opcionális)
+          if(error.code === 'auth/wrong-password') errorElement.innerText = "Hiba: Hibás jelszó.";
+          if(error.code === 'auth/user-not-found') errorElement.innerText = "Hiba: Nincs ilyen felhasználó.";
         });
     }
 
@@ -2694,18 +2771,40 @@ function handleWorkoutFilterChange() {
     function handleSignUp() {
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
-      document.getElementById('loginError').innerText = "";
+      const privacyChecked = document.getElementById('privacyCheck').checked;
+      const errorElement = document.getElementById('loginError');
 
+      errorElement.innerText = "";
+
+      // 1. Adatvédelmi ellenőrzés
+      if (!privacyChecked) {
+        errorElement.style.color = "red";
+        errorElement.innerText = "A regisztrációhoz el kell fogadnod az Adatkezelési Tájékoztatót!";
+        return;
+      }
+
+      // 2. Firebase regisztráció
       auth.createUserWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-          // Sign-up successful, onAuthStateChanged will handle the rest
-          console.log("User created:", userCredential.user.uid);
+          // SIKERES REGISZTRÁCIÓ -> EMAIL KÜLDÉS
+          const user = userCredential.user;
+
+          user.sendEmailVerification().then(function() {
+            // Email elküldve
+            alert("Sikeres regisztráció! ✉️\n\nEgy megerősítő emailt küldtünk a(z) " + email + " címre.\nKérlek, kattints a benne lévő linkre a fiókod aktiválásához, majd jelentkezz be újra.");
+
+            // Fontos: Azonnal kijelentkeztetjük, hogy ne lépjen be az appba
+            auth.signOut();
+          }).catch(function(error) {
+            // Hiba az email küldésnél
+            console.error("Hiba az email küldésekor:", error);
+            alert("A regisztráció sikerült, de a megerősítő emailt nem tudtuk elküldeni. Kérlek, próbálj meg belépni és kérj újat.");
+            auth.signOut();
+          });
         })
         .catch((error) => {
-		  const errorElement = document.getElementById('loginError');
-          errorElement.style.color = "red"; // Ezt add hozzá
+          errorElement.style.color = "red";
           errorElement.innerText = "Hiba: " + error.message;
-          document.getElementById('loginError').innerText = "Hiba: " + error.message;
         });
     }
 
@@ -2801,24 +2900,37 @@ function handleWorkoutFilterChange() {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         // === USER IS LOGGED IN ===
+
+        // BIZTONSÁGI ELLENŐRZÉS: Email verifikáció
+        if (!user.emailVerified) {
+            console.log("User is logged in but NOT verified. Signing out.");
+            // Ha nincs megerősítve, nem töltjük be az adatokat, hanem kiléptetjük
+            auth.signOut();
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            return; // Megállítjuk a futást
+        }
+
+        // Ha idáig eljutott, akkor verifikált felhasználó
         currentUser = user;
         console.log("Auth state changed: Logged in as", user.uid);
 
         document.getElementById('appContainer').style.display = 'block';
         document.getElementById('loginContainer').style.display = 'none';
 
+        // Innentől jön a régi kódod az adatok betöltésével...
         await loadDataFromFirestore();
-        await checkRecurringGoals(); // ÚJ: Ismétlődő célok ellenőrzése
-		await checkRecurringGoals(); // Ez ellenőrzi a *teljesített* ismétlődőket
-        await checkPendingGoals(); // EZ AZ ÚJ SOR (ellenőrzi a várakozókat)
+        await checkRecurringGoals();
+        await checkRecurringGoals();
+        await checkPendingGoals();
         calculateDailyProgress();
         calculateDailyProgress();
         loadMotivation();
         populateWorkoutCategoryFilter();
-        // ==================================
 
         renderAll();
-		loadSavedTheme();
+        loadSavedTheme();
+        startReminderEngine();
         startReminderEngine();
 
         startReminderEngine(); // ÚJ EMLÉKEZTETŐ MOTOR INDÍTÁSA
